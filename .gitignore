@@ -1,0 +1,9 @@
+# macOS
+.DS_Store
+
+# Python (tex2torsor)
+__pycache__/
+*.pyc
+
+# Maintainer's de-identification rules — kept out of the repo on purpose
+sanitize.local

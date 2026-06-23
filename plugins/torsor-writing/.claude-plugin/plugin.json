@@ -1,0 +1,8 @@
+{
+  "name": "torsor-writing",
+  "version": "0.1.0",
+  "description": "Styled LaTeX writing skills (write-manual, write-paper-guide) following the torsor design and prose style. Self-contained: bundles the torsor prose library, reference templates, and the tex2torsor converter so the skills run on any machine.",
+  "author": {
+    "name": "torsor lab"
+  }
+}
