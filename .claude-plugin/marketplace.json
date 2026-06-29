@@ -8,7 +8,7 @@
   "plugins": [
     {
       "name": "torsor-writing",
-      "description": "Styled LaTeX writing skills (write-manual, write-paper-guide) in the torsor design and prose style. Self-contained for use on any machine.",
+      "description": "Styled LaTeX writing skills (write-manual, write-paper-guide, write-topic-guide) in the torsor design and prose style. Self-contained for use on any machine.",
       "source": "./plugins/torsor-writing",
       "category": "productivity"
     }
