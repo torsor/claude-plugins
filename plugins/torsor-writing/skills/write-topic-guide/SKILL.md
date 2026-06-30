@@ -172,5 +172,7 @@ the LaTeX/PDF/HTML/EPUB **plus** the `source-notes/` directory.
 
 Same torsor preamble (Solarized Cézanne, Garamond/Cabin, box styles, `\code{}`), the math
 block (theorem environments, `pitfallbox`), `tex2torsor` + HTML design, the `latexd` /
-pandoc / `lab-view` toolchain, and the `torsor lab` credit. A reader moving between a tool
-manual, a paper guide, and a topic guide should feel the same hand at work.
+pandoc / `lab-view` toolchain, the `torsor lab` credit, and the colophon page on the title
+page's verso (`torsor lab` over the `torsor.org` link — inherited verbatim via the
+`write-paper-guide` scaffold this skill reuses). A reader moving between a tool manual, a
+paper guide, and a topic guide should feel the same hand at work.

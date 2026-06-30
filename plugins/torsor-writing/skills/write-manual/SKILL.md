@@ -238,6 +238,23 @@ Replace only these project-specific fields:
 - The `\input{chapters/...}` lines in the main matter
 - `\part{...}` labels if the book uses parts
 
+**Keep the colophon page verbatim.** Immediately after `\end{titlepage}`, the template
+carries the inner-cover (colophon) page — `torsor lab` over the terracotta `torsor.org`
+link, bottom-aligned on an otherwise blank page. This is a fixed family element: do **not**
+edit the attribution or the URL, and do not move it. Every manual carries the same one.
+
+```latex
+% Colophon — inner cover (verso of the title page)
+\thispagestyle{empty}
+\null\vfill
+\begin{center}
+  {\small\color{inkmuted} torsor lab\par}
+  \vspace{0.4em}
+  {\small\href{https://torsor.org}{\color{terracotta} torsor.org}}
+\end{center}
+\clearpage
+```
+
 Do **not** alter the color palette, fonts, titlesec definitions, box styles, or `\code{}` macro
 without the user's agreement — these are the family-wide design constants.
 
@@ -348,7 +365,8 @@ All manuals in this set share:
 - The same base mechanics, plus a chosen voice, from the torsor prose library
 - The same tex2torsor converter and HTML design
 - The same build toolchain: `latexd` for PDF, pandoc for EPUB, `lab-view` for HTML preview
-- The same author credit: `torsor lab` (in both `pdfauthor` and the epub `--metadata author`)
+- The same author credit: `torsor lab` (in `pdfauthor`, the epub `--metadata author`, and the colophon page)
+- The same colophon page on the title page's verso: `torsor lab` over the `torsor.org` link
 - The same structural rhythm: preface → big idea → features → quick reference
 
 This means a reader moving between manuals for different projects will feel at home. Don't deviate from the design without a strong reason and the user's agreement.

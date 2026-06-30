@@ -405,6 +405,25 @@ mark the document as a guide:
 \end{titlepage}
 ```
 
+**Keep the colophon page verbatim.** Immediately after `\end{titlepage}`, carry the
+inner-cover (colophon) page from the template unchanged — `torsor lab` over the terracotta
+`torsor.org` link, bottom-aligned on an otherwise blank page. This is a fixed family
+element (the guide credits the *paper's* authors on the title page; `torsor lab` is the
+author of the guide and belongs only here, in the metadata, and in the epub). Do not edit
+the attribution or the URL.
+
+```latex
+% Colophon — inner cover (verso of the title page)
+\thispagestyle{empty}
+\null\vfill
+\begin{center}
+  {\small\color{inkmuted} torsor lab\par}
+  \vspace{0.4em}
+  {\small\href{https://torsor.org}{\color{terracotta} torsor.org}}
+\end{center}
+\clearpage
+```
+
 ### STYLE and reader-profile files
 
 Assemble the guide's effective style guide into `latex/STYLE.md` by concatenating the base
@@ -528,7 +547,8 @@ The guide shares with the *thing* / *shelf* manuals:
   `\code{}` macro) — extended, not altered, with the math block above
 - the same tex2torsor converter and HTML design
 - the same toolchain: `latexd` for PDF, pandoc for EPUB, `lab-view` for HTML preview
-- the same author credit: `torsor lab` (in `pdfauthor` and the epub `--metadata author`)
+- the same author credit: `torsor lab` (in `pdfauthor`, the epub `--metadata author`, and the colophon page)
+- the same colophon page on the title page's verso: `torsor lab` over the `torsor.org` link
 
 What is unique to the guide:
 - the two-part shape (overview → walk-through) instead of preface → big idea → features
