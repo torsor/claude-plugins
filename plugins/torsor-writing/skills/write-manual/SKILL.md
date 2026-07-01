@@ -1,10 +1,10 @@
 ---
 name: write-manual
-description: Create a styled user's manual for a project — LaTeX source with HTML, PDF, and EPUB output — following the torsor design and Scalzi-influenced prose style used in the thing manual.
+description: Create a styled user's manual for a project — LaTeX source with HTML, PDF, EPUB, and Markdown output — following the torsor design and Scalzi-influenced prose style used in the thing manual.
 argument-hint: [path or description of the project to document]
 ---
 
-You are helping the user write a user's manual for a project. The manual will be a LaTeX book with matching HTML, PDF, and EPUB output, following the design and voice established in the *thing: A User's Manual*.
+You are helping the user write a user's manual for a project. The manual will be a LaTeX book with matching HTML, PDF, EPUB, and Markdown output, following the design and voice established in the *thing: A User's Manual*.
 
 The user has said: $ARGUMENTS
 
@@ -114,6 +114,7 @@ manual/
   tex2torsor/         ← symlink to the envtools manual's tex2torsor
   html/               ← build output, not created yet
   epub/               ← build output, not created yet
+  markdown/           ← build output, not created yet
 ```
 
 ### .gitignore
@@ -124,6 +125,7 @@ Create this file at `manual/.gitignore`:
 # Built outputs
 html/
 epub/
+markdown/
 
 # LaTeX PDF output
 latex/main.pdf
@@ -149,9 +151,11 @@ Use this exact pattern — `latexd` for PDF, tex2torsor for HTML, pandoc for EPU
 ```makefile
 # <project> manual
 #
-# PDF:  latexd (wrapper around latexmk — keeps build artifacts out of source tree)
+# PDF:  latexd (wrapper around latexmk — keeps build artifacts out of source tree;
+#         falls back to plain latexmk when latexd isn't on PATH)
 # HTML: tex2torsor (Python converter)
 # EPUB: pandoc (directly from LaTeX source)
+# MD:   pandoc → GitHub-Flavored Markdown (directly from LaTeX source)
 #
 # tex2torsor resolve order:
 #   1. TEX2TORSOR_ROOT=/path/to/dir
@@ -164,19 +168,29 @@ LATEX_DIR := latex
 HTML_DIR  := html
 EPUB_DIR  := epub
 EPUB_OUT  := $(EPUB_DIR)/manual.epub
+MD_DIR    := markdown
+MD_OUT    := $(MD_DIR)/manual.md
 
-.PHONY: html pdf epub view clean help
+.PHONY: html pdf epub md view clean help
 
 help:
 	@echo "Targets:"
-	@echo "  make pdf    — build latex/main.pdf via latexd"
+	@echo "  make pdf    — build latex/main.pdf via latexd (or latexmk if latexd absent)"
 	@echo "  make html   — build html/manual.html via tex2torsor"
 	@echo "  make epub   — build epub/manual.epub via pandoc"
+	@echo "  make md     — build markdown/manual.md via pandoc (GitHub-Flavored Markdown)"
 	@echo "  make view   — build html (if needed) and open in lab-view"
-	@echo "  make clean  — remove html/ and epub/ output"
+	@echo "  make clean  — remove html/, epub/, and markdown/ output"
 
+# latexd keeps build artifacts out of the source tree. On hosts without it,
+# fall back to plain latexmk (leaves aux files in latex/ — already gitignored).
 pdf:
-	latexd $(LATEX_DIR)/main.tex
+	@if command -v latexd >/dev/null 2>&1; then \
+	  latexd $(LATEX_DIR)/main.tex; \
+	else \
+	  echo "latexd not on PATH — falling back to latexmk"; \
+	  latexmk -pdf -interaction=nonstopmode -halt-on-error -cd $(LATEX_DIR)/main.tex; \
+	fi
 
 epub:
 	mkdir -p $(EPUB_DIR)
@@ -186,6 +200,13 @@ epub:
 	  --metadata title="<Project Title>" \
 	  --metadata author="torsor lab" \
 	  -o ../$(EPUB_OUT)
+
+md:
+	mkdir -p $(MD_DIR)
+	cd $(LATEX_DIR) && pandoc main.tex \
+	  --toc \
+	  -t gfm \
+	  -o ../$(MD_OUT)
 
 html:
 	@set -e; \
@@ -220,10 +241,12 @@ view: html
 	lab-view $(HTML_DIR)/manual.html &
 
 clean:
-	rm -rf $(HTML_DIR) $(EPUB_DIR)
+	rm -rf $(HTML_DIR) $(EPUB_DIR) $(MD_DIR)
 ```
 
-**EPUB note:** pandoc resolves `\input` relative to its working directory, not the source file, so the epub target must `cd $(LATEX_DIR)` before invoking pandoc and use `../$(EPUB_OUT)` as the output path.
+**EPUB/MD note:** pandoc resolves `\input` relative to its working directory, not the source file, so the `epub` and `md` targets must `cd $(LATEX_DIR)` before invoking pandoc and use `../$(EPUB_OUT)` / `../$(MD_OUT)` as the output path.
+
+**PDF note:** `latexd` is a local lab tool and isn't on most systems. The `pdf` target checks for it and falls back to plain `latexmk` when it's absent, so the build works out of the box; the fallback leaves aux files in `latex/` (already gitignored).
 
 ### main.tex preamble
 
@@ -332,10 +355,14 @@ Once at least the preface and one chapter exist, test the build:
 cd manual && make pdf
 cd manual && make html
 cd manual && make epub
+cd manual && make md
 ```
 
+Build all four by default — the Markdown export (`make md`) is part of the standard deliverable, not an optional extra.
+
 If any target fails, diagnose and fix before continuing. Common issues:
-- `latexd` not installed or not on PATH — it's a Python tool in the lab software suite
+- `latexd` not installed or not on PATH — it's a lab tool, absent on most systems; the `pdf`
+  target automatically falls back to `latexmk`, so this is only a problem if `latexmk` is also missing
 - Missing LaTeX packages (install via tlmgr)
 - Unicode characters inside `lstlisting` blocks — the listings package rejects non-ASCII;
   replace any non-ASCII arrows or special characters with ASCII equivalents (`->` not `→`)
@@ -364,7 +391,7 @@ All manuals in this set share:
 - The same LaTeX preamble (Solarized Cézanne palette, Garamond/Cabin fonts, box styles, `\code{}` macro)
 - The same base mechanics, plus a chosen voice, from the torsor prose library
 - The same tex2torsor converter and HTML design
-- The same build toolchain: `latexd` for PDF, pandoc for EPUB, `lab-view` for HTML preview
+- The same build toolchain: `latexd` (or `latexmk` fallback) for PDF, pandoc for EPUB and Markdown, `lab-view` for HTML preview
 - The same author credit: `torsor lab` (in `pdfauthor`, the epub `--metadata author`, and the colophon page)
 - The same colophon page on the title page's verso: `torsor lab` over the `torsor.org` link
 - The same structural rhythm: preface → big idea → features → quick reference

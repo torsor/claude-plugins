@@ -1,6 +1,6 @@
 ---
 name: write-topic-guide
-description: Use when the goal is a single learning-oriented explanatory guide that synthesizes SEVERAL sources (papers, books, theses) on one mathematical topic or concept — especially when the sources are large or include scanned/no-text-layer PDFs — rather than a companion to one paper. Output is the torsor house format (LaTeX → PDF, HTML, EPUB). Triggers: "explain how to think about X across these papers", "turn these sources into a guide", "orient a student to this idea".
+description: Use when the goal is a single learning-oriented explanatory guide that synthesizes SEVERAL sources (papers, books, theses) on one mathematical topic or concept — especially when the sources are large or include scanned/no-text-layer PDFs — rather than a companion to one paper. Output is the torsor house format (LaTeX → PDF, HTML, EPUB, Markdown). Triggers: "explain how to think about X across these papers", "turn these sources into a guide", "orient a student to this idea".
 argument-hint: [the topic/idea, and the source PDFs to synthesize]
 ---
 
@@ -44,7 +44,7 @@ Two framing rules carry over unchanged from `write-paper-guide`:
 ```
 Phase A  Pre-summarize the sources        -> source-notes/*.md  (reviewed, kept)
 Phase B  Reader + concept spine + synthesis -> reader-profile.md, the spine, gaps list
-Phase C  Author + build (compose w/ write-paper-guide) -> the guide, three formats
+Phase C  Author + build (compose w/ write-paper-guide) -> the guide, four formats
 ```
 
 Do them in order. Phase B's gaps list is a gate: if a spine step is covered by no source,
@@ -127,8 +127,10 @@ Apply these deltas to those steps:
   exemplar), keep a **progress ledger**, and gate with a **whole-guide faithfulness review**
   at the end. The `superpowers:subagent-driven-development` pattern fits this directly.
 
-Build all three formats and verify (`write-paper-guide` Step 8). The guide deliverable is
-the LaTeX/PDF/HTML/EPUB **plus** the `source-notes/` directory.
+Build all four formats and verify (`write-paper-guide` Step 8). The guide deliverable is
+the LaTeX/PDF/HTML/EPUB/Markdown **plus** the `source-notes/` directory. The `pdf` target
+falls back to `latexmk` where `latexd` isn't installed; the Markdown export (`make md`) is
+part of the default build.
 
 ---
 
@@ -150,7 +152,7 @@ the LaTeX/PDF/HTML/EPUB **plus** the `source-notes/` directory.
       04-...  05-...  ...
       99-notation-and-reference.tex    # reconciles all sources' notation
   tex2torsor/                          # copied from the plugin (write-paper-guide Step 5)
-  html/  epub/                         # build output
+  html/  epub/  markdown/              # build output
 ```
 
 ---
@@ -164,15 +166,16 @@ the LaTeX/PDF/HTML/EPUB **plus** the `source-notes/` directory.
 | Treating the topic as a fake single "paper" and walking its sections | Decide a **concept spine**; organize Part II by milestone, not by source |
 | Skipping the synthesis/gaps step and discovering mid-write a step no source covers | Produce `synthesis.md` with a gaps list; resolve gaps before Phase C |
 | Letting sources' clashing conventions leak in | Pin ONE verified convention in `synthesis.md` and the appendix; reconcile everywhere |
-| Guessing the build (`xelatex`/`make4ht`/`tex4ebook`) | Reuse `write-paper-guide`'s `latexd` / `tex2torsor` / `pandoc --mathml` toolchain + its `lessons.md` |
+| Guessing the build (`xelatex`/`make4ht`/`tex4ebook`) | Reuse `write-paper-guide`'s `latexd` (→ `latexmk` fallback) / `tex2torsor` / `pandoc` (EPUB + Markdown) toolchain + its `lessons.md` |
 | Hand-writing every chapter sequentially for a large guide | Subagent per chapter + progress ledger + final faithfulness review |
 | Throwing away the extraction work | Keep `source-notes/` as a deliverable — it is reusable and is part of the point |
 
 ## What stays the same as the manual family
 
 Same torsor preamble (Solarized Cézanne, Garamond/Cabin, box styles, `\code{}`), the math
-block (theorem environments, `pitfallbox`), `tex2torsor` + HTML design, the `latexd` /
-pandoc / `lab-view` toolchain, the `torsor lab` credit, and the colophon page on the title
+block (theorem environments, `pitfallbox`), `tex2torsor` + HTML design, the `latexd`
+(→ `latexmk` fallback) / pandoc (EPUB + Markdown) / `lab-view` toolchain, the `torsor lab`
+credit, and the colophon page on the title
 page's verso (`torsor lab` over the `torsor.org` link — inherited verbatim via the
 `write-paper-guide` scaffold this skill reuses). A reader moving between a tool manual, a
 paper guide, and a topic guide should feel the same hand at work.

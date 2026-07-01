@@ -1,11 +1,11 @@
 ---
 name: write-paper-guide
-description: Create a styled reading guide to a single mathematical paper — LaTeX source with HTML, PDF, and EPUB output — following the torsor design and prose style of the thing/shelf manuals. A two-part guide (Part I overview, Part II detailed walk-through) calibrated to a specific reader, written about the paper in the third person.
+description: Create a styled reading guide to a single mathematical paper — LaTeX source with HTML, PDF, EPUB, and Markdown output — following the torsor design and prose style of the thing/shelf manuals. A two-part guide (Part I overview, Part II detailed walk-through) calibrated to a specific reader, written about the paper in the third person.
 argument-hint: [path, arXiv id/URL, or description of the paper to guide]
 ---
 
 You are helping the user write a reading guide to a mathematical paper. The guide is a
-LaTeX book with matching HTML, PDF, and EPUB output, sharing the design and voice of the
+LaTeX book with matching HTML, PDF, EPUB, and Markdown output, sharing the design and voice of the
 *thing* and *shelf* manuals — but its job is different. It is a **reading companion** to
 one paper: it orients the reader, then walks them through the paper itself.
 
@@ -205,6 +205,7 @@ a guide-shaped chapter list):
   tex2torsor/              ← symlink to the envtools manual's tex2torsor
   html/                    ← build output, not created yet
   epub/                    ← build output, not created yet
+  markdown/                ← build output, not created yet
 ```
 
 ### .gitignore
@@ -213,6 +214,7 @@ a guide-shaped chapter list):
 # Built outputs
 html/
 epub/
+markdown/
 
 # LaTeX PDF output
 latex/main.pdf
@@ -234,14 +236,16 @@ latex/chapters/*.aux
 ### Makefile
 
 Use the manual family's exact Makefile, changing only the EPUB title metadata. The
-pattern (latexd for PDF, tex2torsor for HTML, pandoc for EPUB, lab-view for preview):
+pattern (latexd — or latexmk fallback — for PDF, tex2torsor for HTML, pandoc for EPUB and Markdown, lab-view for preview):
 
 ```makefile
 # <paper> reading guide
 #
-# PDF:  latexd (wrapper around latexmk — keeps build artifacts out of source tree)
+# PDF:  latexd (wrapper around latexmk — keeps build artifacts out of source tree;
+#         falls back to plain latexmk when latexd isn't on PATH)
 # HTML: tex2torsor (Python converter)
 # EPUB: pandoc (directly from LaTeX source)
+# MD:   pandoc → GitHub-Flavored Markdown (directly from LaTeX source)
 #
 # tex2torsor resolve order:
 #   1. TEX2TORSOR_ROOT=/path/to/dir
@@ -254,19 +258,29 @@ LATEX_DIR := latex
 HTML_DIR  := html
 EPUB_DIR  := epub
 EPUB_OUT  := $(EPUB_DIR)/manual.epub
+MD_DIR    := markdown
+MD_OUT    := $(MD_DIR)/manual.md
 
-.PHONY: html pdf epub view clean help
+.PHONY: html pdf epub md view clean help
 
 help:
 	@echo "Targets:"
-	@echo "  make pdf    — build latex/main.pdf via latexd"
+	@echo "  make pdf    — build latex/main.pdf via latexd (or latexmk if latexd absent)"
 	@echo "  make html   — build html/manual.html via tex2torsor"
 	@echo "  make epub   — build epub/manual.epub via pandoc"
+	@echo "  make md     — build markdown/manual.md via pandoc (GitHub-Flavored Markdown)"
 	@echo "  make view   — build html (if needed) and open in lab-view"
-	@echo "  make clean  — remove html/ and epub/ output"
+	@echo "  make clean  — remove html/, epub/, and markdown/ output"
 
+# latexd keeps build artifacts out of the source tree. On hosts without it,
+# fall back to plain latexmk (leaves aux files in latex/ — already gitignored).
 pdf:
-	latexd $(LATEX_DIR)/main.tex
+	@if command -v latexd >/dev/null 2>&1; then \
+	  latexd $(LATEX_DIR)/main.tex; \
+	else \
+	  echo "latexd not on PATH — falling back to latexmk"; \
+	  latexmk -pdf -interaction=nonstopmode -halt-on-error -cd $(LATEX_DIR)/main.tex; \
+	fi
 
 epub:
 	mkdir -p $(EPUB_DIR)
@@ -276,6 +290,13 @@ epub:
 	  --metadata title="A Reading Guide to <Paper Title>" \
 	  --metadata author="torsor lab" \
 	  -o ../$(EPUB_OUT)
+
+md:
+	mkdir -p $(MD_DIR)
+	cd $(LATEX_DIR) && pandoc main.tex \
+	  --toc \
+	  -t gfm \
+	  -o ../$(MD_OUT)
 
 html:
 	@set -e; \
@@ -310,12 +331,16 @@ view: html
 	lab-view $(HTML_DIR)/manual.html &
 
 clean:
-	rm -rf $(HTML_DIR) $(EPUB_DIR)
+	rm -rf $(HTML_DIR) $(EPUB_DIR) $(MD_DIR)
 ```
 
-**EPUB note:** pandoc resolves `\input` relative to its working directory, not the source
-file, so the epub target must `cd $(LATEX_DIR)` before invoking pandoc and use
-`../$(EPUB_OUT)` as the output path.
+**EPUB/MD note:** pandoc resolves `\input` relative to its working directory, not the source
+file, so the `epub` and `md` targets must `cd $(LATEX_DIR)` before invoking pandoc and use
+`../$(EPUB_OUT)` / `../$(MD_OUT)` as the output path.
+
+**PDF note:** `latexd` is a local lab tool and isn't on most systems. The `pdf` target
+checks for it and falls back to plain `latexmk` when it's absent, so the build works out of
+the box; the fallback leaves aux files in `latex/` (already gitignored).
 
 ### main.tex preamble
 
@@ -500,17 +525,22 @@ appendix** last (you'll know what needs collecting).
 
 ## Step 8 — Verify the build
 
-Once the preface and at least one chapter exist, test all three targets:
+Once the preface and at least one chapter exist, test all four targets:
 
 ```
 cd <guide-dir> && make pdf
 cd <guide-dir> && make html
 cd <guide-dir> && make epub
+cd <guide-dir> && make md
 ```
+
+Build all four by default — the Markdown export (`make md`) is part of the standard
+deliverable, not an optional extra.
 
 Fix failures before continuing. Common issues:
 
-- `latexd` not installed or not on PATH — it's a Python tool in the lab software suite.
+- `latexd` not installed or not on PATH — it's a lab tool, absent on most systems; the `pdf`
+  target automatically falls back to `latexmk`, so this only bites if `latexmk` is also missing.
 - Missing LaTeX packages (install via tlmgr) — note the math additions need `amsmath`,
   `amsthm`, `mathtools`.
 - Non-ASCII characters inside `lstlisting` blocks — the listings package rejects them;
@@ -518,8 +548,8 @@ Fix failures before continuing. Common issues:
   which is fine.
 - tex2torsor / pandoc math handling — check that display and inline math survive the HTML
   and EPUB conversions; if a construct breaks, simplify it or note it for the user.
-- Pandoc not installed (needed for HTML via tex2torsor and for EPUB directly).
-- Path issues — remember the epub target must `cd` into `latex/` before calling pandoc.
+- Pandoc not installed (needed for HTML via tex2torsor and for EPUB and Markdown directly).
+- Path issues — remember the epub and md targets must `cd` into `latex/` before calling pandoc.
 
 ---
 
@@ -546,7 +576,7 @@ The guide shares with the *thing* / *shelf* manuals:
 - the same LaTeX preamble (Solarized Cézanne palette, Garamond/Cabin fonts, box styles,
   `\code{}` macro) — extended, not altered, with the math block above
 - the same tex2torsor converter and HTML design
-- the same toolchain: `latexd` for PDF, pandoc for EPUB, `lab-view` for HTML preview
+- the same toolchain: `latexd` (or `latexmk` fallback) for PDF, pandoc for EPUB and Markdown, `lab-view` for HTML preview
 - the same author credit: `torsor lab` (in `pdfauthor`, the epub `--metadata author`, and the colophon page)
 - the same colophon page on the title page's verso: `torsor lab` over the `torsor.org` link
 

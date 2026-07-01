@@ -65,7 +65,7 @@ refs throughout:
 - every theorem/lemma/proposition statement (a one-line restatement is fine), by number;
 - the key tables and computations, transcribed (verify these from the page image, not
   garbled text);
-- proof *spines* of the load-bearing results — the engine, not every step;
+- proof *spines* of the results everything rests on — the engine, not every step;
 - a notation key, and notes on where this source is cleaner / more general than the others.
 
 Tell it to write GitHub-flavored markdown with LaTeX math in `$...$`, to flag illegible or
