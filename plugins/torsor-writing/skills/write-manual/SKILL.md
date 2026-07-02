@@ -33,7 +33,7 @@ Before doing anything else, read:
    ${CLAUDE_PLUGIN_ROOT}/assets/reference/shelf-00-preface.tex
    ```
    `shelf-main.tex` is the full preamble + main matter; `shelf-00-preface.tex` is one chapter
-   for prose rhythm. The canonical Makefile pattern is reproduced verbatim in Step 4 below.
+   for prose rhythm.
 
 3. **Visual style reference** — the artifacts document's LaTeX preamble establishes the
    Solarized Cézanne color palette and Garamond/Cabin typography used in all manuals:
@@ -42,10 +42,18 @@ Before doing anything else, read:
    ```
    (Read lines 1–110 — that's the whole preamble.)
 
-4. **tex2torsor** — the LaTeX→HTML converter. Lives here:
+4. **Shared mechanics — the commons.** The family scaffold (directory layout, Makefile,
+   .gitignore, preamble rules, STYLE.md assembly, vendored tools, build verification),
+   the situational lessons, and the publication pass:
    ```
-   ${CLAUDE_PLUGIN_ROOT}/tools/tex2torsor/
+   ${CLAUDE_PLUGIN_ROOT}/assets/commons/scaffold.md
+   ${CLAUDE_PLUGIN_ROOT}/assets/commons/lessons.md
+   ${CLAUDE_PLUGIN_ROOT}/assets/commons/publication.md
    ```
+   `scaffold.md` is required reading before Step 4. Reach for `lessons.md` when the
+   toolchain misbehaves (`latexd` reporting success on a failed build, HTML/EPUB math
+   not rendering). The tex2torsor converter lives at
+   `${CLAUDE_PLUGIN_ROOT}/tools/tex2torsor/`.
 
 ---
 
@@ -97,215 +105,18 @@ Present the proposed outline to the user and confirm before writing a word. Conf
 
 ## Step 4 — Scaffold the directory
 
-Once the outline is confirmed, create the manual directory structure:
+Once the outline is confirmed, scaffold `manual/` **exactly as specified in
+`${CLAUDE_PLUGIN_ROOT}/assets/commons/scaffold.md`** — directory layout, `.gitignore`,
+Makefile, preamble rules, colophon, STYLE.md assembly, and the vendored tools
+(tex2torsor and check-build.py). The manual-specific parameters:
 
-```
-manual/
-  .gitignore
-  Makefile
-  latex/
-    main.tex
-    STYLE.md          ← base-manual + chosen voice, assembled (records the voice)
-    chapters/
-      00-preface.tex
-      01-<chapter>.tex
-      ...
-      99-quick-reference.tex
-  tex2torsor/         ← symlink to the envtools manual's tex2torsor
-  html/               ← build output, not created yet
-  epub/               ← build output, not created yet
-  markdown/           ← build output, not created yet
-```
-
-### .gitignore
-
-Create this file at `manual/.gitignore`:
-
-```gitignore
-# Built outputs
-html/
-epub/
-markdown/
-
-# LaTeX PDF output
-latex/main.pdf
-
-# LaTeX intermediate artifacts (if built without latexd)
-latex/*.aux
-latex/*.log
-latex/*.out
-latex/*.toc
-latex/*.fls
-latex/*.fdb_latexmk
-latex/*.synctex.gz
-latex/chapters/*.aux
-
-# macOS
-.DS_Store
-```
-
-### Makefile
-
-Use this exact pattern — `latexd` for PDF, tex2torsor for HTML, pandoc for EPUB, `lab-view` for preview:
-
-```makefile
-# <project> manual
-#
-# PDF:  latexd (wrapper around latexmk — keeps build artifacts out of source tree;
-#         falls back to plain latexmk when latexd isn't on PATH)
-# HTML: tex2torsor (Python converter)
-# EPUB: pandoc (directly from LaTeX source)
-# MD:   pandoc → GitHub-Flavored Markdown (directly from LaTeX source)
-#
-# tex2torsor resolve order:
-#   1. TEX2TORSOR_ROOT=/path/to/dir
-#   2. ./tex2torsor  (symlink or copy inside this manual/ directory)
-#   3. ../tex2torsor  (sibling of this directory)
-#   4. ../../tex2torsor
-
-PYTHON    ?= python3
-LATEX_DIR := latex
-HTML_DIR  := html
-EPUB_DIR  := epub
-EPUB_OUT  := $(EPUB_DIR)/manual.epub
-MD_DIR    := markdown
-MD_OUT    := $(MD_DIR)/manual.md
-
-.PHONY: html pdf epub md view clean help
-
-help:
-	@echo "Targets:"
-	@echo "  make pdf    — build latex/main.pdf via latexd (or latexmk if latexd absent)"
-	@echo "  make html   — build html/manual.html via tex2torsor"
-	@echo "  make epub   — build epub/manual.epub via pandoc"
-	@echo "  make md     — build markdown/manual.md via pandoc (GitHub-Flavored Markdown)"
-	@echo "  make view   — build html (if needed) and open in lab-view"
-	@echo "  make clean  — remove html/, epub/, and markdown/ output"
-
-# latexd keeps build artifacts out of the source tree. On hosts without it,
-# fall back to plain latexmk (leaves aux files in latex/ — already gitignored).
-pdf:
-	@if command -v latexd >/dev/null 2>&1; then \
-	  latexd $(LATEX_DIR)/main.tex; \
-	else \
-	  echo "latexd not on PATH — falling back to latexmk"; \
-	  latexmk -pdf -interaction=nonstopmode -halt-on-error -cd $(LATEX_DIR)/main.tex; \
-	fi
-
-epub:
-	mkdir -p $(EPUB_DIR)
-	cd $(LATEX_DIR) && pandoc main.tex \
-	  --toc \
-	  --split-level=1 \
-	  --metadata title="<Project Title>" \
-	  --metadata author="torsor lab" \
-	  -o ../$(EPUB_OUT)
-
-md:
-	mkdir -p $(MD_DIR)
-	cd $(LATEX_DIR) && pandoc main.tex \
-	  --toc \
-	  -t gfm \
-	  -o ../$(MD_OUT)
-
-html:
-	@set -e; \
-	MANUAL="$(CURDIR)"; \
-	REPO="$$(cd "$$MANUAL/.." && pwd)"; \
-	PARENT="$$(cd "$$MANUAL/../.." && pwd)"; \
-	if [ -n "$(strip $(TEX2TORSOR_ROOT))" ]; then \
-	  T2T_ROOT="$(TEX2TORSOR_ROOT)"; \
-	elif [ -f "$$MANUAL/tex2torsor/tex2torsor.py" ]; then \
-	  T2T_ROOT="$$MANUAL/tex2torsor"; \
-	elif [ -f "$$REPO/tex2torsor/tex2torsor.py" ]; then \
-	  T2T_ROOT="$$REPO/tex2torsor"; \
-	elif [ -f "$$PARENT/tex2torsor/tex2torsor.py" ]; then \
-	  T2T_ROOT="$$PARENT/tex2torsor"; \
-	else \
-	  echo >&2 "tex2torsor not found."; \
-	  echo >&2 "Pass the directory containing tex2torsor.py:"; \
-	  echo >&2 "  make TEX2TORSOR_ROOT=/path/to/tex2torsor html"; \
-	  exit 1; \
-	fi; \
-	T2T="$$T2T_ROOT/tex2torsor.py"; \
-	CSS_DIR="$$T2T_ROOT/css"; \
-	mkdir -p $(HTML_DIR); \
-	$(PYTHON) "$$T2T" $(LATEX_DIR)/main.tex \
-	  -o $(HTML_DIR)/manual.html \
-	  --css tokens.css \
-	  --css manual.css; \
-	cp "$$CSS_DIR/tokens.css" $(HTML_DIR)/tokens.css; \
-	cp "$$CSS_DIR/manual.css" $(HTML_DIR)/manual.css
-
-view: html
-	lab-view $(HTML_DIR)/manual.html &
-
-clean:
-	rm -rf $(HTML_DIR) $(EPUB_DIR) $(MD_DIR)
-```
-
-**EPUB/MD note:** pandoc resolves `\input` relative to its working directory, not the source file, so the `epub` and `md` targets must `cd $(LATEX_DIR)` before invoking pandoc and use `../$(EPUB_OUT)` / `../$(MD_OUT)` as the output path.
-
-**PDF note:** `latexd` is a local lab tool and isn't on most systems. The `pdf` target checks for it and falls back to plain `latexmk` when it's absent, so the build works out of the box; the fallback leaves aux files in `latex/` (already gitignored).
-
-### main.tex preamble
-
-Use the **shelf manual's `main.tex`** as the verbatim template for the preamble
-(`${CLAUDE_PLUGIN_ROOT}/assets/reference/shelf-main.tex`).
-It embeds the full Solarized Cézanne palette, Garamond/Cabin fonts, titlesec chapter/section/part
-formatting, fancyhdr setup, mdframed callout boxes, and lstlisting style — all calibrated together.
-
-Replace only these project-specific fields:
-- `pdftitle` in `\hypersetup`; set `pdfauthor` to `torsor lab`
-- The title-page content inside `\begin{titlepage}...\end{titlepage}`
-- The `\input{chapters/...}` lines in the main matter
-- `\part{...}` labels if the book uses parts
-
-**Keep the colophon page verbatim.** Immediately after `\end{titlepage}`, the template
-carries the inner-cover (colophon) page — `torsor lab` over the terracotta `torsor.org`
-link, bottom-aligned on an otherwise blank page. This is a fixed family element: do **not**
-edit the attribution or the URL, and do not move it. Every manual carries the same one.
-
-```latex
-% Colophon — inner cover (verso of the title page)
-\thispagestyle{empty}
-\null\vfill
-\begin{center}
-  {\small\color{inkmuted} torsor lab\par}
-  \vspace{0.4em}
-  {\small\href{https://torsor.org}{\color{terracotta} torsor.org}}
-\end{center}
-\clearpage
-```
-
-Do **not** alter the color palette, fonts, titlesec definitions, box styles, or `\code{}` macro
-without the user's agreement — these are the family-wide design constants.
-
-### STYLE.md
-
-Assemble the manual's effective style guide into `latex/STYLE.md` by concatenating the base
-mechanics and the chosen voice, with a header recording which voice was used. From the
-prose library:
-```
-PROSE=${CLAUDE_PLUGIN_ROOT}/assets/prose
-{ echo "<!-- Voice: 01-direct (manual). Assembled from torsor-style/prose. -->"; echo; \
-  cat "$PROSE/base-manual.md"; echo; cat "$PROSE/voices/01-direct.md"; } \
-  > manual/latex/STYLE.md
-```
-Substitute the chosen voice file if it isn't `01-direct`. This keeps the manual
-self-contained and records which voice it was written in.
-
-### tex2torsor
-
-The converter is vendored in this plugin. **Copy** it into the manual (don't symlink) so the
-manual stays a self-contained deliverable that survives plugin updates or uninstalls:
-
-```bash
-cp -R ${CLAUDE_PLUGIN_ROOT}/tools/tex2torsor manual/tex2torsor
-```
-
-The Makefile's `html` target also accepts `make TEX2TORSOR_ROOT=${CLAUDE_PLUGIN_ROOT}/tools/tex2torsor html`
-if you'd rather not copy it in.
+- **Chapters:** `00-preface.tex`, `01-<chapter>.tex`, …, `99-quick-reference.tex` under
+  `latex/chapters/`, matching the confirmed outline.
+- **Makefile:** genre comment `# <project> manual`; EPUB `--metadata title="<Project Title>"`.
+- **STYLE.md:** assemble from `base-manual.md` + the chosen voice.
+- **main.tex:** the shelf preamble verbatim per the scaffold's rules; adapt the shelf
+  title page's content to this project; keep the colophon verbatim.
+- **Math block:** omit unless the project's manual genuinely needs mathematics.
 
 ---
 
@@ -347,27 +158,20 @@ The quick-reference chapter is exhaustive. It can use tables, dense lists, and o
 
 ---
 
-## Step 8 — Verify the build
+## Step 8 — Verify the build and run the publication pass
 
-Once at least the preface and one chapter exist, test the build:
+Once at least the preface and one chapter exist, build all four formats and verify per
+the commons:
 
 ```
-cd manual && make pdf
-cd manual && make html
-cd manual && make epub
-cd manual && make md
+cd manual && make pdf && make html && make epub && make md && make check
 ```
 
-Build all four by default — the Markdown export (`make md`) is part of the standard deliverable, not an optional extra.
-
-If any target fails, diagnose and fix before continuing. Common issues:
-- `latexd` not installed or not on PATH — it's a lab tool, absent on most systems; the `pdf`
-  target automatically falls back to `latexmk`, so this is only a problem if `latexmk` is also missing
-- Missing LaTeX packages (install via tlmgr)
-- Unicode characters inside `lstlisting` blocks — the listings package rejects non-ASCII;
-  replace any non-ASCII arrows or special characters with ASCII equivalents (`->` not `→`)
-- Pandoc not installed (needed by tex2torsor for HTML and directly for EPUB)
-- Path issues in Makefile — remember the epub target must `cd` into `latex/` before calling pandoc
+Fix what `make check` reports (the common issues and their fixes are in `scaffold.md`
+and `lessons.md`). The manual is not done until the **publication pass** has run and
+returned a clean evidence report — follow
+`${CLAUDE_PLUGIN_ROOT}/assets/commons/publication.md` (dispatch it as a subagent for a
+long session).
 
 ---
 
@@ -390,8 +194,9 @@ If any target fails, diagnose and fix before continuing. Common issues:
 All manuals in this set share:
 - The same LaTeX preamble (Solarized Cézanne palette, Garamond/Cabin fonts, box styles, `\code{}` macro)
 - The same base mechanics, plus a chosen voice, from the torsor prose library
-- The same tex2torsor converter and HTML design
-- The same build toolchain: `latexd` (or `latexmk` fallback) for PDF, pandoc for EPUB and Markdown, `lab-view` for HTML preview
+- The same scaffold, build toolchain, and publication pass, from the commons
+  (`assets/commons/`): `latexd` (or `latexmk` fallback) for PDF, tex2torsor for HTML,
+  pandoc for EPUB and Markdown, `lab-view` for preview, check-build.py for verification
 - The same author credit: `torsor lab` (in `pdfauthor`, the epub `--metadata author`, and the colophon page)
 - The same colophon page on the title page's verso: `torsor lab` over the `torsor.org` link
 - The same structural rhythm: preface → big idea → features → quick reference

@@ -56,14 +56,19 @@ Before doing anything else, read:
    ${CLAUDE_PLUGIN_ROOT}/assets/reference/artifacts.tex
    ```
 
-5. **tex2torsor** — the LaTeX→HTML converter:
+5. **Shared mechanics — the commons.** The family scaffold (directory layout, Makefile,
+   .gitignore, preamble rules, the math block, STYLE.md assembly, vendored tools, build
+   verification), the situational lessons, and the publication pass:
    ```
-   ${CLAUDE_PLUGIN_ROOT}/tools/tex2torsor/
+   ${CLAUDE_PLUGIN_ROOT}/assets/commons/scaffold.md
+   ${CLAUDE_PLUGIN_ROOT}/assets/commons/lessons.md
+   ${CLAUDE_PLUGIN_ROOT}/assets/commons/publication.md
    ```
-
-If the paper has heavy math or you hit a toolchain limit (HTML/EPUB math not rendering,
-`latexd` reporting success on a failed build), check `lessons.md` next to this skill first —
-it has the proven, situational workarounds so you don't rediscover them.
+   `scaffold.md` is required reading before Step 5. If the paper has heavy math or you
+   hit a toolchain limit (HTML/EPUB math not rendering, `latexd` reporting success on a
+   failed build), check `lessons.md` first — it has the proven, situational workarounds
+   so you don't rediscover them. The tex2torsor converter lives at
+   `${CLAUDE_PLUGIN_ROOT}/tools/tex2torsor/`.
 
 ---
 
@@ -104,13 +109,14 @@ Ask, in your own words and as a short batch (not one question at a time):
   somewhere between.
 - **Length tolerance** — a tight orientation or an exhaustive companion.
 
-If the user already has a background document handy, they can point you to it instead of
-answering live; read it and confirm your reading of it.
+If the user already has a background document handy — including a profile file from the
+reader-profiles collection, if one exists for this reader — they can point you to it
+instead of answering live; read it and confirm your reading of it.
 
 Record the answers verbatim into `latex/reader-profile.md` inside the guide directory
 (once it exists). This file is **not** compiled — it is a reference the prose is
-calibrated against and a record for the next time. Re-read it whenever you are unsure how
-much to explain.
+calibrated against and a record for the next time. If it was derived from a profile
+file, record which one and when. Re-read it whenever you are unsure how much to explain.
 
 **Voice.** Default to `01-direct`. If the user wants a different register for this guide (e.g.
 the more digressive `02-wandering`), confirm it now and read that voice file in place of
@@ -184,297 +190,53 @@ the prose chapters deliberately avoid.
 
 ## Step 5 — Scaffold the directory
 
-Once the outline is confirmed, create the structure (identical to the manual family, with
-a guide-shaped chapter list):
+Once the outline is confirmed, scaffold the guide directory **exactly as specified in
+`${CLAUDE_PLUGIN_ROOT}/assets/commons/scaffold.md`** — directory layout, `.gitignore`,
+Makefile, preamble rules, colophon, STYLE.md assembly, and the vendored tools
+(tex2torsor and check-build.py). The guide-specific parameters:
 
-```
-<guide-dir>/
-  .gitignore
-  Makefile
-  latex/
-    main.tex
-    STYLE.md               ← base-paper-guide + chosen voice, assembled (records the voice)
-    reader-profile.md      ← from Step 2; not compiled
-    chapters/
-      00-preface.tex
-      01-what-its-about.tex
-      02-shape-of-the-contribution.tex
-      03-roadmap.tex
-      04-...                ← one per major section of the paper
-      99-notation-and-reference.tex
-  tex2torsor/              ← symlink to the envtools manual's tex2torsor
-  html/                    ← build output, not created yet
-  epub/                    ← build output, not created yet
-  markdown/                ← build output, not created yet
-```
+- **Chapters** under `latex/chapters/`:
+  ```
+  00-preface.tex
+  01-what-its-about.tex
+  02-shape-of-the-contribution.tex
+  03-roadmap.tex
+  04-...                ← one per major section of the paper
+  99-notation-and-reference.tex
+  ```
+  plus `latex/reader-profile.md` (from Step 2; not compiled).
+- **Makefile:** genre comment `# <paper> reading guide`; EPUB
+  `--metadata title="A Reading Guide to <Paper Title>"`.
+- **STYLE.md:** assemble from `base-paper-guide.md` + the chosen voice; record the voice.
+- **Math block:** required — add the scaffold's math block (`amsmath`/`amsthm`/
+  `mathtools`, the `paperthm`/`paperdefn`/`paperlem`/`paperprop` environments,
+  `pitfallbox`) to the preamble. When restating one of the paper's results, always carry
+  the paper's own number in the optional argument, e.g.
+  `\begin{paperthm}[Theorem 4.2, slightly informally] ... \end{paperthm}`,
+  so the reader can cross-check the guide against the paper.
+- **Title page:** adapt the shelf title page — credit the **paper's** title and authors
+  as the subject, and mark the document as a guide:
 
-### .gitignore
+  ```latex
+  \begin{titlepage}
+    \centering
+    \vspace*{3cm}
+    {\Large\sffamily\color{inkmuted} A Reading Guide to\par}
+    \vspace{0.5cm}
+    {\huge\rmfamily\color{inkdark} <Paper Title>\par}
+    \vspace{0.5cm}
+    {\normalsize\itshape\color{inkmuted} <Authors of the paper>\par}
+    \vspace{3cm}
+    {\normalsize\color{inkbody} <one-line orientation: what the paper does, for whom this guide is written>\par}
+    \vfill
+    {\small\color{inkdim} Last revised: \today}
+  \end{titlepage}
+  ```
 
-```gitignore
-# Built outputs
-html/
-epub/
-markdown/
-
-# LaTeX PDF output
-latex/main.pdf
-
-# LaTeX intermediate artifacts (if built without latexd)
-latex/*.aux
-latex/*.log
-latex/*.out
-latex/*.toc
-latex/*.fls
-latex/*.fdb_latexmk
-latex/*.synctex.gz
-latex/chapters/*.aux
-
-# macOS
-.DS_Store
-```
-
-### Makefile
-
-Use the manual family's exact Makefile, changing only the EPUB title metadata. The
-pattern (latexd — or latexmk fallback — for PDF, tex2torsor for HTML, pandoc for EPUB and Markdown, lab-view for preview):
-
-```makefile
-# <paper> reading guide
-#
-# PDF:  latexd (wrapper around latexmk — keeps build artifacts out of source tree;
-#         falls back to plain latexmk when latexd isn't on PATH)
-# HTML: tex2torsor (Python converter)
-# EPUB: pandoc (directly from LaTeX source)
-# MD:   pandoc → GitHub-Flavored Markdown (directly from LaTeX source)
-#
-# tex2torsor resolve order:
-#   1. TEX2TORSOR_ROOT=/path/to/dir
-#   2. ./tex2torsor  (symlink or copy inside this directory)
-#   3. ../tex2torsor  (sibling of this directory)
-#   4. ../../tex2torsor
-
-PYTHON    ?= python3
-LATEX_DIR := latex
-HTML_DIR  := html
-EPUB_DIR  := epub
-EPUB_OUT  := $(EPUB_DIR)/manual.epub
-MD_DIR    := markdown
-MD_OUT    := $(MD_DIR)/manual.md
-
-.PHONY: html pdf epub md view clean help
-
-help:
-	@echo "Targets:"
-	@echo "  make pdf    — build latex/main.pdf via latexd (or latexmk if latexd absent)"
-	@echo "  make html   — build html/manual.html via tex2torsor"
-	@echo "  make epub   — build epub/manual.epub via pandoc"
-	@echo "  make md     — build markdown/manual.md via pandoc (GitHub-Flavored Markdown)"
-	@echo "  make view   — build html (if needed) and open in lab-view"
-	@echo "  make clean  — remove html/, epub/, and markdown/ output"
-
-# latexd keeps build artifacts out of the source tree. On hosts without it,
-# fall back to plain latexmk (leaves aux files in latex/ — already gitignored).
-pdf:
-	@if command -v latexd >/dev/null 2>&1; then \
-	  latexd $(LATEX_DIR)/main.tex; \
-	else \
-	  echo "latexd not on PATH — falling back to latexmk"; \
-	  latexmk -pdf -interaction=nonstopmode -halt-on-error -cd $(LATEX_DIR)/main.tex; \
-	fi
-
-epub:
-	mkdir -p $(EPUB_DIR)
-	cd $(LATEX_DIR) && pandoc main.tex \
-	  --toc \
-	  --split-level=1 \
-	  --metadata title="A Reading Guide to <Paper Title>" \
-	  --metadata author="torsor lab" \
-	  -o ../$(EPUB_OUT)
-
-md:
-	mkdir -p $(MD_DIR)
-	cd $(LATEX_DIR) && pandoc main.tex \
-	  --toc \
-	  -t gfm \
-	  -o ../$(MD_OUT)
-
-html:
-	@set -e; \
-	MANUAL="$(CURDIR)"; \
-	REPO="$$(cd "$$MANUAL/.." && pwd)"; \
-	PARENT="$$(cd "$$MANUAL/../.." && pwd)"; \
-	if [ -n "$(strip $(TEX2TORSOR_ROOT))" ]; then \
-	  T2T_ROOT="$(TEX2TORSOR_ROOT)"; \
-	elif [ -f "$$MANUAL/tex2torsor/tex2torsor.py" ]; then \
-	  T2T_ROOT="$$MANUAL/tex2torsor"; \
-	elif [ -f "$$REPO/tex2torsor/tex2torsor.py" ]; then \
-	  T2T_ROOT="$$REPO/tex2torsor"; \
-	elif [ -f "$$PARENT/tex2torsor/tex2torsor.py" ]; then \
-	  T2T_ROOT="$$PARENT/tex2torsor"; \
-	else \
-	  echo >&2 "tex2torsor not found."; \
-	  echo >&2 "Pass the directory containing tex2torsor.py:"; \
-	  echo >&2 "  make TEX2TORSOR_ROOT=/path/to/tex2torsor html"; \
-	  exit 1; \
-	fi; \
-	T2T="$$T2T_ROOT/tex2torsor.py"; \
-	CSS_DIR="$$T2T_ROOT/css"; \
-	mkdir -p $(HTML_DIR); \
-	$(PYTHON) "$$T2T" $(LATEX_DIR)/main.tex \
-	  -o $(HTML_DIR)/manual.html \
-	  --css tokens.css \
-	  --css manual.css; \
-	cp "$$CSS_DIR/tokens.css" $(HTML_DIR)/tokens.css; \
-	cp "$$CSS_DIR/manual.css" $(HTML_DIR)/manual.css
-
-view: html
-	lab-view $(HTML_DIR)/manual.html &
-
-clean:
-	rm -rf $(HTML_DIR) $(EPUB_DIR) $(MD_DIR)
-```
-
-**EPUB/MD note:** pandoc resolves `\input` relative to its working directory, not the source
-file, so the `epub` and `md` targets must `cd $(LATEX_DIR)` before invoking pandoc and use
-`../$(EPUB_OUT)` / `../$(MD_OUT)` as the output path.
-
-**PDF note:** `latexd` is a local lab tool and isn't on most systems. The `pdf` target
-checks for it and falls back to plain `latexmk` when it's absent, so the build works out of
-the box; the fallback leaves aux files in `latex/` (already gitignored).
-
-### main.tex preamble
-
-Take the **shelf manual's `main.tex` preamble verbatim** — it carries the full Solarized
-Cézanne palette, Garamond/Cabin fonts, titlesec part/chapter/section formatting, fancyhdr
-setup, mdframed `notebox`/`warnbox`, the `\code{}` macro, and `lstlisting` style, all
-calibrated together. Replace only:
-
-- `pdftitle` in `\hypersetup` (e.g. `A Reading Guide to <Paper Title>`); keep
-  `pdfauthor` as `torsor lab`
-- the `\begin{titlepage}...\end{titlepage}` content (see below)
-- the `\input{chapters/...}` lines and the two `\part{...}` labels
-
-Do **not** alter the palette, fonts, titlesec definitions, box styles, or `\code{}` macro
-— these are the family-wide design constants.
-
-**Two additions specific to a math guide** — add these to the preamble, after the
-existing packages, and do not remove anything:
-
-```latex
-% --- Mathematics ---
-\usepackage{amsmath}
-\usepackage{amsthm}
-\usepackage{mathtools}
-
-% Theorem-like environments, styled to match the palette.
-% Used to restate the paper's results faithfully — always cite the paper's own number.
-\newtheoremstyle{guide}%
-  {\topsep}{\topsep}%
-  {\itshape}%            body font
-  {0pt}%                 indent
-  {\sffamily\color{inkdark}\bfseries}% head font
-  {.}%                   punctuation after head
-  {.5em}%                space after head
-  {}%
-\theoremstyle{guide}
-\newtheorem*{paperthm}{Theorem}      % restate as: \begin{paperthm}[Thm 4.2 of the paper] ...
-\newtheorem*{paperdefn}{Definition}
-\newtheorem*{paperlem}{Lemma}
-\newtheorem*{paperprop}{Proposition}
-
-% A callout for the subtlety that actually trips readers — the unstated hypothesis,
-% the index that shifts, the "obvious" step that isn't. Terracotta like warnbox,
-% but semantically "read carefully," not "data loss."
-\newmdenv[
-  backgroundcolor=warnbg,
-  linecolor=terracotta,
-  linewidth=1.5pt,
-  innerleftmargin=10pt,
-  innerrightmargin=10pt,
-  innertopmargin=8pt,
-  innerbottommargin=8pt,
-  skipabove=10pt,
-  skipbelow=10pt,
-]{pitfallbox}
-```
-
-When restating one of the paper's results, use the theorem environment with the paper's
-own number in the optional argument, e.g.:
-
-```latex
-\begin{paperthm}[Theorem 4.2, slightly informally]
-  ...
-\end{paperthm}
-```
-
-so the reader can always cross-check the guide against the paper.
-
-### Title page
-
-Adapt the shelf title page. Credit the **paper's** title and authors as the subject, and
-mark the document as a guide:
-
-```latex
-\begin{titlepage}
-  \centering
-  \vspace*{3cm}
-  {\Large\sffamily\color{inkmuted} A Reading Guide to\par}
-  \vspace{0.5cm}
-  {\huge\rmfamily\color{inkdark} <Paper Title>\par}
-  \vspace{0.5cm}
-  {\normalsize\itshape\color{inkmuted} <Authors of the paper>\par}
-  \vspace{3cm}
-  {\normalsize\color{inkbody} <one-line orientation: what the paper does, for whom this guide is written>\par}
-  \vfill
-  {\small\color{inkdim} Last revised: \today}
-\end{titlepage}
-```
-
-**Keep the colophon page verbatim.** Immediately after `\end{titlepage}`, carry the
-inner-cover (colophon) page from the template unchanged — `torsor lab` over the terracotta
-`torsor.org` link, bottom-aligned on an otherwise blank page. This is a fixed family
-element (the guide credits the *paper's* authors on the title page; `torsor lab` is the
-author of the guide and belongs only here, in the metadata, and in the epub). Do not edit
-the attribution or the URL.
-
-```latex
-% Colophon — inner cover (verso of the title page)
-\thispagestyle{empty}
-\null\vfill
-\begin{center}
-  {\small\color{inkmuted} torsor lab\par}
-  \vspace{0.4em}
-  {\small\href{https://torsor.org}{\color{terracotta} torsor.org}}
-\end{center}
-\clearpage
-```
-
-### STYLE and reader-profile files
-
-Assemble the guide's effective style guide into `latex/STYLE.md` by concatenating the base
-mechanics and the chosen voice, with a header recording which voice was used. From the
-prose library:
-```
-PROSE=${CLAUDE_PLUGIN_ROOT}/assets/prose
-{ echo "<!-- Voice: 01-direct (paper guide). Assembled from torsor-style/prose. -->"; echo; \
-  cat "$PROSE/base-paper-guide.md"; echo; cat "$PROSE/voices/01-direct.md"; } \
-  > <guide-dir>/latex/STYLE.md
-```
-Substitute the chosen voice file if it isn't `01-direct`. This keeps the guide
-self-contained and records which voice it was written in.
-Write `reader-profile.md` from the Step 2 answers.
-
-### tex2torsor
-
-The converter is vendored in this plugin. **Copy** it into the guide (don't symlink) so the
-guide stays a self-contained deliverable that survives plugin updates or uninstalls:
-
-```bash
-cp -R ${CLAUDE_PLUGIN_ROOT}/tools/tex2torsor <guide-dir>/tex2torsor
-```
-
-The Makefile's `html` target also accepts `make TEX2TORSOR_ROOT=${CLAUDE_PLUGIN_ROOT}/tools/tex2torsor html`
-if you'd rather not copy it in.
+  The colophon page that follows it stays verbatim per the scaffold (the guide credits
+  the *paper's* authors on the title page; `torsor lab` is the author of the guide and
+  belongs only in the colophon, the metadata, and the epub).
+- **`pdftitle`:** e.g. `A Reading Guide to <Paper Title>`; keep `pdfauthor` as `torsor lab`.
 
 ---
 
@@ -523,33 +285,24 @@ appendix** last (you'll know what needs collecting).
 
 ---
 
-## Step 8 — Verify the build
+## Step 8 — Verify the build and run the publication pass
 
-Once the preface and at least one chapter exist, test all four targets:
+Once the preface and at least one chapter exist, build all four formats and verify per
+the commons:
 
 ```
-cd <guide-dir> && make pdf
-cd <guide-dir> && make html
-cd <guide-dir> && make epub
-cd <guide-dir> && make md
+cd <guide-dir> && make pdf && make html && make epub && make md && make check
 ```
 
-Build all four by default — the Markdown export (`make md`) is part of the standard
-deliverable, not an optional extra.
+Fix what `make check` reports — the common issues and their fixes are in `scaffold.md`,
+and the heavy-math workarounds (MathML for EPUB, MathJax injection for HTML,
+renderable-notation substitutions, the `pitfallbox` HTML mapping) are in
+`${CLAUDE_PLUGIN_ROOT}/assets/commons/lessons.md`. Check that display and inline math
+survive the HTML and EPUB conversions on the hardest example in the guide.
 
-Fix failures before continuing. Common issues:
-
-- `latexd` not installed or not on PATH — it's a lab tool, absent on most systems; the `pdf`
-  target automatically falls back to `latexmk`, so this only bites if `latexmk` is also missing.
-- Missing LaTeX packages (install via tlmgr) — note the math additions need `amsmath`,
-  `amsthm`, `mathtools`.
-- Non-ASCII characters inside `lstlisting` blocks — the listings package rejects them;
-  use ASCII equivalents (`->` not `→`). This does **not** apply to display/inline math,
-  which is fine.
-- tex2torsor / pandoc math handling — check that display and inline math survive the HTML
-  and EPUB conversions; if a construct breaks, simplify it or note it for the user.
-- Pandoc not installed (needed for HTML via tex2torsor and for EPUB and Markdown directly).
-- Path issues — remember the epub and md targets must `cd` into `latex/` before calling pandoc.
+The guide is not done until the **publication pass** has run and returned a clean
+evidence report — follow `${CLAUDE_PLUGIN_ROOT}/assets/commons/publication.md`
+(dispatch it as a subagent for a long session).
 
 ---
 
@@ -574,9 +327,10 @@ Fix failures before continuing. Common issues:
 
 The guide shares with the *thing* / *shelf* manuals:
 - the same LaTeX preamble (Solarized Cézanne palette, Garamond/Cabin fonts, box styles,
-  `\code{}` macro) — extended, not altered, with the math block above
-- the same tex2torsor converter and HTML design
-- the same toolchain: `latexd` (or `latexmk` fallback) for PDF, pandoc for EPUB and Markdown, `lab-view` for HTML preview
+  `\code{}` macro) — extended, not altered, with the commons math block
+- the same scaffold, build toolchain, and publication pass, from the commons
+  (`assets/commons/`): `latexd` (or `latexmk` fallback) for PDF, tex2torsor for HTML,
+  pandoc for EPUB and Markdown, `lab-view` for preview, check-build.py for verification
 - the same author credit: `torsor lab` (in `pdfauthor`, the epub `--metadata author`, and the colophon page)
 - the same colophon page on the title page's verso: `torsor lab` over the `torsor.org` link
 
@@ -584,7 +338,7 @@ What is unique to the guide:
 - the two-part shape (overview → walk-through) instead of preface → big idea → features
 - the third-person, companion-not-contribution framing
 - the reader profile that calibrates depth
-- the math additions to the preamble (theorem environments, `pitfallbox`)
+- the math block in use throughout (theorem environments, `pitfallbox`)
 
 A reader moving between a tool manual and a paper guide should feel the same hand at work.
 Don't deviate from the shared design without a strong reason and the user's agreement.
