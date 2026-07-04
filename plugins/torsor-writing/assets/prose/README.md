@@ -16,6 +16,7 @@ A project's effective style guide = **one base** + **one voice**.
 prose/
   base-manual.md         ← mechanics for a tool manual (write-manual)
   base-paper-guide.md    ← mechanics for a paper reading guide (write-paper-guide)
+  base-body-of-work.md   ← mechanics for a body-of-work summary (write-body-of-work-summary)
   voices/
     01-direct.md         ← the current, proven voice. THE DEFAULT.
     02-wandering.md      ← experimental Gould/Adams digressive register.
