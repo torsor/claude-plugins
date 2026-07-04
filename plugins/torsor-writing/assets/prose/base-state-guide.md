@@ -54,7 +54,7 @@ harvested, not invented — and arranged into four bands. Name them exactly:
 - **Open / might still flip** — `[Open]` claims, **plus what is being checked that would move
   a label**. Not just "unknown," but "unknown, and here is the probe in flight."
 - **Where to be skeptical** — staged-not-earned steps, load-bearing `[Preprint]` /
-  `[Folklore]`, and the "if this framing is off, the approach is off too" risks. What a
+  `[Folklore]`, and the "if this framing is off, the approach is too" risks. What a
   careful collaborator should distrust even where the room sounds sure.
 
 State the ledger explicitly and get the user's agreement on it: it is the single most
