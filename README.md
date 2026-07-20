@@ -5,18 +5,35 @@ plugin so far:
 
 ## torsor-writing
 
-The `write-manual` and `write-paper-guide` skills, packaged to run on **any** machine. Both
-skills used to read the torsor prose library, a reference manual, a style preamble, and
-`tex2torsor` by absolute paths on one machine; here those are vendored into the plugin and
-referenced via `${CLAUDE_PLUGIN_ROOT}`, so nothing is tied to a particular machine.
+Six styled LaTeX writing skills, packaged to run on **any** machine. The skills used to read
+the torsor prose library, reference templates, a style preamble, and `tex2torsor` by absolute
+paths on one machine; here those are vendored into the plugin and referenced via
+`${CLAUDE_PLUGIN_ROOT}`, so nothing is tied to a particular machine.
+
+Each skill produces a document in the torsor house format — LaTeX source with PDF, HTML,
+EPUB, and Markdown output — in the torsor design and prose style.
+
+| Skill | What it writes |
+|-------|----------------|
+| `write-manual` | A user's manual for a project (Scalzi-influenced prose). |
+| `write-paper-guide` | A two-part reading guide to a single mathematical paper, calibrated to a specific reader. |
+| `write-topic-guide` | One explanatory guide synthesizing several sources on a topic (handles large / scanned PDFs). |
+| `write-study-guide` | A personalized route through one large tag-addressable corpus (Stacks, Kerodon) toward a target result. |
+| `write-body-of-work-summary` | A styled overview of one mathematician's whole body of work — program essay plus a paragraph per paper. |
+| `write-workshop-state-guide` | A state guide for a workshop / working session. |
 
 ```
 plugins/torsor-writing/
   .claude-plugin/plugin.json
   skills/
-    write-manual/SKILL.md
-    write-paper-guide/SKILL.md  (+ lessons.md)
+    write-manual/               SKILL.md
+    write-paper-guide/          SKILL.md (+ lessons.md)
+    write-topic-guide/          SKILL.md
+    write-study-guide/          SKILL.md
+    write-body-of-work-summary/ SKILL.md
+    write-workshop-state-guide/ SKILL.md
   assets/
+    commons/        shared scaffold, lessons, and publication pass used across the skills
     prose/          the torsor prose library (base + voices + README)
     reference/      shelf-main.tex, shelf-00-preface.tex, artifacts-preamble (style only)
   tools/
@@ -33,7 +50,7 @@ claude plugin install torsor-writing@torsor-plugins
 claude plugin list
 ```
 
-Then `/write-manual` and `/write-paper-guide` are available there.
+Then all six `/write-…` skills are available there.
 
 ### Build prerequisites
 
