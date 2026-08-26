@@ -313,7 +313,7 @@ evidence report — follow `${CLAUDE_PLUGIN_ROOT}/assets/commons/publication.md`
   work and not a survey.
 - **Friendly and direct.** A colleague walking a respected paper, not a textbook.
 - **Lead with the point.** State what a result buys before stating it.
-- **Triage openly.** Say what's load-bearing and what's routine; what to read closely and
+- **Triage openly.** Say what carries the argument and what's routine; what to read closely and
   what to skim.
 - **Faithful.** Cite the paper's numbering; mark paraphrases; never silently restate
   results stronger or weaker than they are.

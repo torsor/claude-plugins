@@ -16,7 +16,7 @@ were done. The work is live; the guide sounds live.
 **Attribute to the room and the moment, not timeless authors.** Present-tense, dated,
 commit-stamped. Write "As of `c29366e`, the room has verified X on the generic fibre; Y is
 staged for referee; Z is open" — not "the authors establish X." There are no timeless
-authors here, only a room at a moment. Every load-bearing claim carries the commit or date
+authors here, only a room at a moment. Every claim the work depends on carries the commit or date
 it was last touched, because a state that isn't stamped can't be steered by.
 
 **Translate, never re-grade (the docent invariant).** The room owns the labels; the guide
@@ -53,7 +53,7 @@ harvested, not invented — and arranged into four bands. Name them exactly:
   What moved lately and might still be settling.
 - **Open / might still flip** — `[Open]` claims, **plus what is being checked that would move
   a label**. Not just "unknown," but "unknown, and here is the probe in flight."
-- **Where to be skeptical** — staged-not-earned steps, load-bearing `[Preprint]` /
+- **Where to be skeptical** — staged-not-earned steps, depended-upon `[Preprint]` /
   `[Folklore]`, and the "if this framing is off, the approach is too" risks. What a
   careful collaborator should distrust even where the room sounds sure.
 
@@ -82,7 +82,7 @@ they are a finished-paper's concerns, and this is not a finished paper.
 weaken. A paraphrase is marked as a paraphrase and points to the exact statement; the label
 travels with the claim. The reader must be able to trust the guide against the record.
 
-**Distinguish load-bearing from routine — and earned from staged.** Say plainly which claim
+**Distinguish what the next move depends on from what is routine — and earned from staged.** Say plainly which claim
 the next move depends on, and which is bookkeeping; which is `[Verified]` and which is
 staged-not-earned. This triage, keyed to confidence, is the most valuable thing the guide
 provides.

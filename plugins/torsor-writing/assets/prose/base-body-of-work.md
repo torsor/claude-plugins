@@ -139,12 +139,11 @@ roughly, precisely, central, consolidates, opens, closes off.
   that" (to whom?);
 - **clean** — an AI tell, not the register mathematicians write in: don't call an
   idea, a proof, a step, or a case "clean";
-- **load-bearing** / "load bearing" — overused to the point of tell. Say what a
-  result actually does: it is *central*, it *carries the argument*, it *does the
-  work*, it is *the engine of the proof*, everything *turns on* it.
-
-*(This is the one place the genre departs from `base-paper-guide.md`, which
-prefers "load-bearing." Here it is banned; use the substitutes above.)*
+- **load-bearing** / "load bearing" — overused to the point of tell, and in
+  mathematics it grades nothing: either a step is used or the result is false. Say
+  what a result actually does: it is *central*, it *carries the argument*, it *does
+  the work*, it is *the engine of the proof*, everything *turns on* it. Banned
+  family-wide, in every genre and every voice.
 
 **Numbers:** spell out one through nine; numerals for 10 and above, and always
 for theorem, section, equation, and reference numbers, and for years.

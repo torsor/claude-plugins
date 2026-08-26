@@ -129,7 +129,7 @@ first; if the corpus has no graph tooling at all, fall back to editorial routing
 knowledge + search + the table of contents) and *say so in the preface* — the reader
 should know the route wasn't computed.
 
-### Triage and cluster — the load-bearing edit
+### Triage and cluster — the edit that carries the guide
 
 The route is a **superset skeleton**: citation edges encode citation, not what a
 learner must internalize. Edit it hard:
@@ -142,7 +142,7 @@ learner must internalize. Edit it hard:
   it, return later — say when "later" is). The frontier already cut the closure once;
   honest triage cuts it again. Both cuts are where personalization does its work.
 - **In-degree is your canonicality signal** — a tag cited from many later chapters is
-  load-bearing; a depth-7 technical lemma with in-degree 1 is a black-box candidate.
+  central; a depth-7 technical lemma with in-degree 1 is a black-box candidate.
 
 **Present the spine to the user** — numbered milestones, each with its tags and triage
 marks and one sentence of why it's on the path — and get agreement before writing

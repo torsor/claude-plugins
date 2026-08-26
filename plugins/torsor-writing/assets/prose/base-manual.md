@@ -67,6 +67,11 @@ might genuinely miss that matters. A `warnbox` is for something that could cause
 
 ## Words and numbers (house rules)
 
+**Banned outright — in every voice:** **load-bearing** / "load bearing" — overused to the point of tell, and in
+mathematics it grades nothing: either a step is used or the result is false. Say what
+a result actually does: it is *central*, it *carries the argument*, it *does the work*,
+it is *the engine of the proof*, everything *turns on* it.
+
 **Banned filler — in every voice:** utilize (use "use"), leverage (use "use" or be
 specific), seamless, robust, powerful, simple (show it; don't claim it), easy (same),
 straightforward; **clean** (an AI tell — don't call an idea, a solution, or a step "clean").

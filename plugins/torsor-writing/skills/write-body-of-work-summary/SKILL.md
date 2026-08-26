@@ -71,7 +71,7 @@ Before anything else, read:
    ```
    `base-body-of-work.md` carries the two rules that define the genre: **answer
    the six framing questions without ever naming them**, and the banned-words
-   list (which here adds **clean** and **load-bearing**). Read it before writing
+   list (**clean** and **load-bearing** are banned family-wide). Read it before writing
    a word.
 
 2. **Voice catalog** — `01-direct` is the default; use it unless the user asks
@@ -281,7 +281,7 @@ LaTeX/PDF/HTML/EPUB/Markdown **plus** the kept `source-notes/`.
 | Sliding into a field survey or a recommendation letter | Summarize *this person's* work; explain and locate, don't review the area or lobby |
 | Guessing the grammatical person | Ask the purpose mode first; third person unless self-presentation |
 | Skipping the themes map and discovering mid-write that the work doesn't cohere as drafted | Produce `themes.md`; agree themes + organization before Phase C |
-| Using "clean" or "load-bearing" | Banned here — say *central*, *carries the argument*, *does the work*, *the engine of* |
+| Using "clean" or "load-bearing" | Banned family-wide — say *central*, *carries the argument*, *does the work*, *the engine of* |
 | Guessing the build | Reuse the commons scaffold's `latexd` (→ `latexmk` fallback) / `tex2torsor` / pandoc toolchain + `lessons.md` |
 | Throwing away the extraction work | Keep `source-notes/` — reusable, and part of the point |
 

@@ -48,8 +48,8 @@ reader must be able to trust the guide against the paper.
 **Cite by the paper's own numbering.** "Section 3," "Theorem 4.2," "equation (5.1)." The
 guide is a map; its coordinates must match the territory.
 
-**Distinguish load-bearing from routine.** Say plainly which lemma is the engine and which
-is bookkeeping; what to read line by line and what to take on faith on a first pass. This
+**Distinguish what carries the argument from what is routine.** Say plainly which lemma is
+the engine and which is bookkeeping; what to read line by line and what to take on faith on a first pass. This
 triage is the single most valuable thing a guide provides.
 
 **Use display math in service of prose.** Drop in the key definition, the central
@@ -86,15 +86,18 @@ index that shifts, the "obvious" step that isn't. Not for ordinary commentary.
 ## Words and numbers (house rules)
 
 **Prefer:** the authors, they prove, they introduce, the construction, the argument turns
-on, the key estimate, load-bearing, on a first pass, the engine of the proof, faithfully,
-roughly, precisely.
+on, the key estimate, carries the argument, on a first pass, the engine of the proof,
+faithfully, roughly, precisely.
 
 **Banned — in every voice:** "we prove," "our result," "in this paper we" (the paper's
 voice, not the guide's); presenting the guide as a contribution or survey; utilize, leverage,
 seamless, robust, powerful, elegant-as-filler, beautiful-as-filler, simple/easy/
 straightforward (show it), "it is well known that" (to whom?); **clean** (an AI tell — not the
 register mathematicians actually write in: don't call an idea, a proof, a step, or a case
-"clean").
+"clean"); **load-bearing** / "load bearing" — overused to the point of tell, and in
+mathematics it grades nothing: either a step is used or the result is false. Say what
+a result actually does: it is *central*, it *carries the argument*, it *does the work*,
+it is *the engine of the proof*, everything *turns on* it.
 
 **Numbers:** spell out one through nine; numerals for 10 and above, and always for theorem,
 section, equation, and reference numbers.
@@ -112,6 +115,9 @@ right.
   the paper.
 - Not a survey of the field — context serves *this* paper, not a literature review.
 - Not a textbook — it assumes the named reader's background and builds from there.
+- Not a critical guide — this one is expository: it takes the paper as given and helps a
+  reader through it, rather than weighing whether it holds. Its evaluative sibling is
+  `write-critical-guide`, which takes a reading guide as its input.
 - Not a referee report — it explains and guides; it does not judge publishability.
 
 ---

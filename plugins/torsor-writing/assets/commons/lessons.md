@@ -17,6 +17,17 @@ tree without check-build.py, verify by hand:
 - The PDF's mtime should be newer than `main.tex`.
 - If either is off, the build failed silently — read `latex/main.log` for the real error.
 
+**A long document written in one message is lost entirely.** An agent that composes a whole
+chapter, report, or sweep in a single reply and writes it at the end hits the output cap
+mid-message and dies having written **nothing** — not a truncated file, no file. The work is
+gone and the run has to start over.
+
+Write incrementally instead: create the file early, then append a section at a time. A run cut
+short then still leaves everything produced up to that point, and the next pass continues
+rather than restarts. This matters most for the pieces with no natural break — a long prose
+chapter, a subagent's sweep over a big paper, a summary written straight through — and it
+applies to any subagent you dispatch, so put it in the brief rather than assuming it.
+
 ---
 
 ## Heavy-math documents: HTML/EPUB rendering

@@ -20,7 +20,7 @@ Two framing rules govern everything below:
 1. **Present-tense, dated, room-attributed — never timeless-authorial.** Write "as of
    `c29366e`, the room has verified X on the generic fibre; Y is staged for referee; Z is open,"
    never "the authors establish X." There are no timeless authors here, only a room at a moment;
-   every load-bearing claim carries the commit or date it was last touched.
+   every claim the work depends on carries the commit or date it was last touched.
 2. **Translate faithfully, never re-grade — the docent invariant.** The room owns the labels;
    the guide re-arranges and exposits them. Carry every confidence label and provenance tag
    verbatim; never silently upgrade a `[Conjectured]` to `[Proved]` because the prose wanted a
@@ -119,7 +119,7 @@ and arranged into four bands. The docent re-arranges and exposits; it **never re
 - **Provisional / just changed** — recently corrected or shifted; typically `[Conjectured]`.
 - **Open / might still flip** — `[Open]` claims, plus *what is being checked that would move a
   label*.
-- **Where to be skeptical** — staged-not-earned steps, load-bearing `[Preprint]` /
+- **Where to be skeptical** — staged-not-earned steps, depended-upon `[Preprint]` /
   `[Folklore]`, and the "if this framing is off, the approach is off too" risks.
 
 State the ledger explicitly and get the user's agreement — it is the guide's map and the single
