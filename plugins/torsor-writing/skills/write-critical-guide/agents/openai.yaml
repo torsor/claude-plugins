@@ -1,0 +1,4 @@
+interface:
+  display_name: "Critical Guide"
+  short_description: "Produce a critical guide to a mathematical paper"
+  default_prompt: "Use $write-critical-guide to examine this paper and produce a critical guide to it."

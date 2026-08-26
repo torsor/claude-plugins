@@ -17,10 +17,13 @@ EPUB, and Markdown output — in the torsor design and prose style.
 |-------|----------------|
 | `write-manual` | A user's manual for a project (Scalzi-influenced prose). |
 | `write-paper-guide` | A two-part reading guide to a single mathematical paper, calibrated to a specific reader. |
+| `write-critical-guide` | A critical guide to one paper — summary, graded issue list, repairs, and annotated copies of its source. Working material for a referee; runs unattended and reaches no verdict. |
 | `write-topic-guide` | One explanatory guide synthesizing several sources on a topic (handles large / scanned PDFs). |
 | `write-study-guide` | A personalized route through one large tag-addressable corpus (Stacks, Kerodon) toward a target result. |
 | `write-body-of-work-summary` | A styled overview of one mathematician's whole body of work — program essay plus a paragraph per paper. |
 | `write-workshop-state-guide` | A state guide for a workshop / working session. |
+| `write-pure-math-paper` | A mathematics paper in the house style. |
+| `write-technical-report` | An evidence-led technical experiment report. |
 
 ```
 plugins/torsor-writing/
@@ -28,10 +31,13 @@ plugins/torsor-writing/
   skills/
     write-manual/               SKILL.md
     write-paper-guide/          SKILL.md (+ lessons.md)
+    write-critical-guide/       SKILL.md (+ references/, agents/, tools/annotate_tex.py)
     write-topic-guide/          SKILL.md
     write-study-guide/          SKILL.md
     write-body-of-work-summary/ SKILL.md
     write-workshop-state-guide/ SKILL.md
+    write-pure-math-paper/      SKILL.md (+ references/, agents/)
+    write-technical-report/     SKILL.md (+ references/, agents/)
   assets/
     commons/        shared scaffold, lessons, and publication pass used across the skills
     prose/          the torsor prose library (base + voices + README)
@@ -50,7 +56,7 @@ claude plugin install torsor-writing@torsor-plugins
 claude plugin list
 ```
 
-Then all six `/write-…` skills are available there.
+Then all nine `/write-…` skills are available there.
 
 ### Build prerequisites
 
