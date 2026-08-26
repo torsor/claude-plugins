@@ -383,10 +383,22 @@ whether it is *sharp* — the exact condition — or merely sufficient.
 **Branching never nests.** A branch is a genuine choice among repair routes, and the cost of
 choices that compose is their product, not their sum. So: branch points must be mutually
 **independent**. If, inside one branch, a second choice arises *whose options depend on which
-branch you are in*, that choice does not get to branch. Resolve it — take the option most
-consistent with the branch you are already in — then say in the branch report that you resolved
-it, which way, and what the alternative was. A named road not taken is worth more to the
-authors than a tree they cannot read, and it costs nothing to explore.
+branch you are in*, that choice does not get to branch. Resolve it, and resolve it in this
+order:
+
+1. **Correctness first.** Establish which options are actually right. If only one survives,
+   take it — whatever branch you are in, and whatever it does to the tidiness of the report.
+2. **Consistency is only a tiebreaker.** Where two options are both correct, prefer the one
+   consistent with the branch you are already in.
+
+The order matters more than it looks. "Consistent with the branch you are in" reads like a
+reason, and an agent following it in good faith will reach a wrong answer while believing it
+followed the rule — this has happened. Consistency is never evidence. It arbitrates between
+options already known to be sound, and nothing else.
+
+Then say in the branch report that you resolved it, which way, on what grounds, and what the
+alternative was. A named road not taken is worth more to the authors than a tree they cannot
+read, and it costs nothing to explore.
 
 Two consequences worth stating.
 
