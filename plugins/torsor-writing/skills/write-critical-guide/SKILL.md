@@ -338,9 +338,13 @@ the chronology exonerated the authors either way. It was dropped, and recorded a
 it survived, a referee would have put an accusation of uncredited duplication to authors who
 had done nothing wrong.
 
-**Do not economise here.** In one run this phase cost 0.38 M tokens — the cheapest of the whole
-pipeline — and corrected five literature claims before they reached the page. Verification is
-what makes the rest of the document worth handing to someone; it is not where the savings are.
+**Do not economise here.** The countable evidence: in one repair trial, seventeen skeptics were
+dispatched against six findings, and **four of the six left the audit in a different state than
+they entered** — a non-sequitur in a base-change justification, a forcing argument that did not
+hold up, a citation that did not say what it was cited for, and a rationale refuted by
+comparing the files. The audit also caught two errors in the ledger it was checking against.
+Those are counts, not estimates. Verification is what makes the rest of the document worth
+handing to someone; it is not where the savings are.
 
 **Every priority or duplication charge gets a chronology check, without exception.** Before such
 a finding may enter the ledger, establish: when each work first appeared *publicly* — the
@@ -527,9 +531,17 @@ Read `references/lessons.md` before starting; it carries the fixes for what goes
    Nothing checks this for you: render page 1 and a middle page and look at them.
 3. In Case B, every annotated passage was confirmed present in the submitted PDF.
 
-Then hand back: the path to `critical-guide/`, what the package contains, the count of findings by
-category and grade, what Phase 3 refuted and dropped, and what was not verified. Send
+Then hand back: the path to `critical-guide/`, what the package contains, the count of findings
+by category and grade, what Phase 3 refuted and dropped, and what was not verified. Send
 `00-guide.pdf` and the annotated PDFs to the user.
+
+**Every quantity you report must have been measured.** Counts — findings, notes, pages,
+dropped items — come from the files, and `annotate_tex.py` prints most of them. Durations
+come from `date -Is` stamped into the log at each phase boundary as you pass it, or from the
+mtimes of your own outputs. They never come from a figure you found in context, including
+one this package recorded for an earlier run — that is the observed failure, not a
+hypothetical one. If you did not measure something, say you did not rather than estimating
+it.
 
 State the findings plainly and let them stand. Do not close by recommending what should happen
 to the paper — that is the referee's to write, and they have not read this yet.

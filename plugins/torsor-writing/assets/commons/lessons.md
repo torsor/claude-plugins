@@ -28,6 +28,25 @@ rather than restarts. This matters most for the pieces with no natural break —
 chapter, a subagent's sweep over a big paper, a summary written straight through — and it
 applies to any subagent you dispatch, so put it in the brief rather than assuming it.
 
+**You have no clock, and a number in your context is not a measurement.** Asked how long a
+run took, an agent cannot observe the answer and will supply a plausible one. The observed
+failure is sharper than invention: a report said "about two hours" because the document's own
+README recorded `2 h 7 m` for an *earlier, different* run, that string sat in context all
+session, and it came back out as a self-measurement. File mtimes giving the true answer — 41
+minutes — were available the whole time and were never consulted.
+
+So: **measure, or say you did not.** Stamp `date -Is` into the log at each phase boundary as
+you pass it, or read the mtimes of your own outputs at the end. Never report a duration, a
+token count, or a cost you did not read off something. If a figure comes from elsewhere, name
+where — "the guide's README records 2 h 7 m for that run" is useful; the same number offered as
+your own is not.
+
+**Shares of effort are not shares of the clock, and a table implies a partition.** Where work
+runs in parallel — a fan-out of subagents while the main thread drafts — wall time and effort
+diverge, and the categories overlap. Rows that sum to 100% in a table read as a decomposition
+of elapsed time. If they are neither exhaustive nor disjoint, say so in the caption, or do not
+use a table.
+
 ---
 
 ## Heavy-math documents: HTML/EPUB rendering
