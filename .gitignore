@@ -7,3 +7,5 @@ __pycache__/
 
 # Maintainer's de-identification rules — kept out of the repo on purpose
 sanitize.local
+*.swp
+*.swo

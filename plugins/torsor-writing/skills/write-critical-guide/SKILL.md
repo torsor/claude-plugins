@@ -136,14 +136,20 @@ undefined. So where a path below is written with it:
    <skill dir>/references/package-templates.md
    ```
 
-4. **Shared mechanics — the commons.** The family's toolchain gotchas and its verification
+4. **Long documents** — when the work is a book or thesis reviewed in chunks across
+   sessions, and the carry file that makes that possible:
+   ```
+   <skill dir>/references/long-documents.md
+   ```
+
+5. **Shared mechanics — the commons.** The family's toolchain gotchas and its verification
    pass apply here unchanged, and Phase 7 is that pass:
    ```
    ${CLAUDE_PLUGIN_ROOT}/assets/commons/lessons.md
    ${CLAUDE_PLUGIN_ROOT}/assets/commons/publication.md
    ```
 
-5. **Referee-specific toolchain lessons** — annotating a source you did not write, and
+6. **Referee-specific toolchain lessons** — annotating a source you did not write, and
    assembling a report that quotes LaTeX. Read before Phase 7; consult the moment a build
    misbehaves:
    ```
@@ -151,6 +157,30 @@ undefined. So where a path below is written with it:
    ```
 
 The generator lives at `<skill dir>/tools/annotate_tex.py`.
+
+---
+
+## Is this one pass or many?
+
+**Decide before Phase 0, because it changes everything after.** Would a referee read this work
+in one sitting and form one judgment? A paper, however long, yes. A book, a thesis, a memoir in
+parts — no. Those are reviewed a chunk at a time, in separate sessions, with the user reading
+each chunk before declaring the next.
+
+If this is a chunked review, stop here and read:
+
+```
+<skill dir>/references/long-documents.md
+```
+
+It carries the chunked flow and the schema for `review-state.yaml`, the carry file that is the
+whole design — nothing survives between sessions except what is written into it. If a
+`review-state.yaml` already exists beside the work, **this is a chunked review already in
+progress**: read it in full before doing anything else, and do only the chunk the user named.
+
+The phases below then run as written, scoped to that chunk, with four changes that
+`long-documents.md` specifies: the carry file is read first, Phase 2d does not run per chunk,
+Phase 2c consults the citation cache, and tags are namespaced by chunk.
 
 ---
 
