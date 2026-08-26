@@ -46,17 +46,26 @@ find "$HERE/tools/tex2torsor" -name __pycache__ -type d -prune -exec rm -rf {} +
 # maintainer's real name never appears in shared content. Create scripts/sanitize.local
 # with one or more perl substitutions, e.g.:
 #     s/Real Name/torsor lab/g; s/\bRealFirst\b/the author/g;
-# Without it, snapshots are copied through unchanged and a warning is printed.
+# Without it this script REFUSES to run — silently shipping un-de-identified snapshots
+# is the failure this whole step exists to prevent.
 RULES_FILE="$HERE/scripts/sanitize.local"
-if [ -f "$RULES_FILE" ]; then
-  RULES="$(cat "$RULES_FILE")"
-  while IFS= read -r f; do
-    perl -i -pe "$RULES" "$f"
-  done < <(find "$HERE/assets" -type f \( -name '*.md' -o -name '*.tex' \))
-  echo "Sanitized snapshots using scripts/sanitize.local."
-else
-  echo "WARNING: scripts/sanitize.local not found — snapshots were NOT de-identified." >&2
-  echo "         Create it before committing/sharing (see comments in this script)." >&2
+if [ ! -f "$RULES_FILE" ]; then
+  echo "ERROR: scripts/sanitize.local not found — refusing to leave snapshots" >&2
+  echo "       un-de-identified. Create it before syncing (see comments above)." >&2
+  exit 1
 fi
+
+RULES="$(cat "$RULES_FILE")"
+# Scope is the whole plugin, not just assets/: skills/ is hand-authored, and that is
+# where a name is most likely to be typed rather than imported.
+while IFS= read -r f; do
+  perl -i -pe "$RULES" "$f"
+done < <(find "$HERE" -type f \( -name '*.md' -o -name '*.tex' \) \
+           -not -path '*/__pycache__/*' -not -name '*.local')
+echo "Sanitized using scripts/sanitize.local (whole plugin)."
+
+# Backstop. Substitution only fixes what its rules anticipate, and it never reaches
+# docs/ at the repo root. This fails the sync on anything that slipped through.
+"$HERE/scripts/check-identity.sh"
 
 echo "Done. Review with 'git status' / 'git diff', then commit and push."

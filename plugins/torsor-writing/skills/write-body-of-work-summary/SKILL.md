@@ -42,7 +42,7 @@ Two framing rules carry over from the family:
 
 - **A summary, not a contribution or a survey.** It explains and appraises
   existing work; it is never original research and never a survey of the field.
-- **Third person about the work by default.** *Krashen proves; the 2019 paper
+- **Third person about the work by default.** *Nakayama proves; the 2019 paper
   establishes.* The one exception is **self-presentation** mode (see Phase B),
   where the first person is the whole point.
 
@@ -96,11 +96,14 @@ Before anything else, read:
    ${CLAUDE_PLUGIN_ROOT}/skills/write-topic-guide/pre-summarization.md
    ```
 
-5. **Layout exemplar** — the canonical preamble, title page, and Makefile:
+5. **Layout exemplar** — for prose rhythm and what the house style produces:
    ```
-   ${CLAUDE_PLUGIN_ROOT}/assets/reference/shelf-main.tex
    ${CLAUDE_PLUGIN_ROOT}/assets/reference/shelf-00-preface.tex
    ```
+   The **preamble, title page, Makefile, and colophon are owned by the core** and
+   generated for you (see the commons). You do **not** copy `shelf-main.tex` —
+   author only chapters and a `build.yaml` manifest. `shelf-main.tex` remains a
+   reference for what the house style produces.
 
 ---
 
@@ -199,26 +202,35 @@ Get the user's agreement on the themes and the organization before Phase C.
 
 ## Phase C — Author and build
 
-Authoring reuses the family commons, with body-of-work deltas.
-**REQUIRED:** scaffold and build per
-`${CLAUDE_PLUGIN_ROOT}/assets/commons/scaffold.md` (directory, `.gitignore`,
-Makefile, preamble rules, the math block, STYLE.md assembly, tex2torsor +
-check-build.py copies). Consult
+Authoring reuses the family commons, with body-of-work deltas. You author only the
+chapters and a `build.yaml` manifest; the core generates `main.tex`, the Makefile,
+`STYLE.md`, the colophon, the math block, and the vendored tooling — do **not**
+hand-build those.
+**REQUIRED:** read `${CLAUDE_PLUGIN_ROOT}/assets/commons/scaffold.md` before
+setting up the directory. Consult
 `${CLAUDE_PLUGIN_ROOT}/assets/commons/lessons.md` for math-rendering and `latexd`
 gotchas. Do not re-derive the build.
 
 Apply these deltas:
 
-- **Directory.** Same layout as a guide, plus the kept `source-notes/` beside
-  `latex/`.
-- **Structure is overview-plus-paragraphs, not a two-part book.** Chapters:
+- **Directory.** Author chapters under `<summary-dir>/latex/chapters/` (any images
+  in `<summary-dir>/latex/assets/`), plus the kept `source-notes/` beside `latex/`.
+- **Structure is overview-plus-paragraphs, not a two-part book.** Author these
+  chapter files under `latex/chapters/`:
   ```
   00-preface.tex          # whose work, who this is for, how to read it
   01-overview.tex         # the 2–3 page essay — the intellectual core
   02-the-papers.tex       # short paragraph per paper (theme-grouped or chronological)
-  99-references.tex       # chronological citation list + themes × papers table
+  appendix-references.tex # chronological citation list + themes × papers table
   ```
   For a large program, `02-the-papers.tex` may `\input` one file per theme.
+- **`<summary-dir>/build.yaml`:** `genre: body-of-work`, `title` (the
+  mathematician's name as subject), `subtitle`, `stem`, the chosen `voice`, and a
+  `chapters:` block mapping the document shape onto structure —
+  `frontmatter: [00-preface]`, `mainmatter: [01-overview, 02-the-papers]`,
+  `appendix: [appendix-references]`. The body-of-work genre defaults to features
+  `callouts, math`, and STYLE.md is assembled from `base-body-of-work.md` + the
+  voice automatically.
 - **Write the overview first, and make it earn the six answers without naming
   them.** It implicitly conveys what the work is about, why it is interesting, why
   it is plausible, where the difficulty lives, what is new, and the perspective
@@ -243,7 +255,17 @@ Apply these deltas:
   belongs only in the colophon, metadata, and epub. In self-presentation mode the
   subject is still named on the title page as the subject of the work.
 
-Build all four formats, run `make check`, and finish with the publication pass
+Once the preface, overview, and at least one paper paragraph exist, assemble in
+place and build:
+
+```
+python3 ${CLAUDE_PLUGIN_ROOT}/tools/core/assemble.py <summary-dir>/build.yaml <summary-dir> --in-place
+cd <summary-dir> && make all
+```
+
+Re-run `assemble.py --in-place` after adding chapters or editing `build.yaml` (it is
+idempotent), then `make all` — it builds every format and runs `check-build.py`. Fix
+what it reports. Finish with the publication pass
 (`${CLAUDE_PLUGIN_ROOT}/assets/commons/publication.md`). The deliverable is the
 LaTeX/PDF/HTML/EPUB/Markdown **plus** the kept `source-notes/`.
 
@@ -253,19 +275,20 @@ LaTeX/PDF/HTML/EPUB/Markdown **plus** the kept `source-notes/`.
 
 ```
 <summary-dir>/
-  Makefile  .gitignore  check-build.py       # from the commons scaffold
+  build.yaml                                 # YOU write this manifest
   source-notes/                              # KEPT deliverable — the pre-summarization
     <paper-a>.md  <paper-b>.md  ...
     themes.md                                # themes + paper→theme map + organization + throughline
   latex/
-    main.tex  STYLE.md  reader-profile.md    # reader-profile records purpose mode + person + voice
-    chapters/
+    reader-profile.md                        # YOU write — purpose mode + person + voice
+    chapters/                                # YOU author these
       00-preface.tex
       01-overview.tex                        # the 2–3 page essay
       02-the-papers.tex                      # paragraph per paper (may \input per-theme files)
-      99-references.tex                      # citation list + themes × papers table
-  tex2torsor/                                # copied from the plugin (commons scaffold)
-  html/  epub/  markdown/                    # build output
+      appendix-references.tex                # citation list + themes × papers table
+    assets/                                  # images the chapters use (optional)
+  # generated by the core: main.tex, Makefile, STYLE.md, check-build.py,
+  # the vendored tooling, and html/ epub/ markdown/ + latex/<stem>.pdf build output
 ```
 
 ---
@@ -282,7 +305,7 @@ LaTeX/PDF/HTML/EPUB/Markdown **plus** the kept `source-notes/`.
 | Guessing the grammatical person | Ask the purpose mode first; third person unless self-presentation |
 | Skipping the themes map and discovering mid-write that the work doesn't cohere as drafted | Produce `themes.md`; agree themes + organization before Phase C |
 | Using "clean" or "load-bearing" | Banned here — say *central*, *carries the argument*, *does the work*, *the engine of* |
-| Guessing the build | Reuse the commons scaffold's `latexd` (→ `latexmk` fallback) / `tex2torsor` / pandoc toolchain + `lessons.md` |
+| Hand-building `main.tex` / Makefile / STYLE.md, or guessing the build | Author chapters + `build.yaml`, then `assemble.py --in-place` && `make all`; the core owns the toolchain (see `scaffold.md`, `lessons.md`) |
 | Throwing away the extraction work | Keep `source-notes/` — reusable, and part of the point |
 
 ## What stays the same as the family

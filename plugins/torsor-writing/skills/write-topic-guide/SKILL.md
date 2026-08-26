@@ -105,16 +105,24 @@ end with two things:
 ## Phase C — Author and build
 
 Authoring reuses the family commons and `write-paper-guide`, with topic-guide deltas.
-**REQUIRED:** scaffold and build per `${CLAUDE_PLUGIN_ROOT}/assets/commons/scaffold.md`
-(directory, `.gitignore`, Makefile, preamble rules, the math block, STYLE.md assembly,
-tex2torsor + check-build.py copies); take the guide-genre specifics — title page,
+**REQUIRED:** read `${CLAUDE_PLUGIN_ROOT}/assets/commons/scaffold.md` for the build
+contract before authoring. You author only the chapters and a `build.yaml` manifest; the
+**core** generates `main.tex`, the Makefile, `STYLE.md`, the colophon, and the vendored
+tooling — do **not** hand-build those. Take the guide-genre specifics — title page,
 reader profile, outline conventions — from `write-paper-guide` Steps 4–5; and consult
 `${CLAUDE_PLUGIN_ROOT}/assets/commons/lessons.md` for the math-rendering and `latexd`
 gotchas. Do not re-derive the build.
 
 Apply these deltas to those steps:
 
-- **Directory.** Same as a paper guide, plus the kept `source-notes/` beside `latex/`.
+- **Directory & manifest.** Author chapters under `<guide-dir>/latex/chapters/` (images in
+  `<guide-dir>/latex/assets/`), keep `source-notes/` beside `latex/`, and write
+  `<guide-dir>/build.yaml` with `genre: topic-guide`, `title`/`subtitle`/`stem`, the chosen
+  `voice`, and a `chapters:` block giving the spine's front/main/appendix order. The
+  topic-guide genre defaults to features `callouts, math` (theorem environments and
+  `$…$`/`\[…\]`; no code listings by default), and STYLE.md is assembled from
+  `base-paper-guide` + the voice automatically. The core generates `main.tex`, the Makefile,
+  STYLE.md, and tooling.
 - **Structure is spine-driven, not paper-driven.** Part I is the **intuition map** of the
   whole spine (no proofs). Part II is the **detailed walk-through**, one chapter per spine
   milestone (not per source-section), pulling from whichever source the synthesis note says
@@ -130,11 +138,18 @@ Apply these deltas to those steps:
   exemplar), keep a **progress ledger**, and gate with a **whole-guide faithfulness review**
   at the end. The `superpowers:subagent-driven-development` pattern fits this directly.
 
-Build all four formats, run `make check`, and finish with the publication pass
-(`${CLAUDE_PLUGIN_ROOT}/assets/commons/publication.md`). The guide deliverable is
-the LaTeX/PDF/HTML/EPUB/Markdown **plus** the `source-notes/` directory. The `pdf` target
-falls back to `latexmk` where `latexd` isn't installed; the Markdown export (`make md`) is
-part of the default build.
+Assemble in place and build every format:
+
+```bash
+python3 ${CLAUDE_PLUGIN_ROOT}/tools/core/assemble.py <guide-dir>/build.yaml <guide-dir> --in-place
+cd <guide-dir> && make all
+```
+
+Re-run `assemble.py --in-place` after editing chapters or the manifest (it is idempotent);
+`make all` builds every format (PDF, HTML, EPUB, Markdown) and runs `check-build.py`. Finish
+with the publication pass (`${CLAUDE_PLUGIN_ROOT}/assets/commons/publication.md`) — the guide
+is not done until it returns a clean evidence report. The guide deliverable is the
+LaTeX/PDF/HTML/EPUB/Markdown **plus** the `source-notes/` directory.
 
 ---
 
@@ -142,21 +157,22 @@ part of the default build.
 
 ```
 <guide-dir>/
-  Makefile  .gitignore  check-build.py # from the commons scaffold
+  build.yaml                           # YOU write — the manifest (genre: topic-guide)
   source-notes/                        # KEPT deliverable — the pre-summarization
     <source-a>.md  <source-b>.md  ...
     synthesis.md                       # spine map + unified notation + gaps list
   latex/
-    main.tex  STYLE.md  reader-profile.md
-    chapters/
+    reader-profile.md                  # YOU write (not compiled)
+    chapters/                          # YOU author
       00-preface.tex
       01-what-its-about.tex            # Part I — intuition map
       02-shape-of-the-contribution.tex
       03-roadmap.tex                   # Part II — one chapter per SPINE milestone
       04-...  05-...  ...
       99-notation-and-reference.tex    # reconciles all sources' notation
-  tex2torsor/                          # copied from the plugin (commons scaffold)
-  html/  epub/  markdown/              # build output
+    assets/                            # images the chapters use (optional)
+  # core-generated: main.tex, STYLE.md, Makefile, check-build.py, tex2torsor/,
+  #   .gitignore, config.mk, and the html/ epub/ markdown/ build output
 ```
 
 ---
@@ -170,7 +186,7 @@ part of the default build.
 | Treating the topic as a fake single "paper" and walking its sections | Decide a **concept spine**; organize Part II by milestone, not by source |
 | Skipping the synthesis/gaps step and discovering mid-write a step no source covers | Produce `synthesis.md` with a gaps list; resolve gaps before Phase C |
 | Letting sources' clashing conventions leak in | Pin ONE verified convention in `synthesis.md` and the appendix; reconcile everywhere |
-| Guessing the build (`xelatex`/`make4ht`/`tex4ebook`) | Reuse the commons scaffold's `latexd` (→ `latexmk` fallback) / `tex2torsor` / `pandoc` (EPUB + Markdown) toolchain + `assets/commons/lessons.md` |
+| Guessing the build (`xelatex`/`make4ht`/`tex4ebook`) | Author chapters + `build.yaml`, then `assemble.py --in-place` and `make all` — the core owns the toolchain; see `assets/commons/lessons.md` |
 | Hand-writing every chapter sequentially for a large guide | Subagent per chapter + progress ledger + final faithfulness review |
 | Throwing away the extraction work | Keep `source-notes/` as a deliverable — it is reusable and is part of the point |
 
@@ -180,6 +196,6 @@ Same torsor preamble (Solarized Cézanne, Garamond/Cabin, box styles, `\code{}`)
 block (theorem environments, `pitfallbox`), `tex2torsor` + HTML design, the `latexd`
 (→ `latexmk` fallback) / pandoc (EPUB + Markdown) / `lab-view` toolchain, the publication
 pass, the `torsor lab` credit, and the colophon page on the title
-page's verso (`torsor lab` over the `torsor.org` link — inherited verbatim via the
-commons scaffold this skill reuses). A reader moving between a tool manual, a
+page's verso (`torsor lab` over the `torsor.org` link — inherited verbatim from the
+unified core this skill builds on). A reader moving between a tool manual, a
 paper guide, and a topic guide should feel the same hand at work.

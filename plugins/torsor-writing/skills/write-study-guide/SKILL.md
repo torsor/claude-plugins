@@ -52,9 +52,14 @@ Close    Offer the frontier update                                -> profile log
 1. Style: `${CLAUDE_PLUGIN_ROOT}/assets/prose/base-paper-guide.md` + the chosen voice
    (default `01-direct`; catalog in `assets/prose/README.md`).
 2. Commons: `${CLAUDE_PLUGIN_ROOT}/assets/commons/scaffold.md` (required before
-   Phase B), `assets/commons/lessons.md` (math-rendering and `latexd` gotchas — a study
+   Phase B — the build contract: author chapters + a `build.yaml` manifest, the core
+   assembles `main.tex`/Makefile/STYLE.md/tooling and builds every format),
+   `assets/commons/lessons.md` (math-rendering and `latexd` gotchas — a study
    guide is always math-heavy), `assets/commons/publication.md`.
-3. Layout reference: `${CLAUDE_PLUGIN_ROOT}/assets/reference/shelf-main.tex`.
+3. Layout reference: `${CLAUDE_PLUGIN_ROOT}/assets/reference/shelf-main.tex`. The
+   **preamble, Makefile, and colophon are owned by the core** and generated for you — you
+   do **not** copy `shelf-main.tex`; author only chapters and a manifest. It remains a
+   reference for what the house style produces.
 
 ---
 
@@ -170,12 +175,15 @@ corpus's chapters, pin one convention in the appendix as topic-guide does.
 
 ## Phase B — Author and build
 
-Scaffold and build per the commons: **REQUIRED** —
-`${CLAUDE_PLUGIN_ROOT}/assets/commons/scaffold.md` (with the **math block**: theorem
-environments and `pitfallbox`), verification per `make check`, and the publication pass
-(`assets/commons/publication.md`) before the guide is called done. Genre parameters:
+Author the chapters and a `build.yaml` manifest, then let the core assemble and build —
+per `${CLAUDE_PLUGIN_ROOT}/assets/commons/scaffold.md` (**REQUIRED**; the `study-guide`
+genre turns on the **math block** — theorem environments and `pitfallbox` — by default).
+You author only the chapters and the manifest; the core generates `main.tex`, the
+Makefile, `STYLE.md`, the colophon, and the vendored tooling — do **not** hand-build
+those. Genre parameters:
 
-- **Chapters:**
+- **Chapters:** author under `<guide-dir>/latex/chapters/` (images/assets in
+  `<guide-dir>/latex/assets/`):
   ```
   00-preface.tex                    ← who this is for, the destination, how to use it
   01-the-route-at-a-glance.tex      ← Part I: the whole spine as an intuition map — why
@@ -184,16 +192,19 @@ environments and `pitfallbox`), verification per `make check`, and the publicati
   02-<milestone>.tex ... N-<milestone>.tex   ← Part II: one chapter per milestone
   99-tag-map-and-notation.tex       ← appendix: guide chapters ↔ tags, all deep-linked
   ```
-- **Makefile:** genre comment `# <topic> study guide`; EPUB
-  `--metadata title="A Study Guide: <topic>"`; `pdftitle` to match.
-- **STYLE.md:** assemble from `base-paper-guide.md` + the chosen voice.
-- **Title page:** adapt `write-paper-guide`'s, crediting the corpus as the subject —
-  "A Study Guide / <topic> in <the Stacks project>" — with the one-line orientation
-  naming the reader profile's reader. Colophon verbatim per the scaffold.
-- **Deep links.** Every tag mention links into the corpus. Define once in the preamble:
+- **`<guide-dir>/build.yaml`:** `genre: study-guide`, `stem`, the chosen `voice`, and a
+  `chapters:` block giving front/main/appendix order. Give the title in the family form —
+  `title: "A Study Guide: <topic>"`, crediting the corpus as the subject ("<topic> in
+  <the Stacks project>") — plus an optional `subtitle` and a `tagline`/`blurb` for the
+  one-line orientation that names the reader profile's reader. The `study-guide` genre
+  defaults to features `callouts, math` (theorem envs + `$…$`; no code listings), and
+  STYLE.md is assembled from `base-paper-guide.md` + the voice automatically. The title
+  page and colophon are generated from the manifest — colophon verbatim per the scaffold.
+- **Deep links.** Every tag mention links into the corpus. The core owns the preamble, so
+  define the macro once at the top of your first chapter with `\providecommand`:
   ```latex
-  \newcommand{\stag}[1]{\href{https://stacks.math.columbia.edu/tag/#1}{\code{#1}}}
-  % Kerodon: \newcommand{\ktag}[1]{\href{https://kerodon.net/tag/#1}{\code{#1}}}
+  \providecommand{\stag}[1]{\href{https://stacks.math.columbia.edu/tag/#1}{\code{#1}}}
+  % Kerodon: \providecommand{\ktag}[1]{\href{https://kerodon.net/tag/#1}{\code{#1}}}
   ```
   and use `\stag{01JF}` throughout. The HTML build is where these shine; check a few in
   the publication pass.
@@ -208,6 +219,22 @@ looking ("prove \stag{023N} for the affine case"). Write from the digests, not t
 corpus. Show the user Part I, then chapters as they come — same review rhythm as the
 rest of the family. For a long spine, one subagent per chapter with a progress ledger
 and a final faithfulness review, as in `write-topic-guide` Phase C.
+
+**Assemble and build.** Once the preface and at least one milestone chapter exist,
+assemble in place and build every format:
+
+```bash
+python3 ${CLAUDE_PLUGIN_ROOT}/tools/core/assemble.py <guide-dir>/build.yaml <guide-dir> --in-place
+cd <guide-dir> && make all
+```
+
+Re-run `assemble.py --in-place` after adding chapters or editing `build.yaml` — it
+scaffolds `main.tex` and the tooling around your chapters and is idempotent. `make all`
+builds every format (PDF, HTML, both EPUBs — math is on — and Markdown) and runs
+`check-build.py`. Fix what it reports (common issues and fixes are in `scaffold.md` and
+`lessons.md`). The guide is not done until the **publication pass** has run and returned a
+clean evidence report — follow `${CLAUDE_PLUGIN_ROOT}/assets/commons/publication.md`
+(dispatch it as a subagent for a long session).
 
 ---
 

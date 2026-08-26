@@ -26,14 +26,13 @@ Before doing anything else, read:
    ```
    `01-direct` is the default, proven voice. Use it unless the user asks for another.
 
-2. **Canonical manual template** — a snapshot of the shelf manual as the definitive worked
-   example for layout and preamble. Read both:
+2. **Worked example** — the shelf manual, for layout and prose rhythm:
    ```
-   ${CLAUDE_PLUGIN_ROOT}/assets/reference/shelf-main.tex
    ${CLAUDE_PLUGIN_ROOT}/assets/reference/shelf-00-preface.tex
    ```
-   `shelf-main.tex` is the full preamble + main matter; `shelf-00-preface.tex` is one chapter
-   for prose rhythm.
+   The **preamble, Makefile, and colophon are owned by the core** and generated for you
+   (see the commons). You do **not** copy `shelf-main.tex` — author only chapters and a
+   manifest. `shelf-main.tex` remains a reference for what the house style produces.
 
 3. **Visual style reference** — the artifacts document's LaTeX preamble establishes the
    Solarized Cézanne color palette and Garamond/Cabin typography used in all manuals:
@@ -42,9 +41,9 @@ Before doing anything else, read:
    ```
    (Read lines 1–110 — that's the whole preamble.)
 
-4. **Shared mechanics — the commons.** The family scaffold (directory layout, Makefile,
-   .gitignore, preamble rules, STYLE.md assembly, vendored tools, build verification),
-   the situational lessons, and the publication pass:
+4. **Shared mechanics — the commons.** The build contract (author chapters + a `build.yaml`
+   manifest; the core assembles `main.tex`/Makefile/STYLE.md/tooling and builds every
+   format), the situational lessons, and the publication pass:
    ```
    ${CLAUDE_PLUGIN_ROOT}/assets/commons/scaffold.md
    ${CLAUDE_PLUGIN_ROOT}/assets/commons/lessons.md
@@ -103,20 +102,23 @@ Present the proposed outline to the user and confirm before writing a word. Conf
 
 ---
 
-## Step 4 — Scaffold the directory
+## Step 4 — Set up the directory
 
-Once the outline is confirmed, scaffold `manual/` **exactly as specified in
-`${CLAUDE_PLUGIN_ROOT}/assets/commons/scaffold.md`** — directory layout, `.gitignore`,
-Makefile, preamble rules, colophon, STYLE.md assembly, and the vendored tools
-(tex2torsor and check-build.py). The manual-specific parameters:
+Once the outline is confirmed, set up `manual/` per
+`${CLAUDE_PLUGIN_ROOT}/assets/commons/scaffold.md`. You author only the chapters and a
+manifest; the core generates `main.tex`, the Makefile, `STYLE.md`, the colophon, and the
+vendored tooling — do **not** hand-build those.
 
-- **Chapters:** `00-preface.tex`, `01-<chapter>.tex`, …, `99-quick-reference.tex` under
-  `latex/chapters/`, matching the confirmed outline.
-- **Makefile:** genre comment `# <project> manual`; EPUB `--metadata title="<Project Title>"`.
-- **STYLE.md:** assemble from `base-manual.md` + the chosen voice.
-- **main.tex:** the shelf preamble verbatim per the scaffold's rules; adapt the shelf
-  title page's content to this project; keep the colophon verbatim.
-- **Math block:** omit unless the project's manual genuinely needs mathematics.
+- **Chapters:** author under `manual/latex/chapters/` — `00-preface.tex`,
+  `01-<chapter>.tex`, …, `99-quick-reference.tex`, matching the confirmed outline. Put any
+  images in `manual/latex/assets/`.
+- **`manual/build.yaml`:** `genre: manual`, `title`, `subtitle`, `stem`, the chosen
+  `voice`, and a `chapters:` block giving front/main/appendix/back order. The manual genre
+  defaults to features `callouts, listings`, and STYLE.md is assembled from `base-manual.md`
+  + the voice automatically.
+- **Math:** add `extra_features: [math]` only if the manual genuinely needs mathematics
+  (e.g. a CLI reference for a mathematical tool — then `$…$`, `\[…\]`, and the `paperthm`
+  environments are available alongside code).
 
 ---
 
@@ -160,18 +162,19 @@ The quick-reference chapter is exhaustive. It can use tables, dense lists, and o
 
 ## Step 8 — Verify the build and run the publication pass
 
-Once at least the preface and one chapter exist, build all four formats and verify per
-the commons:
+Once at least the preface and one chapter exist, assemble and build per the commons:
 
 ```
-cd manual && make pdf && make html && make epub && make md && make check
+python3 ${CLAUDE_PLUGIN_ROOT}/tools/core/assemble.py manual/build.yaml manual --in-place
+cd manual && make all
 ```
 
-Fix what `make check` reports (the common issues and their fixes are in `scaffold.md`
-and `lessons.md`). The manual is not done until the **publication pass** has run and
-returned a clean evidence report — follow
-`${CLAUDE_PLUGIN_ROOT}/assets/commons/publication.md` (dispatch it as a subagent for a
-long session).
+Re-run `assemble.py --in-place` after adding chapters or editing `build.yaml` (it is
+idempotent), then `make all` — it builds every format and runs `check-build.py`. Fix what
+it reports (common issues and fixes are in `scaffold.md` and `lessons.md`). The manual is
+not done until the **publication pass** has run and returned a clean evidence report —
+follow `${CLAUDE_PLUGIN_ROOT}/assets/commons/publication.md` (dispatch it as a subagent for
+a long session).
 
 ---
 

@@ -40,15 +40,16 @@ Before doing anything else, read:
    ${CLAUDE_PLUGIN_ROOT}/assets/prose/README.md
    ```
 
-3. **Canonical preamble + layout** — the shelf manual is the definitive worked example
-   for preamble, title page, part/chapter structure, and Makefile. Read `main.tex`:
-   ```
-   ${CLAUDE_PLUGIN_ROOT}/assets/reference/shelf-main.tex
-   ```
-   and at least one chapter for prose rhythm:
+3. **Worked example — layout and prose rhythm.** The shelf manual is the definitive
+   worked example for title page, part/chapter structure, and prose rhythm. Read at least
+   one chapter:
    ```
    ${CLAUDE_PLUGIN_ROOT}/assets/reference/shelf-00-preface.tex
    ```
+   The **preamble, Makefile, and colophon are owned by the core** and generated for you
+   (see the commons). You do **not** copy `shelf-main.tex` — author only chapters and a
+   manifest. `shelf-main.tex` remains a reference for what the house style produces, not a
+   preamble template to copy.
 
 4. **Visual style reference** — the artifacts preamble establishes the Solarized Cézanne
    palette and Garamond/Cabin typography used family-wide (read lines 1–110):
@@ -56,9 +57,9 @@ Before doing anything else, read:
    ${CLAUDE_PLUGIN_ROOT}/assets/reference/artifacts.tex
    ```
 
-5. **Shared mechanics — the commons.** The family scaffold (directory layout, Makefile,
-   .gitignore, preamble rules, the math block, STYLE.md assembly, vendored tools, build
-   verification), the situational lessons, and the publication pass:
+5. **Shared mechanics — the commons.** The build contract (author chapters + a `build.yaml`
+   manifest; the core assembles `main.tex`/Makefile/STYLE.md/tooling, the math block, and
+   builds every format), the situational lessons, and the publication pass:
    ```
    ${CLAUDE_PLUGIN_ROOT}/assets/commons/scaffold.md
    ${CLAUDE_PLUGIN_ROOT}/assets/commons/lessons.md
@@ -188,14 +189,14 @@ the prose chapters deliberately avoid.
 
 ---
 
-## Step 5 — Scaffold the directory
+## Step 5 — Author the chapters and the manifest
 
-Once the outline is confirmed, scaffold the guide directory **exactly as specified in
-`${CLAUDE_PLUGIN_ROOT}/assets/commons/scaffold.md`** — directory layout, `.gitignore`,
-Makefile, preamble rules, colophon, STYLE.md assembly, and the vendored tools
-(tex2torsor and check-build.py). The guide-specific parameters:
+Once the outline is confirmed, set up the guide directory per
+`${CLAUDE_PLUGIN_ROOT}/assets/commons/scaffold.md`. You author only the chapters and a
+manifest; the core generates `main.tex`, the Makefile, `STYLE.md`, the colophon, the math
+block, and the vendored tooling — do **not** hand-build those.
 
-- **Chapters** under `latex/chapters/`:
+- **Chapters:** author under `<guide-dir>/latex/chapters/`:
   ```
   00-preface.tex
   01-what-its-about.tex
@@ -204,39 +205,38 @@ Makefile, preamble rules, colophon, STYLE.md assembly, and the vendored tools
   04-...                ← one per major section of the paper
   99-notation-and-reference.tex
   ```
-  plus `latex/reader-profile.md` (from Step 2; not compiled).
-- **Makefile:** genre comment `# <paper> reading guide`; EPUB
-  `--metadata title="A Reading Guide to <Paper Title>"`.
-- **STYLE.md:** assemble from `base-paper-guide.md` + the chosen voice; record the voice.
-- **Math block:** required — add the scaffold's math block (`amsmath`/`amsthm`/
-  `mathtools`, the `paperthm`/`paperdefn`/`paperlem`/`paperprop` environments,
-  `pitfallbox`) to the preamble. When restating one of the paper's results, always carry
-  the paper's own number in the optional argument, e.g.
-  `\begin{paperthm}[Theorem 4.2, slightly informally] ... \end{paperthm}`,
-  so the reader can cross-check the guide against the paper.
-- **Title page:** adapt the shelf title page — credit the **paper's** title and authors
-  as the subject, and mark the document as a guide:
+  Put any images in `<guide-dir>/latex/assets/`. Also keep
+  `<guide-dir>/latex/reader-profile.md` (from Step 2; authoring reference, not compiled).
+- **`<guide-dir>/build.yaml`:** the manifest. Set `genre: paper-guide`, a `stem`, the
+  chosen `voice`, and the `chapters:` block giving front/main/appendix/back order (the
+  guide's two-part Part I / Part II shape). For the title page, credit the **paper's**
+  title and authors as the subject and mark the document as a guide: set `title` to the
+  paper's title, `subtitle` to the paper's authors, and a `tagline`/`blurb` for the
+  one-line orientation (what the paper does, for whom this guide is written). Example:
 
-  ```latex
-  \begin{titlepage}
-    \centering
-    \vspace*{3cm}
-    {\Large\sffamily\color{inkmuted} A Reading Guide to\par}
-    \vspace{0.5cm}
-    {\huge\rmfamily\color{inkdark} <Paper Title>\par}
-    \vspace{0.5cm}
-    {\normalsize\itshape\color{inkmuted} <Authors of the paper>\par}
-    \vspace{3cm}
-    {\normalsize\color{inkbody} <one-line orientation: what the paper does, for whom this guide is written>\par}
-    \vfill
-    {\small\color{inkdim} Last revised: \today}
-  \end{titlepage}
+  ```yaml
+  genre:  paper-guide
+  stem:   <output-stem>
+  title:    "A Reading Guide to <Paper Title>"
+  subtitle: "<Authors of the paper>"
+  blurb:    "<one-line orientation: what the paper does, for whom this guide is written>"
+  voice:    01-direct
+  chapters:
+    frontmatter: [00-preface]
+    mainmatter:  [01-what-its-about, 02-shape-of-the-contribution, 03-roadmap, 04-...]
+    appendix:    [99-notation-and-reference]
   ```
 
-  The colophon page that follows it stays verbatim per the scaffold (the guide credits
-  the *paper's* authors on the title page; `torsor lab` is the author of the guide and
-  belongs only in the colophon, the metadata, and the epub).
-- **`pdftitle`:** e.g. `A Reading Guide to <Paper Title>`; keep `pdfauthor` as `torsor lab`.
+  The guide credits the *paper's* authors on the title page; `torsor lab` is the author
+  of the guide and belongs only in the colophon, the metadata, and the epub — the core
+  supplies it (author defaults to `torsor lab`; `pdftitle` comes from `title`). STYLE.md
+  is assembled from `base-paper-guide.md` + the chosen voice automatically.
+- **Math:** the `paper-guide` genre defaults to features `callouts, math`, so the theorem
+  environments `paperthm`/`paperdefn`/`paperlem`/`paperprop` and `$…$`/`\[…\]` are
+  available throughout — no `extra_features` needed. When restating one of the paper's
+  results, always carry the paper's own number in the optional argument, e.g.
+  `\begin{paperthm}[Theorem 4.2, slightly informally] ... \end{paperthm}`, so the reader
+  can cross-check the guide against the paper.
 
 ---
 
@@ -287,16 +287,18 @@ appendix** last (you'll know what needs collecting).
 
 ## Step 8 — Verify the build and run the publication pass
 
-Once the preface and at least one chapter exist, build all four formats and verify per
-the commons:
+Once the preface and at least one chapter exist, assemble and build per the commons:
 
 ```
-cd <guide-dir> && make pdf && make html && make epub && make md && make check
+python3 ${CLAUDE_PLUGIN_ROOT}/tools/core/assemble.py <guide-dir>/build.yaml <guide-dir> --in-place
+cd <guide-dir> && make all
 ```
 
-Fix what `make check` reports — the common issues and their fixes are in `scaffold.md`,
-and the heavy-math workarounds (MathML for EPUB, MathJax injection for HTML,
-renderable-notation substitutions, the `pitfallbox` HTML mapping) are in
+Re-run `assemble.py --in-place` after adding chapters or editing `build.yaml` (it is
+idempotent), then `make all` — it builds every format and runs `check-build.py`. Fix what
+it reports — the common issues and their fixes are in `scaffold.md`, and the heavy-math
+workarounds (MathML for EPUB, MathJax injection for HTML, renderable-notation
+substitutions, the `pitfallbox` HTML mapping) are in
 `${CLAUDE_PLUGIN_ROOT}/assets/commons/lessons.md`. Check that display and inline math
 survive the HTML and EPUB conversions on the hardest example in the guide.
 

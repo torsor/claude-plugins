@@ -25,7 +25,7 @@ purpose, recorded in the reader profile. In **self-presentation** mode the
 subject is presenting their own program — first person is allowed ("I show,"
 "my main construction"). In every other mode — **newcomer orientation**,
 **evaluator appraisal**, **scholarly appreciation** — write about the
-mathematician in the third person: *Krashen proves, the 2019 paper establishes,
+mathematician in the third person: *Nakayama proves, the 2019 paper establishes,
 the construction of Section 3.* Pick one and hold it throughout.
 
 **It is opinionated about what matters.** It may say plainly which papers are

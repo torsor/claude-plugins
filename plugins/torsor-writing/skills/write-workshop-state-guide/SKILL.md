@@ -52,12 +52,17 @@ Before doing anything else, read:
    rule, the extended result-maxing ban-list. The tone shift is the point of this skill.
 2. **Voice catalog** — `${CLAUDE_PLUGIN_ROOT}/assets/prose/README.md`, the available voices and
    how base+voice compose. `01-direct` is the default; use it unless the user asks otherwise.
-3. **Canonical preamble + layout** — `${CLAUDE_PLUGIN_ROOT}/assets/reference/shelf-main.tex`,
-   the definitive worked example for preamble, title page, part/chapter structure, and Makefile.
-4. **Shared mechanics — the commons.** `${CLAUDE_PLUGIN_ROOT}/assets/commons/scaffold.md`
-   (directory, Makefile, `.gitignore`, preamble, math block, STYLE.md assembly, vendored tools,
-   build verification), `${CLAUDE_PLUGIN_ROOT}/assets/commons/lessons.md` (situational
-   math-rendering lessons), `${CLAUDE_PLUGIN_ROOT}/assets/commons/publication.md`.
+3. **Canonical layout reference** — `${CLAUDE_PLUGIN_ROOT}/assets/reference/shelf-main.tex`,
+   a worked example of the title page, part/chapter structure, and what the house style
+   produces. The **preamble, Makefile, and colophon are owned by the core** and generated for
+   you (see the commons) — you do **not** copy `shelf-main.tex`; you author only chapters and a
+   manifest. It remains a reference for the finished look.
+4. **Shared mechanics — the commons.** The build contract (author chapters + a `build.yaml`
+   manifest; the core assembles `main.tex`/Makefile/STYLE.md/colophon/tooling and builds every
+   format), the situational lessons, and the publication pass:
+   `${CLAUDE_PLUGIN_ROOT}/assets/commons/scaffold.md` (required reading before Phase C),
+   `${CLAUDE_PLUGIN_ROOT}/assets/commons/lessons.md` (situational math-rendering lessons),
+   `${CLAUDE_PLUGIN_ROOT}/assets/commons/publication.md`.
 5. **Distill-first discipline** —
    `${CLAUDE_PLUGIN_ROOT}/skills/write-topic-guide/pre-summarization.md`: the isolated-subagent,
    distill-before-writing, review-every-digest, err-on-the-side-of-more procedure that governs
@@ -140,9 +145,21 @@ list: the judgment calls the collaborator faces next).
 ## Phase C — Author and build
 
 Authoring reuses the family commons and the four-format build **verbatim** (full build every
-time). Scaffold per `${CLAUDE_PLUGIN_ROOT}/assets/commons/scaffold.md`; assemble STYLE.md from
-`base-state-guide.md` + the chosen voice; consult
-`${CLAUDE_PLUGIN_ROOT}/assets/commons/lessons.md` for math-rendering gotchas. Apply these deltas:
+time). You author only the chapters and a `build.yaml` manifest per
+`${CLAUDE_PLUGIN_ROOT}/assets/commons/scaffold.md`; the core generates `main.tex`, the
+Makefile, `STYLE.md`, the colophon, and the vendored tooling — do **not** hand-build those.
+Consult `${CLAUDE_PLUGIN_ROOT}/assets/commons/lessons.md` for math-rendering gotchas.
+
+- **Chapters:** author under `<doc-dir>/latex/chapters/` — `00-preface.tex`, then the
+  ledger-driven structure below (`01-state-map.tex`, one chapter per ledger band, the mandatory
+  `NN-what-changed.tex`, and `99-ledger-and-reference.tex`). Put any images in
+  `<doc-dir>/latex/assets/`.
+- **`<doc-dir>/build.yaml`:** `genre: state-guide`, plus `title` / `subtitle` / `stem`, the
+  chosen `voice`, and a `chapters:` block giving front/main/appendix/back order. The state-guide
+  genre defaults to features `callouts, math`, and STYLE.md is assembled from `base-state-guide.md`
+  + the voice automatically — the ledger register lives there.
+
+Apply these deltas:
 
 - **Placement — a new dated artifact, never an overwrite.** The guide lives at
   `guide/<YYYY-MM-DD>-<slug>-state/` in the docent's `guide/` stream, listed in `guide/INDEX.md`;
@@ -163,9 +180,17 @@ time). Scaffold per `${CLAUDE_PLUGIN_ROOT}/assets/commons/scaffold.md`; assemble
 - **Scale with subagents** for a large whole-workshop guide (one per chapter, a progress ledger,
   final whole-guide **label-faithfulness** review), exactly as the topic guide does.
 
-Build all four formats, run `make check`, and finish with the publication pass
-(`${CLAUDE_PLUGIN_ROOT}/assets/commons/publication.md`). The deliverable is the four-format
-output **plus** the `state-notes/` directory.
+Assemble in place and build (`<doc-dir>` is `guide/<YYYY-MM-DD>-<slug>-state/`):
+
+```
+python3 ${CLAUDE_PLUGIN_ROOT}/tools/core/assemble.py <doc-dir>/build.yaml <doc-dir> --in-place
+cd <doc-dir> && make all
+```
+
+Re-run `assemble.py --in-place` after adding chapters or editing `build.yaml` (it is
+idempotent), then `make all` — it builds every format and runs `check-build.py`. Finish with the
+publication pass (`${CLAUDE_PLUGIN_ROOT}/assets/commons/publication.md`). The deliverable is the
+four-format output **plus** the `state-notes/` directory.
 
 ---
 
@@ -173,20 +198,21 @@ output **plus** the `state-notes/` directory.
 
 ```
 guide/<YYYY-MM-DD>-<slug>-state/
-  Makefile  .gitignore  check-build.py       # from the commons scaffold
+  build.yaml                                 # YOU write this manifest (genre: state-guide)
   state-notes/                               # KEPT deliverable — the live-record distillation
     <room-a>.md  <room-b>.md  ...            # label-faithful, commit-stamped digests
     synthesis.md                             # ledger map + notation + what-changed + forks list
   latex/
-    main.tex  STYLE.md  reader-profile.md
-    chapters/
+    reader-profile.md                        # verbatim reader model (not compiled)
+    chapters/                                # YOU author these
       00-preface.tex
       01-state-map.tex                       # Part I — lead with the ledger
       02-...                                 # Part II — one chapter per ledger BAND
       NN-what-changed.tex                    # mandatory: corrections + active checks + graveyard
       99-ledger-and-reference.tex            # the ledger as a table + notation reconciliation
-  tex2torsor/                                # copied from the plugin (commons scaffold)
-  html/  epub/  markdown/                    # build output
+    assets/                                  # images the chapters use (optional)
+  # main.tex, STYLE.md, Makefile, check-build.py, tex2torsor/, html/, epub/, markdown/
+  # are all generated by the core (assemble.py --in-place + make all)
 ```
 
 `guide/INDEX.md` lists it chronologically and by topic (per `guide/README.md`).
@@ -204,7 +230,7 @@ guide/<YYYY-MM-DD>-<slug>-state/
 | Burying corrections and dead ends in footnotes | Make them a **first-class chapter** ("what changed / what might change") |
 | Result-maxing rhetoric ("contribution," "pulled it off," "impressive") | Use the five state questions; obey the extended ban-list + no-premature-closure rule |
 | Overwriting last week's state guide | Write a **new dated artifact**; progression must stay visible |
-| Guessing the build toolchain | Reuse the commons scaffold (`latexd`→`latexmk`, `tex2torsor`, pandoc) + `lessons.md` |
+| Hand-building `main.tex`/Makefile/preamble, or guessing the toolchain | Author only chapters + `build.yaml`; let the core generate the rest (`assemble.py --in-place` + `make all`) |
 | Throwing away the distillation | Keep `state-notes/` as a deliverable, distinct from background `source-notes/` |
 
 ---
