@@ -41,6 +41,23 @@ token count, or a cost you did not read off something. If a figure comes from el
 where — "the guide's README records 2 h 7 m for that run" is useful; the same number offered as
 your own is not.
 
+**An append to a file that isn't there is silent, and the shell's directory can move under
+you.** The incremental-write rule above has one failure mode, and it is nasty. Some tool calls
+reset the working directory without saying so. The next `cat >> notes.md` then creates a
+*second* `notes.md` one level up, reports nothing, and exits 0 — and reading the file back
+looks exactly like having lost six hundred lines of work. Nothing is lost; it is in the other
+file.
+
+Two habits prevent it: **append by absolute path**, and check that a file you are appending to
+already exists rather than trusting `>>` to tell you. If a file you have been writing to
+suddenly looks truncated, look one directory up before concluding anything.
+
+**Verify numbering from `.aux`, not from extracted text.** Comparing two builds of the same
+document by scraping `pdftotext` output produces false divergences: a repair that changes a
+sentence's length reflows the paragraph, so which statements begin a line differs between
+builds even when every number is identical. `\newlabel` entries in the `.aux` files are the
+reliable comparison — they carry the actual values.
+
 **Shares of effort are not shares of the clock, and a table implies a partition.** Where work
 runs in parallel — a fan-out of subagents while the main thread drafts — wall time and effort
 diverge, and the categories overlap. Rows that sum to 100% in a table read as a decomposition

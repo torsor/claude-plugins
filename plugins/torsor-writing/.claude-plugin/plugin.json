@@ -1,6 +1,6 @@
 {
   "name": "torsor-writing",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "description": "Styled LaTeX writing skills (write-manual, write-paper-guide, write-critical-guide, write-topic-guide, write-study-guide, write-body-of-work-summary, write-workshop-state-guide, write-pure-math-paper, write-technical-report) following the torsor design and prose style. Self-contained: bundles the torsor prose library, reference templates, and the tex2torsor converter so the skills run on any machine.",
   "author": {
     "name": "torsor lab"
