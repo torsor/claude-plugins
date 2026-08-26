@@ -380,6 +380,29 @@ branch in one reply. Each must say what the hypothesis is, what it costs in
 generality, exactly which of the paper's results it restores and in what amended form, and
 whether it is *sharp* — the exact condition — or merely sufficient.
 
+**Branching never nests.** A branch is a genuine choice among repair routes, and the cost of
+choices that compose is their product, not their sum. So: branch points must be mutually
+**independent**. If, inside one branch, a second choice arises *whose options depend on which
+branch you are in*, that choice does not get to branch. Resolve it — take the option most
+consistent with the branch you are already in — then say in the branch report that you resolved
+it, which way, and what the alternative was. A named road not taken is worth more to the
+authors than a tree they cannot read, and it costs nothing to explore.
+
+Two consequences worth stating.
+
+- **Independent choice points are fine, and are not nesting.** Two unrelated repairs each
+  admitting two routes cost four reports only if you cross them, and there is no reason to:
+  report each separately. Cross them only if a reader genuinely cannot evaluate one without
+  fixing the other, which is the definition of dependence and therefore already excluded.
+- **A choice that most other repairs sit downstream of should not be patched around at all.**
+  If the branch point is foundational — if resolving it one way or the other changes what a
+  large part of the rest of the paper says — then the repair is not determined, and a document
+  that silently embodies one arbitrary resolution misleads. Report it as a critical issue for
+  the authors and stop there.
+
+If a paper produces many independent branch points, that is itself a finding: it says the
+repair is underdetermined, and the guide should say so plainly rather than presenting a menu.
+
 Then one synthesis agent writes `critical-guide/repairs/synthesis.md`: which hypothesis is exact and
 which convenient, which is most economical, what each restores and what each gives up, and a
 recommended order of preference for the authors. **This recommendation is about mathematics,
