@@ -1,0 +1,4 @@
+# State-guide genre — a docent's state-of-the-work snapshot for live workshop work.
+default_features: [callouts, math]
+prose_base: base-state-guide
+titlepage: genres/_shared/guide-titlepage.tex

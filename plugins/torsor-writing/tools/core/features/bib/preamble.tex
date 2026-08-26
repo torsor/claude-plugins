@@ -1,0 +1,13 @@
+% Bib feature — LaTeX preamble slice (PDF path).
+% biblatex + biber render the bibliography in the PDF; latexmk runs biber
+% automatically. The pandoc-driven formats (HTML/EPUB/Markdown) resolve the same
+% \cite/\textcite commands via pandoc --citeproc — see bib.mk. Enabled by setting
+% `bibliography: <file>.bib` in the manifest (auto-adds this feature and vendors
+% the file as references.bib beside main.tex).
+%
+% Author with \cite{key} / \textcite{key} / \parencite{key}, and place
+% \printbibliography where the bibliography should appear (e.g. a backmatter
+% references chapter).
+
+\usepackage[backend=biber, style=alphabetic, sorting=nyt]{biblatex}
+\addbibresource{references.bib}

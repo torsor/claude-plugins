@@ -1,0 +1,3 @@
+# Technical-doc genre — a bundle. Code-bearing technical documentation.
+default_features: [callouts, listings]
+prose_base: base-manual

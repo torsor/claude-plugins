@@ -3,19 +3,25 @@
 
 Run from the document root (the directory holding Makefile and latex/):
 
-    python3 check-build.py [--root DIR] [--log PATH]
+    python3 check-build.py [--root DIR] [--stem NAME] [--log PATH]
+                           [--overfull-threshold PT]
+
+The output stem defaults to the document directory's name (the unified builder
+names outputs <stem>.pdf/.html/.epub/-svg.epub/.md). Override with --stem.
 
 Verifies, without trusting any tool's exit code:
-  - latex/main.pdf exists and is newer than every .tex source
+  - the deliverable PDF exists and is newer than every .tex source
   - the LaTeX log carries no errors and no undefined references/citations
   - overfull hboxes, itemized with pt overrun and source lines
   - no non-ASCII characters inside lstlisting environments
   - HTML math fallback spans have a MathJax loader if present
-  - EPUB and Markdown outputs exist (informational)
+  - both EPUBs (MathML + SVG math) and the Markdown output exist
 
-Prints an evidence report. Exit 1 on hard failures (missing/stale PDF, LaTeX
-errors, undefined references); exit 0 otherwise — warnings still deserve reading.
-No dependencies beyond the standard library.
+Exit 1 on mechanical failures: missing/stale PDF, LaTeX errors, undefined
+references, overfull hboxes over the threshold, non-ASCII listings, or any
+missing expected output. Overfull hboxes at or below --overfull-threshold pt are
+reported but not fatal (they are the residue no rewrap can fix). Exit 0
+otherwise. No dependencies beyond the standard library.
 """
 from __future__ import annotations
 
@@ -29,39 +35,50 @@ OVERFULL_RE = re.compile(r"Overfull \\hbox \((\d+(?:\.\d+)?)pt too wide\)(.*)")
 UNDEF_RE = re.compile(r"LaTeX Warning: (Reference|Citation) [`']([^']*)' .*undefined")
 PAGES_RE = re.compile(r"Output written on .*\((\d+) pages?")
 
+DEFAULT_OVERFULL_THRESHOLD = 2.0
+
 
 def fmt_mtime(p: Path) -> str:
     return time.strftime("%Y-%m-%d %H:%M", time.localtime(p.stat().st_mtime))
 
 
-def check_pdf(root: Path, failures: list[str]) -> None:
-    pdf = root / "latex" / "main.pdf"
-    if not pdf.exists():
-        failures.append("PDF missing: latex/main.pdf")
-        print("PDF: MISSING (latex/main.pdf)")
-        return
-    sources = list((root / "latex").rglob("*.tex"))
-    newer = [s for s in sources if s.stat().st_mtime > pdf.stat().st_mtime]
-    fresh = not newer
-    print(f"PDF: latex/main.pdf, built {fmt_mtime(pdf)}, fresh against sources: {'yes' if fresh else 'NO'}")
-    if not fresh:
-        failures.append("PDF stale — sources newer than PDF")
-        for s in newer:
-            print(f"  newer source: {s.relative_to(root)} ({fmt_mtime(s)})")
-
-
-def find_log(root: Path, explicit: str | None) -> Path | None:
-    if explicit:
-        p = Path(explicit)
-        return p if p.exists() else None
-    for cand in ("latex/main.log", "latex/build/main.log", "build/main.log"):
+def find_pdf(root: Path, stem: str) -> Path | None:
+    """Prefer the stem-named deliverable; fall back to the raw latexmk output."""
+    for cand in (f"latex/{stem}.pdf", "latex/main.pdf"):
         p = root / cand
         if p.exists():
             return p
     return None
 
 
-def check_log(log: Path | None, failures: list[str]) -> None:
+def check_pdf(root: Path, stem: str, failures: list[str]) -> None:
+    pdf = find_pdf(root, stem)
+    if pdf is None:
+        failures.append(f"PDF missing: latex/{stem}.pdf")
+        print(f"PDF: MISSING (latex/{stem}.pdf)")
+        return
+    sources = list((root / "latex").rglob("*.tex"))
+    newer = [s for s in sources if s.stat().st_mtime > pdf.stat().st_mtime]
+    fresh = not newer
+    print(f"PDF: {pdf.relative_to(root)}, built {fmt_mtime(pdf)}, fresh against sources: {'yes' if fresh else 'NO'}")
+    if not fresh:
+        failures.append("PDF stale — sources newer than PDF")
+        for s in newer:
+            print(f"  newer source: {s.relative_to(root)} ({fmt_mtime(s)})")
+
+
+def find_log(root: Path, stem: str, explicit: str | None) -> Path | None:
+    if explicit:
+        p = Path(explicit)
+        return p if p.exists() else None
+    for cand in (f"latex/{stem}.log", "latex/main.log", "latex/build/main.log", "build/main.log"):
+        p = root / cand
+        if p.exists():
+            return p
+    return None
+
+
+def check_log(log: Path | None, threshold: float, failures: list[str]) -> None:
     if log is None:
         print("Log: NOT FOUND — latexd may keep it elsewhere; pass --log PATH. "
               "Errors/undefined refs/overfull NOT checked.")
@@ -93,15 +110,20 @@ def check_log(log: Path | None, failures: list[str]) -> None:
 
     overfull = [(float(m.group(1)), m.group(2).strip()) for m in map(OVERFULL_RE.match, lines) if m]
     if overfull:
+        over = [(pt, where) for pt, where in overfull if pt > threshold]
+        under = len(overfull) - len(over)
         worst = max(pt for pt, _ in overfull)
-        print(f"Overfull hboxes: {len(overfull)} (worst {worst}pt)")
-        for pt, where in sorted(overfull, reverse=True)[:15]:
+        note = f" ({under} at or below {threshold}pt, not fatal)" if under else ""
+        print(f"Overfull hboxes: {len(overfull)} (worst {worst}pt){note}")
+        if over:
+            failures.append(f"{len(over)} overfull hbox(es) over {threshold}pt")
+        for pt, where in sorted(over, reverse=True)[:15]:
             print(f"  {pt}pt {where}")
     else:
         print("Overfull hboxes: none")
 
 
-def check_listings_ascii(root: Path, warnings: list[str]) -> None:
+def check_listings_ascii(root: Path, failures: list[str]) -> None:
     hits: list[str] = []
     for tex in (root / "latex").rglob("*.tex"):
         inside = False
@@ -113,7 +135,7 @@ def check_listings_ascii(root: Path, warnings: list[str]) -> None:
             if "\\end{lstlisting}" in ln:
                 inside = False
     if hits:
-        warnings.append("non-ASCII inside lstlisting")
+        failures.append("non-ASCII inside lstlisting")
         print(f"lstlisting non-ASCII: {len(hits)} line(s)")
         for h in hits[:10]:
             print(f"  {h}")
@@ -121,8 +143,8 @@ def check_listings_ascii(root: Path, warnings: list[str]) -> None:
         print("lstlisting non-ASCII: none")
 
 
-def check_html(root: Path, warnings: list[str]) -> None:
-    html = root / "html" / "manual.html"
+def check_html(root: Path, stem: str, warnings: list[str]) -> None:
+    html = root / "html" / f"{stem}.html"
     if not html.exists():
         print("HTML: not built")
         return
@@ -131,28 +153,40 @@ def check_html(root: Path, warnings: list[str]) -> None:
     loader = "MathJax-script" in text
     print(f"HTML math: {spans} fallback span(s), MathJax loader present: {'yes' if loader else 'no'}")
     if spans and not loader:
-        warnings.append("HTML has raw TeX math spans but no MathJax loader (see commons/lessons.md)")
+        warnings.append("HTML has raw TeX math spans but no MathJax loader")
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description=__doc__)
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--root", default=".", help="document root (default: cwd)")
-    ap.add_argument("--log", default=None, help="path to the LaTeX log if not latex/main.log")
+    ap.add_argument("--stem", default=None, help="output stem (default: document directory name)")
+    ap.add_argument("--log", default=None, help="path to the LaTeX log if not latex/<stem>.log or latex/main.log")
+    ap.add_argument("--overfull-threshold", type=float, default=DEFAULT_OVERFULL_THRESHOLD,
+                    help=f"overfull hboxes at or below this many pt are not fatal (default: {DEFAULT_OVERFULL_THRESHOLD})")
+    ap.add_argument("--require", nargs="*", default=None, metavar="PATH",
+                    help="output files that must exist (the Makefile passes the registered "
+                         "formats' + features' declared outputs). If omitted, defaults to "
+                         "epub/<stem>.epub and markdown/<stem>.md.")
     args = ap.parse_args()
     root = Path(args.root).resolve()
     if not (root / "latex").is_dir():
         print(f"error: no latex/ directory under {root}", file=sys.stderr)
         return 2
+    stem = args.stem or root.name
 
     failures: list[str] = []
     warnings: list[str] = []
-    print(f"== check-build report — {root.name} ==")
-    check_pdf(root, failures)
-    check_log(find_log(root, args.log), failures)
-    check_listings_ascii(root, warnings)
-    check_html(root, warnings)
-    for out, label in (("epub/manual.epub", "EPUB"), ("markdown/manual.md", "Markdown")):
-        print(f"{label}: {'present' if (root / out).exists() else 'not built'}")
+    print(f"== check-build report — {root.name} (stem: {stem}) ==")
+    check_pdf(root, stem, failures)
+    check_log(find_log(root, stem, args.log), args.overfull_threshold, failures)
+    check_listings_ascii(root, failures)
+    check_html(root, stem, warnings)
+    required = args.require if args.require is not None else [f"epub/{stem}.epub", f"markdown/{stem}.md"]
+    for rel in required:
+        present = (root / rel).exists()
+        print(f"output {rel}: {'present' if present else 'MISSING'}")
+        if not present:
+            failures.append(f"missing output: {rel}")
 
     print()
     if failures:

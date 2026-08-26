@@ -1,0 +1,17 @@
+% Shared guide title page (reading guides, surveys, state guides). The genre's
+% @@TAGLINE@@ carries the lead-in ("A Reading Guide to", "An overview of the work
+% of", "State of the work:"), @@TITLE@@ the subject, @@SUBTITLE@@ the authors or
+% qualifier, @@BLURB@@ the reader calibration. No cover on guides.
+\begin{titlepage}
+  \centering
+  \vspace*{3cm}
+  {\Large\sffamily\color{inkmuted} @@TAGLINE@@\par}
+  \vspace{0.5cm}
+  {\huge\rmfamily\color{inkdark} @@TITLE@@\par}
+  \vspace{0.5cm}
+  {\normalsize\itshape\color{inkmuted} @@SUBTITLE@@\par}
+  \vspace{3cm}
+  {\normalsize\color{inkbody} @@BLURB@@\par}
+  \vfill
+  {\small\color{inkdim} Last revised: \today}
+\end{titlepage}

@@ -1,0 +1,4 @@
+# Topic-guide genre — a learning-oriented synthesis of several sources. Math, no code.
+default_features: [callouts, math]
+prose_base: base-paper-guide
+titlepage: genres/_shared/guide-titlepage.tex

@@ -44,6 +44,8 @@ def build_pandoc_cmd(
     template: Path,
     filter_path: Path,
     resource_path: Path,
+    citeproc: bool = False,
+    bibliographies: Optional[list[str]] = None,
 ) -> list[str]:
     cmd = [
         "pandoc",
@@ -63,6 +65,11 @@ def build_pandoc_cmd(
 
     if embed:
         cmd.append("--embed-resources")
+
+    if citeproc:
+        cmd.append("--citeproc")
+    for bib in bibliographies or []:
+        cmd.append(f"--bibliography={bib}")
 
     for css in css_files:
         cmd.append(f"--css={css}")
@@ -101,6 +108,14 @@ def main() -> None:
     parser.add_argument(
         "--embed", action="store_true", default=False,
         help="Embed CSS inline for a single-file output",
+    )
+    parser.add_argument(
+        "--citeproc", action="store_true", default=False,
+        help="Resolve citations with pandoc-citeproc (needs --bibliography)",
+    )
+    parser.add_argument(
+        "--bibliography", action="append", default=None, metavar="FILE",
+        help="Bibliography file for --citeproc (repeatable)",
     )
     args = parser.parse_args()
 
@@ -146,6 +161,8 @@ def main() -> None:
             template=template_path,
             filter_path=filter_path,
             resource_path=input_path.parent,
+            citeproc=args.citeproc,
+            bibliographies=args.bibliography,
         )
 
         result = subprocess.run(cmd, cwd=input_path.parent)

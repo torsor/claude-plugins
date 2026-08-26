@@ -1,0 +1,128 @@
+% Base preamble — torsor family (format-neutral).
+% Feature preamble fragments (math, ...) are appended after this block by the
+% assembler; document body follows from base/body.tex.tmpl. Do NOT hand-edit in
+% a deliverable — edit the core fragment and re-assemble.
+
+\documentclass[12pt, openany]{book}
+
+% --- Encoding ---
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+% --- Page geometry (6x9 book) ---
+\usepackage[paperwidth=6in, paperheight=9in,
+            inner=1in, outer=0.75in,
+            top=0.875in, bottom=1in,
+            headheight=14pt]{geometry}
+
+% --- Typography ---
+\usepackage{ebgaramond}
+\usepackage[scale=0.92]{cabin}
+\usepackage[protrusion=true,expansion=true]{microtype}
+\usepackage{setspace}
+\emergencystretch=3em
+\hfuzz=3pt
+
+% --- Color palette: Solarized Cezanne ---
+\usepackage{xcolor}
+\definecolor{paper}     {HTML}{FAF6EE}
+\definecolor{inkdark}   {HTML}{2A2620}
+\definecolor{inkbody}   {HTML}{4A4136}
+\definecolor{inkmuted}  {HTML}{6E6353}
+\definecolor{inkdim}    {HTML}{8E8270}
+\definecolor{terracotta}{HTML}{C0643A}
+\definecolor{sage}      {HTML}{669966}
+\definecolor{pageborder}{HTML}{DDD0B6}
+\definecolor{codebg}    {HTML}{F2EDE3}
+\definecolor{notebg}    {HTML}{EEF4E8}
+\definecolor{warnbg}    {HTML}{FBF2E0}
+
+% --- Hyperref ---
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks = true,
+  linkcolor  = inkdark,
+  citecolor  = inkmuted,
+  urlcolor   = terracotta,
+  pdftitle   = {@@PDFTITLE@@},
+  pdfauthor  = {@@PDFAUTHOR@@},
+}
+
+% (Code listings live in the listings feature — opt-in, default-off.)
+
+% --- Tables ---
+\usepackage{array}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\usepackage{booktabs}
+\usepackage{longtable}
+
+% --- Chapter and section headings ---
+\usepackage{titlesec}
+
+\titleformat{\chapter}[display]
+  {\normalfont\sffamily\footnotesize\bfseries\color{inkmuted}}
+  {\chaptertitlename~\thechapter}
+  {0.5em}
+  {\huge\rmfamily\mdseries\color{inkdark}}
+  [\medskip{\color{pageborder}\titlerule[0.4pt]}\vspace{1em}]
+\titlespacing*{\chapter}{0pt}{-10pt}{30pt}
+
+\titleformat{name=\chapter,numberless}[display]
+  {\normalfont\huge\rmfamily\mdseries\color{inkdark}}
+  {}
+  {0pt}
+  {}
+  [\medskip{\color{pageborder}\titlerule[0.4pt]}\vspace{1em}]
+\titlespacing*{name=\chapter,numberless}{0pt}{-10pt}{30pt}
+
+\titleformat{\section}
+  {\normalfont\sffamily\large\color{inkdark}}
+  {}
+  {0em}
+  {}
+\titlespacing*{\section}{0pt}{2.5ex plus 1ex minus .2ex}{0.5em}
+
+\titleformat{\subsection}
+  {\normalfont\sffamily\normalsize\color{inkmuted}}
+  {}
+  {0em}
+  {}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .5ex minus .2ex}{0.3em}
+
+% --- Headers and footers ---
+\usepackage{fancyhdr}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\renewcommand{\sectionmark}[1]{\markright{#1}}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\small\color{inkdim}\thepage}
+\fancyhead[RE]{\small\color{inkmuted}\itshape\leftmark}
+\fancyhead[LO]{\small\color{inkmuted}\itshape\rightmark}
+\renewcommand{\headrulewidth}{0pt}
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \fancyfoot[C]{\small\color{inkdim}\thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+}
+
+% --- Layout helpers ---
+% (Callout boxes live in the callouts feature; mdframed is loaded there.)
+\usepackage{parskip}
+\newcounter{none}
+\usepackage{enumitem}
+\usepackage{graphicx}
+
+% Inline code — breakable at path/command/JSON separators, so long inline paths
+% and commands wrap instead of overflowing. Spaces and nested macros (e.g.
+% \textit placeholders) are preserved; \allowbreak is only an opportunity, so
+% short code never breaks.
+\ExplSyntaxOn
+\tl_new:N \l__code_tl
+\cs_new_protected:Npn \__code_break:n #1 {
+  \tl_set:Nn \l__code_tl {#1}
+  \regex_replace_all:nnN { [/.,:;"=\[\]-] | \c{_} } { \0 \c{allowbreak} } \l__code_tl
+  \tl_use:N \l__code_tl
+}
+\NewDocumentCommand \code { m } { \texttt { \color{inkdark} \__code_break:n {#1} } }
+\ExplSyntaxOff
+\setcounter{secnumdepth}{0}

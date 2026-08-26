@@ -1,0 +1,15 @@
+/* Listings feature — HTML/EPUB style slice. Appended to the deliverable's
+ * doc.css by the assembler. Styles block code: pre.shell (from the tex2torsor
+ * filter's shell-class tagging of bare code blocks) and pre.sourceCode (pandoc
+ * syntax-highlighted code). Inline \code stays in base. */
+pre.shell,
+pre.sourceCode {
+  font-size: var(--text-sm);
+  line-height: 1.55;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-2);
+  padding: var(--space-4) var(--space-5);
+  overflow-x: auto;
+  margin: var(--space-4) 0 var(--space-5);
+}

@@ -1,0 +1,7 @@
+# Base tex2torsor mappings (format-neutral). Feature mappings merge on top of
+# this. Environment→callout mappings belong to the callouts feature, not here.
+mappings:
+  macros:
+    code:
+      html_tag: code
+      classes: []

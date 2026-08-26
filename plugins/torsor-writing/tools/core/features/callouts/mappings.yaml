@@ -1,0 +1,13 @@
+# Callouts feature — tex2torsor HTML slice.
+# Merged into the deliverable's tex2torsor/mappings.yaml by the assembler.
+mappings:
+  environments:
+    notebox:
+      classes: [callout, callout-note]
+      label: "Note"
+    warnbox:
+      classes: [callout, callout-warn]
+      label: "Warning"
+    pitfallbox:
+      classes: [callout, callout-pitfall]
+      label: "Watch out"

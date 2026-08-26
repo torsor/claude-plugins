@@ -1,23 +1,9 @@
-# tex2torsor mappings for: thing — A User's Manual
-# Used by tex2torsor.py as the default config for this project.
-#
-# To reuse for a different LaTeX project, copy this file and adjust
-# environments/macros to match that project's custom commands.
-
+# Default tex2torsor mappings (format-neutral base). In a torsor deliverable the
+# assembler OVERWRITES this with the doc's assembled mappings (core base +
+# enabled features, e.g. the callouts feature's notebox/warnbox/pitfallbox). This
+# minimal default is only what a bare tex2torsor run would use.
 mappings:
-  environments:
-    notebox:
-      classes: [callout, callout-note]
-      label: "Note"
-    warnbox:
-      classes: [callout, callout-warn]
-      label: "Warning"
-
   macros:
     code:
       html_tag: code
       classes: []
-
-# CSS files to link in output (paths relative to output file, or absolute).
-# tex2torsor.py --css flags override this list entirely.
-css: []

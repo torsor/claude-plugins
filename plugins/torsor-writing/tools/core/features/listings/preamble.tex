@@ -1,0 +1,28 @@
+% Listings feature — LaTeX preamble slice. Opt-in (default-off): on for manuals
+% and technical docs, off for math guides where code does not appear. Owns the
+% listings/fvextra setup and the shell code style; block-code CSS is in
+% style.css. Uses base palette colors (codebg, pageborder), loaded before this.
+
+\usepackage{listings}
+\usepackage{fvextra}
+\lstdefinestyle{shell}{
+  backgroundcolor=\color{codebg},
+  frame=single,
+  framesep=4pt,
+  rulecolor=\color{pageborder},
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  breakatwhitespace=false,
+  keepspaces=true,
+  showstringspaces=false,
+  xleftmargin=8pt,
+  xrightmargin=8pt,
+}
+\lstset{style=shell}
+\DefineVerbatimEnvironment{verbatim}{Verbatim}{
+  breaklines=true,
+  breakanywhere=true,
+  fontsize=\small,
+  frame=single,
+  framesep=4pt
+}

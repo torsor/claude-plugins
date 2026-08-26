@@ -1,0 +1,4 @@
+# Study-guide genre — a personalized route through a large tag-addressable corpus.
+default_features: [callouts, math]
+prose_base: base-paper-guide
+titlepage: genres/_shared/guide-titlepage.tex

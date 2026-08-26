@@ -1,0 +1,4 @@
+# Body-of-work genre — a styled overview of one mathematician's whole program.
+default_features: [callouts, math]
+prose_base: base-body-of-work
+titlepage: genres/_shared/guide-titlepage.tex

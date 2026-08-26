@@ -1,0 +1,27 @@
+% Math feature — LaTeX preamble slice.
+% Loaded only when the `math` feature is enabled. Theorem environments restate a
+% source's results faithfully; pitfallbox flags the subtlety that trips readers.
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{mathrsfs}
+\usepackage{amssymb}
+\allowdisplaybreaks
+
+\newtheoremstyle{guide}%
+  {\topsep}{\topsep}%
+  {\itshape}%
+  {0pt}%
+  {\sffamily\color{inkdark}\bfseries}%
+  {.}%
+  {.5em}%
+  {}%
+\theoremstyle{guide}
+\newtheorem*{paperthm}{Theorem}
+\newtheorem*{paperdefn}{Definition}
+\newtheorem*{paperlem}{Lemma}
+\newtheorem*{paperprop}{Proposition}
+\newtheorem*{papercor}{Corollary}
+% (The pitfallbox callout lives in the callouts feature, not here — it is a
+% presentation box, not mathematics.)

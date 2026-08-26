@@ -1,0 +1,4 @@
+# Manual genre — a bundle. Default features a manual enables; the manifest may
+# override. Uses the base default title page (no genres/manual/titlepage.tex).
+default_features: [callouts, listings]
+prose_base: base-manual   # assets/prose/<prose_base>.md (for STYLE.md assembly)

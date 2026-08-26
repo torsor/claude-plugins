@@ -1,0 +1,46 @@
+% Callouts feature — LaTeX preamble slice.
+% Owns the whole callout system across formats: mdframed + the box definitions
+% here (PDF), the tex2torsor mappings (HTML), and the .callout CSS (HTML/EPUB)
+% live together in this directory. Default-on for every genre.
+
+\usepackage{mdframed}
+
+% notebox — the green "Note" aside.
+\newmdenv[
+  backgroundcolor=notebg,
+  linecolor=sage,
+  linewidth=1.5pt,
+  innerleftmargin=10pt,
+  innerrightmargin=10pt,
+  innertopmargin=8pt,
+  innerbottommargin=8pt,
+  skipabove=10pt,
+  skipbelow=10pt,
+]{notebox}
+
+% warnbox — the terracotta "Warning" box (real risk, especially data loss).
+\newmdenv[
+  backgroundcolor=warnbg,
+  linecolor=terracotta,
+  linewidth=1.5pt,
+  innerleftmargin=10pt,
+  innerrightmargin=10pt,
+  innertopmargin=8pt,
+  innerbottommargin=8pt,
+  skipabove=10pt,
+  skipbelow=10pt,
+]{warnbox}
+
+% pitfallbox — "read carefully": the unstated hypothesis, the index that shifts,
+% the "obvious" step that isn't. Terracotta like warnbox, different semantics.
+\newmdenv[
+  backgroundcolor=warnbg,
+  linecolor=terracotta,
+  linewidth=1.5pt,
+  innerleftmargin=10pt,
+  innerrightmargin=10pt,
+  innertopmargin=8pt,
+  innerbottommargin=8pt,
+  skipabove=10pt,
+  skipbelow=10pt,
+]{pitfallbox}

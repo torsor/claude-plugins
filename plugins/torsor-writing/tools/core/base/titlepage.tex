@@ -1,0 +1,15 @@
+% Default title page (used by genres that do not supply their own
+% genres/<genre>/titlepage.tex). Slots filled by the assembler.
+\begin{titlepage}
+  \centering
+  \vspace*{@@TOPSPACE@@}
+  {\Huge\rmfamily\color{inkdark} @@TITLE@@\par}
+  \vspace{0.5cm}
+  {\Large\sffamily\color{inkmuted} @@SUBTITLE@@\par}
+  \vspace{0.3cm}
+  {\normalsize\itshape\color{inkmuted} @@TAGLINE@@\par}
+@@COVER_BLOCK@@  \vspace{@@SPACER@@}
+  {\normalsize\color{inkbody} @@BLURB@@\par}
+  \vfill
+  {\small\color{inkdim} Last revised: \today}
+\end{titlepage}

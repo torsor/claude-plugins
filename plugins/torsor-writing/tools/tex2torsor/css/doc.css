@@ -1,5 +1,5 @@
 /*
- * manual.css — supplement to tokens.css for HTML documentation output.
+ * doc.css — supplement to tokens.css for HTML documentation output.
  *
  * Provides: page layout, callout boxes, TOC sidebar, section spacing.
  * Requires tokens.css loaded first.
@@ -101,6 +101,21 @@ body {
   margin: 0;
 }
 
+/* Images are responsive by default (cover art, figures) so a fixed LaTeX
+   width never overflows a narrow screen. */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.titlepage img {
+  display: block;
+  width: min(42vw, 220px) !important;
+  max-width: 220px !important;
+  height: auto;
+  margin: var(--space-5) auto var(--space-6);
+}
+
 /* Section spacing */
 h1, h2, h3, h4 {
   margin-top: var(--space-7);
@@ -117,57 +132,9 @@ h2:first-child {
   margin-right: 0.5em;
 }
 
-/* --- Callout boxes (notebox / warnbox) --- */
-.callout {
-  padding: var(--space-4) var(--space-5);
-  border-radius: var(--radius-2);
-  border-left: 3px solid var(--border-strong);
-  background: var(--bg-panel);
-  margin: var(--space-5) 0;
-}
+/* (Callout box styles live in the callouts feature's style slice.) */
 
-.callout p:last-child {
-  margin-bottom: 0;
-}
-
-.callout strong:first-child {
-  display: block;
-  font-size: var(--text-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: var(--space-2);
-}
-
-.callout-note {
-  border-left-color: var(--skyblue);
-  background: color-mix(in oklch, var(--skyblue-soft), var(--bg-panel) 50%);
-}
-
-.callout-note strong:first-child {
-  color: var(--skyblue-deep);
-}
-
-.callout-warn {
-  border-left-color: var(--ochre);
-  background: color-mix(in oklch, var(--ochre-soft), var(--bg-panel) 50%);
-}
-
-.callout-warn strong:first-child {
-  color: var(--ochre-deep);
-}
-
-/* --- Code blocks --- */
-pre.shell,
-pre.sourceCode {
-  font-size: var(--text-sm);
-  line-height: 1.55;
-  background: var(--bg-panel);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-2);
-  padding: var(--space-4) var(--space-5);
-  overflow-x: auto;
-  margin: var(--space-4) 0 var(--space-5);
-}
+/* (Block-code styles live in the listings feature's style slice.) */
 
 /* --- Tables --- */
 table {

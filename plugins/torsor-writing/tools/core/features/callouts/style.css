@@ -1,0 +1,49 @@
+/* Callouts feature — HTML/EPUB style slice.
+ * Appended to the deliverable's doc.css by the assembler. Owns the .callout base
+ * mechanism and every callout variant (note / warn / pitfall). */
+.callout {
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-2);
+  border-left: 3px solid var(--border-strong);
+  background: var(--bg-panel);
+  margin: var(--space-5) 0;
+}
+
+.callout p:last-child {
+  margin-bottom: 0;
+}
+
+.callout strong:first-child {
+  display: block;
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: var(--space-2);
+}
+
+.callout-note {
+  border-left-color: var(--skyblue);
+  background: color-mix(in oklch, var(--skyblue-soft), var(--bg-panel) 50%);
+}
+
+.callout-note strong:first-child {
+  color: var(--skyblue-deep);
+}
+
+.callout-warn {
+  border-left-color: var(--ochre);
+  background: color-mix(in oklch, var(--ochre-soft), var(--bg-panel) 50%);
+}
+
+.callout-warn strong:first-child {
+  color: var(--ochre-deep);
+}
+
+.callout-pitfall {
+  border-left-color: var(--terracotta, var(--ochre));
+  background: color-mix(in oklch, var(--ochre-soft), var(--bg-panel) 50%);
+}
+
+.callout-pitfall strong:first-child {
+  color: var(--ochre-deep);
+}
