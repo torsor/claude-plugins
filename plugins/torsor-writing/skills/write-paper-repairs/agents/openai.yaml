@@ -1,0 +1,4 @@
+interface:
+  display_name: "Paper Repairs"
+  short_description: "Repair the issues a critical guide found, in the paper's own source"
+  default_prompt: "Use $write-paper-repairs to work out repairs for the issues in this paper's critical guide."

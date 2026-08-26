@@ -1,0 +1,162 @@
+% ---------------------------------------------------------------------------
+% agentic-edits.tex --- tracked repairs in someone else's paper
+%
+% Which build this is comes from the command line, not from editing this file:
+%
+%   pdflatex main.tex                            -> notes build (default)
+%   pdflatex "\def\agenticclean{}\input{main}"   -> clean build
+%
+% Notes-on is the default deliberately. A file of unmarked edits that reads as
+% the authors' own text is the dangerous artifact; you should have to ask.
+%
+% THREE STATES
+%   applied   the repair is in the paper. Marked in the notes build, silently
+%             present in the clean build.
+%   proposed  worked out but not adopted. Shown in the notes build with its
+%             replacement text in place; ABSENT from the clean build.
+%   removed   deleted text. Framed in the notes build, gone from the clean one.
+%
+% INLINE  \agenticaddition[tag]{t}  \agenticremoval[tag]{t}
+%         \agenticremovalbox[tag]{t}   for fragile tokens (\cite, \ref)
+%         \agenticproposal[tag]{t}
+% BLOCK   agenticadded / agenticremoved / agenticproposed  environments
+% MATH    \agenticmathadd[tag]{t}  \agenticmathdel[tag]{t}   inside a display
+% LISTS   \agenticitem[tag]{t}
+% WHY     \agenticnote{one line}
+% ---------------------------------------------------------------------------
+\usepackage{xcolor}
+\usepackage[normalem]{ulem}   % normalem: or every \emph silently underlines
+\usepackage{mdframed}
+\usepackage[makeroom]{cancel}
+\usepackage{etoolbox}
+
+\newif\ifagenticnotes
+\makeatletter
+\@ifundefined{agenticclean}{\agenticnotestrue}{\agenticnotesfalse}
+\makeatother
+
+\definecolor{agenticadd}{HTML}{1A5FB4}
+\definecolor{agenticdel}{HTML}{A51D2D}
+\definecolor{agenticmeta}{HTML}{5A5348}
+\definecolor{agenticprop}{HTML}{6B21A8}
+
+% Declared before anything that uses them: correct either way, but the reverse
+% is fragile to rearranging this file.
+\newcommand{\agenticstashed}{}
+\newsavebox{\agenticbin}
+
+\newcommand{\agentictag}[1]{%
+  \ifagenticnotes\ifstrempty{#1}{}{{\scriptsize\color{agenticmeta}[#1]}}\fi}
+
+% Math mode cannot take \scriptsize or \color directly, so the tag is boxed.
+\newcommand{\agenticmathtag}[1]{%
+  \ifagenticnotes\ifstrempty{#1}{}{\mbox{\scriptsize\color{agenticmeta}[#1]}}\fi}
+
+% --- inline -----------------------------------------------------------------
+\newcommand{\agenticaddition}[2][]{%
+  \ifagenticnotes{\color{agenticadd}#2}\agentictag{#1}\else#2\fi}
+
+\newcommand{\agenticremoval}[2][]{%
+  \ifagenticnotes{\color{agenticdel}\sout{#2}}\agentictag{#1}\else\ignorespaces\fi}
+
+% \sout refuses \cite, \ref, \label and other fragile tokens; \mbox fixes that
+% but makes the argument unbreakable.
+%
+% MEASURED, on a real paper: boxing the citation *and* its surrounding words
+% took a paragraph's overfull box from 14.0pt to 47.5pt. Boxing only the \cite
+% gave 24.8pt -- still worse, because the tag then sat mid-phrase and forced a
+% break there. Boxing only the \cite and hanging the tag off the trailing plain
+% \agenticremoval returned it to 14.0pt, the original.
+%
+% So: box the fragile token and nothing else, and put the tag on the last piece.
+\newcommand{\agenticremovalbox}[2][]{%
+  \ifagenticnotes{\color{agenticdel}\sout{\mbox{#2}}}\agentictag{#1}\else\ignorespaces\fi}
+
+\newcommand{\agenticnote}[1]{%
+  \ifagenticnotes{\footnote{\color{agenticmeta}\textsc{repair note.} #1}}\fi}
+
+% --- inside math ------------------------------------------------------------
+% \sout cannot enter math mode, so a one-glyph fix in a display would otherwise
+% have to be shown as two whole displays. \cancel does work in math.
+% Use these *within* the existing display; never duplicate it.
+\newcommand{\agenticmathdel}[2][]{%
+  \ifagenticnotes{\color{agenticdel}\cancel{#2}}\agenticmathtag{#1}\fi}
+\newcommand{\agenticmathadd}[2][]{%
+  \ifagenticnotes{\color{agenticadd}#2}\agenticmathtag{#1}\else#2\fi}
+
+% --- a whole new list item --------------------------------------------------
+% \item must run INSIDE the colour group: LaTeX sets the label at \item time,
+% so colouring afterwards leaves the number black and the clause does not read
+% as new -- which, for an added condition, is the whole point of marking it.
+\newcommand{\agenticitem}[2][]{%
+  \ifagenticnotes{\color{agenticadd}\item #2\agentictag{#1}}\else\item #2\fi}
+
+% --- counters ---------------------------------------------------------------
+% A proposal is not part of the paper and must not consume a theorem, equation
+% or figure number, or every later statement shifts in the notes build and the
+% reader's cross-references stop matching the paper.
+% \cl@@ckpt is LaTeX's own list of \newcounter-registered counters.
+\makeatletter
+\newcommand{\agenticfreezecounters}{%
+  \def\@elt##1{\expandafter\xdef\csname agenticsv@##1\endcsname{\the\value{##1}}}%
+  \cl@@ckpt
+  \let\@elt\relax}
+\newcommand{\agenticthawcounters}{%
+  \def\@elt##1{%
+    \@ifundefined{agenticsv@##1}{}{\setcounter{##1}{\csname agenticsv@##1\endcsname}}}%
+  \cl@@ckpt
+  \let\@elt\relax}
+\makeatother
+
+% --- block ------------------------------------------------------------------
+\newenvironment{agenticadded}[1][]%
+  {\renewcommand{\agenticstashed}{#1}%
+   \ifagenticnotes\color{agenticadd}\fi\ignorespaces}%
+  {\agentictag{\agenticstashed}\ignorespacesafterend}
+
+\newenvironment{agenticremoved}[1][]%
+  {\renewcommand{\agenticstashed}{#1}%
+   \ifagenticnotes
+     \begingroup\color{agenticdel}%
+     \begin{mdframed}[linecolor=agenticdel!40,linewidth=0.4pt,
+                      backgroundcolor=agenticdel!4,skipabove=4pt,skipbelow=4pt]%
+     \noindent{\scriptsize\color{agenticmeta}\textsc{removed}\ \agentictag{\agenticstashed}}\par
+   \else\setbox\agenticbin\vbox\bgroup\fi}%
+  {\ifagenticnotes\end{mdframed}\endgroup\else\egroup\fi}
+
+% --- proposals: worked out, NOT adopted -------------------------------------
+% Counters are frozen across the block. \label is disabled inside it: a label
+% defined in a proposal resolves in the notes build and prints ?? in the clean
+% build, where the proposal is not there to define it.
+%
+% If the proposal restates a NUMBERED result, step the counter inside the block
+% so it prints the number it would replace. Prefer \addtocounter{...}{-1} to
+% \setcounter: papers numbering by section or subsection have no literal "16"
+% anywhere in the source to set.
+%
+% KNOWN LIMIT: a proposal cannot add a bibliography entry. A \bibitem inside the
+% block is discarded in the clean build; outside it, it leaks into a build that
+% never proposed it. Cite such a source as plain text and flag it in the log.
+\newcommand{\agenticproposal}[2][]{%
+  \ifagenticnotes
+    {\unskip\ \color{agenticprop}\textsc{\scriptsize proposed}\,\textbardbl\,#2\,\textbardbl}%
+    \agentictag{#1}%
+  \fi}
+
+\makeatletter
+\newenvironment{agenticproposed}[1][]%
+  {\begingroup
+   \renewcommand{\agenticstashed}{#1}%
+   \agenticfreezecounters
+   \let\label\@gobble
+   \ifagenticnotes
+     \color{agenticprop}%
+     \begin{mdframed}[linecolor=agenticprop!45,linewidth=0.4pt,
+                      backgroundcolor=agenticprop!4,skipabove=4pt,skipbelow=4pt]%
+     \noindent{\scriptsize\color{agenticmeta}\textsc{proposed, not applied}\
+       \agentictag{\agenticstashed}}\par
+   \else\setbox\agenticbin\vbox\bgroup\fi}%
+  {\ifagenticnotes\end{mdframed}\else\egroup\fi
+   \agenticthawcounters
+   \endgroup}
+\makeatother

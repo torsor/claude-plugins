@@ -8,7 +8,7 @@
   "plugins": [
     {
       "name": "torsor-writing",
-      "description": "Styled LaTeX writing skills (write-manual, write-paper-guide, write-critical-guide, write-topic-guide, write-study-guide, write-body-of-work-summary, write-workshop-state-guide, write-pure-math-paper, write-technical-report) in the torsor design and prose style. Self-contained for use on any machine.",
+      "description": "Styled LaTeX writing skills (write-manual, write-paper-guide, write-critical-guide, write-paper-repairs, write-topic-guide, write-study-guide, write-body-of-work-summary, write-workshop-state-guide, write-pure-math-paper, write-technical-report) in the torsor design and prose style. Self-contained for use on any machine.",
       "source": "./plugins/torsor-writing",
       "category": "productivity"
     }
