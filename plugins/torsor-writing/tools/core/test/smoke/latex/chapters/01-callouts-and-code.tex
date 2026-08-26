@@ -1,0 +1,28 @@
+\chapter{Callouts and code}
+
+The three callout boxes come from the \code{callouts} feature, which the manual
+genre turns on by default.
+
+\begin{notebox}
+A note box carries an aside that is useful but not urgent.
+\end{notebox}
+
+\begin{warnbox}
+A warning box flags something the reader should be careful about.
+\end{warnbox}
+
+\begin{pitfallbox}
+A pitfall box calls out a mistake that is easy to make and costly to debug.
+\end{pitfallbox}
+
+Inline code such as \code{git rebase --onto main feature~3 feature} is breakable,
+so even a long path like \code{/usr/local/share/some-package/config.default.yaml}
+wraps at the margin instead of overflowing.
+
+A block listing comes from the \code{listings} feature:
+
+\begin{lstlisting}[style=shell]
+$ smoke build --format all
+building pdf, html, epub, epub-svg, markdown
+all formats green
+\end{lstlisting}

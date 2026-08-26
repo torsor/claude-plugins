@@ -1,0 +1,10 @@
+genre: manual
+stem: smoke
+title: "Core Smoke Test"
+subtitle: "a self-contained regression fixture"
+tagline: "proves the unified core builds every format green"
+cover: latex/assets/cover.png
+chapters:
+  frontmatter: [00-preface]
+  mainmatter:  [01-callouts-and-code, 02-tables]
+  backmatter:  [afterword]

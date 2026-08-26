@@ -1,0 +1,20 @@
+\chapter{Tables}
+
+A plain table renders through the base preamble's \code{booktabs}/\code{array}
+setup. Nothing here is wide enough to overflow the 6-by-9-inch page.
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Format & Engine & Notes \\
+\midrule
+PDF      & latexmk         & house title page + cover \\
+HTML     & tex2torsor      & responsive images \\
+EPUB     & pandoc          & MathML when math is on \\
+Markdown & pandoc          & round-trip source \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+That is the whole fixture: if every format above builds and the checker passes,
+the core is intact.

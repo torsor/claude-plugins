@@ -1,0 +1,22 @@
+# Only source is tracked; ignore everything the core generates if built in place.
+/Makefile
+/config.mk
+/check-build.py
+/features/
+/formats/
+/tex2torsor/
+/html/
+/epub/
+/markdown/
+/latex/main.*
+/latex/smoke.*
+/latex/STYLE.md
+/latex/*.aux
+/latex/*.log
+/latex/*.out
+/latex/*.toc
+/latex/*.fls
+/latex/*.fdb_latexmk
+/latex/*.bbl
+/latex/*.bcf
+/latex/*.run.xml
