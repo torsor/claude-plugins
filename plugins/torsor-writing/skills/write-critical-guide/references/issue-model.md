@@ -31,6 +31,19 @@ deserve a `computational` category; one whose real problems are organisational m
 `mathematical` into `correctness` and `rigour` if the distinction is doing work for this
 paper. Invent what fits — you are closer to the paper than this file is.
 
+**A worked example.** A paper proposing a generalisation of an existing theory — where the
+contested question is how much of it is new — was given a fourth category, `attribution`
+(violet), separate from `references`. It carried the most consequential findings in the
+package: an uncited paper producing the same headline examples, whose author was thanked in
+the acknowledgements; a prior body of work under almost the same name; a remark in a cited
+paper that already asserted the generalisation. None of those belongs in `references`, which
+is about locators and records and asks the author to look something up. None is `mathematical`
+either — the mathematics was fine. They ask the author to reconsider what they are claiming to
+have done, which is a third kind of act, and it deserved its own file and its own colour.
+
+The signal to watch for: when the paper's *claim to novelty* is the thing under examination
+rather than its correctness, attribution is doing enough work to stand alone.
+
 Two constraints, and they are the only ones:
 
 - **A category that would hold one or two items is not a category.** Fold it into a

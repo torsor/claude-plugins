@@ -39,6 +39,25 @@ Two framing rules carry over unchanged from `write-paper-guide`:
 - **A guide, not a contribution.** It explains and synthesizes existing work; it is never
   original research and never a survey of the field.
 
+## Locating the shared assets — do this before reading them
+
+The paths below are written `${CLAUDE_PLUGIN_ROOT}/…`. That resolves only when this skill is
+loaded as part of an **installed plugin**; under a plain symlink into `~/.claude/skills/` it is
+undefined, and the assets look as though they do not exist. So:
+
+1. **Try the path as written.**
+2. **If it is not there, derive the root.** You are told this skill's base directory when you
+   are invoked. Resolve it first — it is often a symlink, so `readlink -f` or `realpath` it —
+   and take its **grandparent** as the plugin root. Both install modes give the same tree from
+   there: `assets/`, `tools/`, and the other skills' `references/`.
+3. **If the assets are still not found, stop and say so.** They are required, not optional: the
+   prose base and the chosen voice are what make the output part of this family, and the
+   scaffold is what makes it build. A document written without them looks finished and is wrong
+   in the way that is hardest to catch afterwards. Say the bundle is missing and let the user
+   install the plugin; do not improvise a substitute.
+
+---
+
 ## The shape of the job
 
 ```

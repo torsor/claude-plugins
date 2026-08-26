@@ -101,12 +101,18 @@ see it, resolve the base directory first — it is often a symlink, so `readlink
 `realpath` on it before looking. Rebuilding it from `references/issue-model.md` is a last
 resort and will cost you several build cycles rediscovering the same four hazards.
 
-**The family assets are a bonus, not a dependency.** `${CLAUDE_PLUGIN_ROOT}` resolves only when
-this skill is loaded as part of an installed plugin; under a plain symlink into
-`~/.claude/skills/` it is undefined. Where the paths below are written with it, resolve them
-as `<plugin root>/…`, where the plugin root is the real (symlink-resolved) skill directory's
-grandparent. If they are genuinely absent, say so once and carry on — `references/` alone is
-enough to do the work.
+**The family assets are required.** `${CLAUDE_PLUGIN_ROOT}` resolves only when this skill is
+loaded as part of an installed plugin; under a plain symlink into `~/.claude/skills/` it is
+undefined. So where a path below is written with it:
+
+1. Try it as written.
+2. If it is not there, resolve your base directory — it is often a symlink, so `readlink -f`
+   or `realpath` it — and take its **grandparent** as the plugin root. Both install modes give
+   the same tree from there.
+3. If the assets are still not found, **stop and say so.** Do not proceed on `references/`
+   alone: the prose base and the chosen voice are what make the output part of this family,
+   and a guide written without them looks finished and is wrong in the way that is hardest to
+   see afterwards.
 
 ---
 
@@ -317,10 +323,32 @@ and being wrong about priority in front of the author whose priority it is costs
 more than a missed lemma would. Send each one out to be refuted, with the requirement that the
 refuter consult the actual paper rather than its reputation.
 
+**Scale the checking to what being wrong would cost.** Not to how likely you think you are to
+be wrong — you are a poor judge of that, and it is the wrong quantity anyway. A finding whose
+consequence is that an author adds a sentence needs one pass. A finding whose consequence is
+that a referee accuses an author of taking someone's result without credit needs as many as it
+takes, because the cost of being wrong there is not symmetric with the cost of leaving it out.
+
+**A worked case.** In one run the context sweep charged that a proposition duplicated an
+uncited published result — the highest-stakes item in that examination. Two independent
+skeptics refuted it on five separate grounds: the paper *did* cite the result, at the sentence
+introducing it; the result was twenty-six years older than the work it was supposedly taken
+from; the other paper's proposition was a different statement with different hypotheses; and
+the chronology exonerated the authors either way. It was dropped, and recorded as dropped. Had
+it survived, a referee would have put an accusation of uncredited duplication to authors who
+had done nothing wrong.
+
 **Do not economise here.** In one run this phase cost 0.38 M tokens — the cheapest of the whole
 pipeline — and corrected five literature claims before they reached the page. Verification is
-the part that makes the rest of the document worth handing to someone; it is not where the
-savings are.
+what makes the rest of the document worth handing to someone; it is not where the savings are.
+
+**Every priority or duplication charge gets a chronology check, without exception.** Before such
+a finding may enter the ledger, establish: when each work first appeared *publicly* — the
+preprint date, not the publication date, since that is what determines what the authors could
+have known; whether the earlier work is where the result actually originates, or is itself
+citing someone earlier; and whether the charge is even coherent in time. A duplication charge
+that dissolves on dates alone is the commonest false positive of the whole pipeline, and the
+cheapest to prevent.
 
 For each candidate, dispatch **three independent skeptics**. Each gets the paper's source and
 the finding, and is told to **refute** it: to show the paper is right and the finding mistaken,
