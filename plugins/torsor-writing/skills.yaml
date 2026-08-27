@@ -1,0 +1,36 @@
+# torsor-writing — skill catalog
+#
+# One entry per skill directory under skills/. The directories are the source of
+# truth; this file is the human-readable index. The link Makefile (in the parent
+# `torsor-writing/` thing directory, not shipped) cross-checks this list against the
+# actual directories and warns on drift.
+
+plugin: torsor-writing
+
+skills:
+  # House documents — author a document in the torsor house format
+  # (LaTeX source → PDF, HTML, EPUB, Markdown).
+  - name: write-manual
+    summary: A user's manual for a project (Scalzi-influenced prose).
+  - name: write-paper-guide
+    summary: A two-part reading guide to a single mathematical paper, calibrated to a specific reader.
+  - name: write-topic-guide
+    summary: One explanatory guide synthesizing several sources on a topic (handles large / scanned PDFs).
+  - name: write-study-guide
+    summary: A personalized route through one large tag-addressable corpus (Stacks, Kerodon) toward a target result.
+  - name: write-body-of-work-summary
+    summary: A styled overview of one mathematician's whole body of work — program essay plus a paragraph per paper.
+  - name: write-workshop-state-guide
+    summary: A state guide for a workshop / working session.
+  - name: write-pure-math-paper
+    summary: A mathematics paper in the house style.
+  - name: write-technical-report
+    summary: An evidence-led technical experiment report.
+
+  # Referee / repair family — operate on an external paper's own source.
+  - name: write-critical-guide
+    summary: A critical guide to one paper — summary, graded issue list, repairs, and annotated copies of its source. Referee working material; runs unattended, reaches no verdict.
+  - name: write-paper-repairs
+    summary: Repairs for the issues a critical guide found, written into the paper's own source as tracked changes. Applies only what the paper forces; proposes the rest.
+  - name: write-review-and-repair
+    summary: Runs the pair end to end — write-critical-guide then write-paper-repairs on one paper — as a single unattended pipeline. A thin orchestrator; adds no judgment of its own.

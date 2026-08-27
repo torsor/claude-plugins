@@ -1,5 +1,5 @@
 ---
-name: review-and-repair
+name: write-review-and-repair
 description: Run the two-stage examine-then-repair pipeline end to end on one mathematical paper — first write-critical-guide to examine it and produce a graded, located issue ledger, then write-paper-repairs to work out and mark up the repairs that examination found. A thin orchestrator: it sequences the two skills against their shared on-disk package and carries no examination or repair judgment of its own. Runs unattended. It produces a critical guide plus a marked-up corrected source for you to review; it reaches no verdict and applies no change silently.
 argument-hint: [path to the paper, an arXiv id/URL, or the folder containing it]
 ---

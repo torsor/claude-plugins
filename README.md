@@ -5,7 +5,7 @@ plugin so far:
 
 ## torsor-writing
 
-Six styled LaTeX writing skills, packaged to run on **any** machine. The skills used to read
+Eleven styled LaTeX writing skills, packaged to run on **any** machine. The skills used to read
 the torsor prose library, reference templates, a style preamble, and `tex2torsor` by absolute
 paths on one machine; here those are vendored into the plugin and referenced via
 `${CLAUDE_PLUGIN_ROOT}`, so nothing is tied to a particular machine.
@@ -19,7 +19,7 @@ EPUB, and Markdown output — in the torsor design and prose style.
 | `write-paper-guide` | A two-part reading guide to a single mathematical paper, calibrated to a specific reader. |
 | `write-critical-guide` | A critical guide to one paper — summary, graded issue list, repairs, and annotated copies of its source. Working material for a referee; runs unattended and reaches no verdict. |
 | `write-paper-repairs` | Repairs for the issues a critical guide found, written into the paper's own source as tracked changes. Applies only what the paper forces; proposes the rest. |
-| `review-and-repair` | Runs the pair end to end — `write-critical-guide` then `write-paper-repairs` on one paper — as a single unattended pipeline. A thin orchestrator; adds no judgment of its own. |
+| `write-review-and-repair` | Runs the pair end to end — `write-critical-guide` then `write-paper-repairs` on one paper — as a single unattended pipeline. A thin orchestrator; adds no judgment of its own. |
 | `write-topic-guide` | One explanatory guide synthesizing several sources on a topic (handles large / scanned PDFs). |
 | `write-study-guide` | A personalized route through one large tag-addressable corpus (Stacks, Kerodon) toward a target result. |
 | `write-body-of-work-summary` | A styled overview of one mathematician's whole body of work — program essay plus a paragraph per paper. |
@@ -35,7 +35,7 @@ plugins/torsor-writing/
     write-paper-guide/          SKILL.md (+ lessons.md)
     write-critical-guide/       SKILL.md (+ references/, agents/, tools/annotate_tex.py)
     write-paper-repairs/        SKILL.md (+ references/, agents/, assets/)
-    review-and-repair/          SKILL.md
+    write-review-and-repair/    SKILL.md
     write-topic-guide/          SKILL.md
     write-study-guide/          SKILL.md
     write-body-of-work-summary/ SKILL.md
@@ -60,7 +60,7 @@ claude plugin install torsor-writing@torsor-plugins
 claude plugin list
 ```
 
-Then all eleven skills are available there — the `/write-…` family plus `/review-and-repair`.
+Then all eleven `/write-…` skills are available there.
 
 ### Build prerequisites
 
