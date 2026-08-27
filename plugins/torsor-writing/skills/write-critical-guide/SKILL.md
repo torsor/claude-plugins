@@ -26,7 +26,7 @@ tell whether a sentence belongs here. If it explains the paper to someone who wa
 understand it, it belongs in the reading guide. If it weighs the paper for someone who has to
 judge it, it belongs here.
 
-The paradigm reader is a critical reader, and the phases below are written for that case because it is
+The target audience is a critical reader, and the phases below are written for that case because it is
 the demanding one — a deadline, an editor, and an author who will act on what is said. The
 same document serves anyone who has to judge the paper for themselves: an editor deciding whom
 to ask, a committee reading outside its area, someone deciding whether to build on the result.
