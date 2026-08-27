@@ -3,7 +3,7 @@
 Every finding in a critical guide lives in one place: `critical-guide/issues.yaml`. The
 point-by-point issue list and the annotated LaTeX sources are both **generated** from it by
 `annotate_tex.py`. Nothing is maintained in two places, so the prose and the annotation
-anchors cannot drift apart — the failure that makes a referee note point at the wrong passage.
+anchors cannot drift apart — the failure that makes a note point at the wrong passage.
 
 ---
 
@@ -102,7 +102,7 @@ expectation and prints nothing per item — the issue list says once, in its pre
 unmarked findings are direct checks.
 
 **Grade qualifier** — `grade_note: "for readability"` renders as *major (for readability)*. The
-three grades are the machine-readable spine; the qualifier is where a referee's judgment
+three grades are the machine-readable spine; the qualifier is where a reader's judgment
 actually lives. "Trivial but should be reconciled" and "trivial" are different instructions to
 an author, and both hand-made reports needed the distinction.
 

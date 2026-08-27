@@ -2,7 +2,7 @@
 
 A book, thesis, or long memoir cannot be examined in one pass. It is reviewed a chunk at a
 time, in **separate sessions with separate agents**, with the user reading each chunk's output
-before declaring the next. The pause between chunks is the point: it keeps a referee in control
+before declaring the next. The pause between chunks is the point: it keeps a critical reader in control
 of a long review instead of handing them one unreadable delivery at the end.
 
 Nothing carries between those sessions except what is written down. **`review-state.yaml` is
@@ -13,7 +13,7 @@ pointed at a smaller source.
 
 Chunk when the work has parts a reader would review separately — chapters, or parts of a
 thesis — and when no single pass could hold it. A 40-page paper is not chunked. A 300-page book
-is. In between, ask: would a human referee read this in one sitting and form one judgment? If
+is. In between, ask: would a human reader read this in one sitting and form one judgment? If
 not, chunk it.
 
 Chunking also settles a tooling question. `annotate_tex.py` annotates one source file, so a
@@ -94,7 +94,7 @@ structure:                     # written at chunk 0, status updated after each c
 
 decisions:                     # fixed at chunk 0. Do not drift.
   reader_profile: >
-    An active researcher in a roughly adjacent field, reading in order to referee.
+    An active researcher in a roughly adjacent field, reading in order to assess and evaluate it.
   voice: "01-direct"
   categories:
     mathematical:   {tag: M, colour: red}
@@ -172,7 +172,7 @@ ten chapters graded by ten agents from disagreeing about what "major" means.
 records it and stops. Whether to re-run chapter 1 is the user's call, and re-running is
 expensive.
 
-**`not_examined` is cumulative and honest.** It is the field a referee will actually rely on to
+**`not_examined` is cumulative and honest.** It is the field a reader will actually rely on to
 know where the review's coverage ends.
 
 ## Hand-back, per chunk

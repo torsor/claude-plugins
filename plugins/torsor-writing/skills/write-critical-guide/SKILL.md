@@ -1,19 +1,19 @@
 ---
 name: write-critical-guide
-description: Produce a critical guide to a single mathematical paper — working material for someone who has been asked to referee it. A summary of the work and its significance, a point-by-point issue list tagged and graded, suggested repairs, and one annotated copy of the paper's own source per issue category with notes set inline at the passages they concern. Runs unattended. Reads the paper by way of write-paper-guide, sweeps for mathematical, reference, and typographical issues in parallel, and tries to refute every major finding before it is written down. It equips a referee; it does not referee the paper.
+description: Produce a critical guide to a single mathematical paper — working material for someone trying to assess and evaluate it. A summary of the work and its significance, a point-by-point issue list tagged and graded, suggested repairs, and one annotated copy of the paper's own source per issue category with notes set inline at the passages they concern. Runs unattended. Reads the paper by way of write-paper-guide, sweeps for mathematical, reference, and typographical issues in parallel, and tries to refute every major finding before it is written down. It equips a critical reader; it does not judge the paper.
 argument-hint: [path to the paper, an arXiv id/URL, or the folder containing it]
 ---
 
 You are producing a **critical guide** to one mathematical paper: working material for a
-person who has been asked to referee it. It is a set of Markdown documents, a typeset guide,
+person trying to assess and evaluate it. It is a set of Markdown documents, a typeset guide,
 and annotated copies of the paper's own LaTeX source carrying `\todo[inline]` notes at the
 passages they concern.
 
-**Be clear about what this is.** It is not a referee report, and it must never be written as
-one. A referee report is a document one person signs and sends to an editor, and it carries
+**Be clear about what this is.** It is not a formal evaluation, and it must never be written as
+one. A formal evaluation is a document one person signs and sends to an editor, and it carries
 that person's judgment. What you are producing is the material that person works from: the
 paper read closely, its context established, everything questionable found and located and
-verified, with repairs where repairs exist. The referee reads it, decides what they agree
+verified, with repairs where repairs exist. The critical reader reads it, decides what they agree
 with, decides what matters, and writes their own report. Some of your sentences may end up in
 that report; that is a use of this document, not its purpose.
 
@@ -26,14 +26,14 @@ tell whether a sentence belongs here. If it explains the paper to someone who wa
 understand it, it belongs in the reading guide. If it weighs the paper for someone who has to
 judge it, it belongs here.
 
-The paradigm reader is a referee, and the phases below are written for that case because it is
+The paradigm reader is a critical reader, and the phases below are written for that case because it is
 the demanding one — a deadline, an editor, and an author who will act on what is said. The
 same document serves anyone who has to judge the paper for themselves: an editor deciding whom
 to ask, a committee reading outside its area, someone deciding whether to build on the result.
-Write for the referee and the rest are served.
+Write for the critical reader and the rest are served.
 
 This changes what "finished" means. Finished is not a polished verdict — it is coverage the
-referee can rely on, findings they can check, and locations they can go straight to.
+reader can rely on, findings they can check, and locations they can go straight to.
 
 The user has said: $ARGUMENTS
 
@@ -55,12 +55,12 @@ paper. Say what is wrong, how consequential it is, and what would repair it. Ord
 issues by consequence is as close to a verdict as the guide comes.
 
 This is not modesty about the mathematics — it follows from what the document is. The
-disposition is the referee's to reach and their name that goes on it. A guide that arrives at
+disposition is the reader's to reach and their name that goes on it. A guide that arrives at
 a verdict invites them to ratify a judgment they did not make, which is the one thing this
 material must not do. Give them everything they need to decide, and nothing that presumes the
 decision.
 
-**2. Try to refute a finding before you write it down.** A referee who repeats a defect that
+**2. Try to refute a finding before you write it down.** A critical reader who repeats a defect that
 is not there costs the authors weeks and costs themselves their credibility — and they will be
 relying on this material, often without re-deriving it. A missed comma costs a reader three
 seconds. The errors are not symmetric and the process should not treat them as if they were.
@@ -70,7 +70,7 @@ ledger.
 **3. Record what checked out, not only what failed.** A list of nine problems reads as the
 complete result of the examination. If you verified thirty citations and nine were wrong, say
 you verified thirty. If you did not re-derive the long computation in §6, say that too. The
-referee needs to know where your coverage ends, because that is exactly where their own work
+critical reader needs to know where your coverage ends, because that is exactly where their own work
 begins — and they cannot tell a clean bill of health from an unopened box unless you say
 which it was.
 
@@ -79,7 +79,7 @@ Section 3 establishes; Theorem 4.2 states. Use your own first person for what yo
 found: "I verified every tag the paper cites that I had reason to doubt," "I found no error
 that threatens the main theorem." Never "we."
 
-That first person is yours, not the referee's. You are handing them your examination, and they
+That first person is yours, not the reader's. You are handing them your examination, and they
 must be able to tell your work from their own conclusions — so report what you checked and
 what you concluded, and leave the deciding to them. Never write a sentence for them to sign.
 
@@ -149,7 +149,7 @@ undefined. So where a path below is written with it:
    ${CLAUDE_PLUGIN_ROOT}/assets/commons/publication.md
    ```
 
-6. **Referee-specific toolchain lessons** — annotating a source you did not write, and
+6. **Review-specific toolchain lessons** — annotating a source you did not write, and
    assembling a report that quotes LaTeX. Read before Phase 7; consult the moment a build
    misbehaves:
    ```
@@ -162,7 +162,7 @@ The generator lives at `<skill dir>/tools/annotate_tex.py`.
 
 ## Is this one pass or many?
 
-**Decide before Phase 0, because it changes everything after.** Would a referee read this work
+**Decide before Phase 0, because it changes everything after.** Would a critical reader read this work
 in one sitting and form one judgment? A paper, however long, yes. A book, a thesis, a memoir in
 parts — no. Those are reviewed a chunk at a time, in separate sessions, with the user reading
 each chunk before declaring the next.
@@ -213,14 +213,14 @@ Read the paper's own text. Record into the `paper:` block of the ledger: title, 
 identifier and version, page count, the annotation base, and what locations refer to.
 
 Create `critical-guide/` beside the paper, and `review-notes/` for the working files of Phases 1–4.
-`review-notes/` is not part of what you hand over; it is the audit trail, kept so a referee who
+`review-notes/` is not part of what you hand over; it is the audit trail, kept so a critical reader who
 doubts a finding can see how it was reached.
 
 ---
 
 ## Phase 1 — The reading pass
 
-**You cannot referee a paper you have not read closely, and the reading is where the findings
+**You cannot assess and evaluate a paper you have not read closely, and the reading is where the findings
 come from.** Do that reading by invoking the installed `write-paper-guide` skill. Its output —
 a full reading guide calibrated to a reviewer — is what Phase 2 works from.
 
@@ -232,7 +232,7 @@ output location. Adapt the wording, keep the substance:
 > take every default and proceed. **The reader** is an active researcher in a roughly
 > adjacent field: comfortable with the general area and its standard machinery, familiar with
 > the objects by name, but not a specialist in this particular corner and without the local
-> folklore. **They are reading in order to referee it**, so the guide must go to proof
+> folklore. **They are reading in order to assess and evaluate it**, so the guide must go to proof
 > depth and skip nothing — where the paper compresses, the guide reconstructs. **Length:**
 > exhaustive; there is no length budget. **Location:** `<paper folder>/guide/`.
 >
@@ -349,14 +349,14 @@ become graded findings — "this is the first result in arbitrary dimension", "X
 surface case", "the technique originates with Y" — so nothing else in this pipeline checks
 them, and they go straight into the summary where they are the most quotable sentences in the
 package. They are also the easiest thing in the whole document to be confidently wrong about,
-and being wrong about priority in front of the author whose priority it is costs the referee
+and being wrong about priority in front of the author whose priority it is costs the reader
 more than a missed lemma would. Send each one out to be refuted, with the requirement that the
 refuter consult the actual paper rather than its reputation.
 
 **Scale the checking to what being wrong would cost.** Not to how likely you think you are to
 be wrong — you are a poor judge of that, and it is the wrong quantity anyway. A finding whose
 consequence is that an author adds a sentence needs one pass. A finding whose consequence is
-that a referee accuses an author of taking someone's result without credit needs as many as it
+that a critical reader accuses an author of taking someone's result without credit needs as many as it
 takes, because the cost of being wrong there is not symmetric with the cost of leaving it out.
 
 **A worked case.** In one run the context sweep charged that a proposition duplicated an
@@ -365,7 +365,7 @@ skeptics refuted it on five separate grounds: the paper *did* cite the result, a
 introducing it; the result was twenty-six years older than the work it was supposedly taken
 from; the other paper's proposition was a different statement with different hypotheses; and
 the chronology exonerated the authors either way. It was dropped, and recorded as dropped. Had
-it survived, a referee would have put an accusation of uncredited duplication to authors who
+it survived, a critical reader would have put an accusation of uncredited duplication to authors who
 had done nothing wrong.
 
 **Do not economise here.** The countable evidence: in one repair trial, seventeen skeptics were
@@ -487,7 +487,7 @@ generator translate them for LaTeX. Do not hand-write `` ``...'' ``.
 
 Written by hand, in the voice from `base-critical-guide.md`:
 
-**`01-summary.md`** — four parts, in this order. This is the part a referee reads first and
+**`01-summary.md`** — four parts, in this order. This is the part a critical reader reads first and
 leans on hardest, since it is where the paper is characterized rather than itemized. Write it
 one part at a time, appending — it is the longest prose in the package and the easiest to lose
 whole to an output cap.
@@ -501,7 +501,7 @@ whole to an output cap.
    result does not give.
 4. **Findings.** What the examination turned up: the issues that most need attention, ordered
    by consequence and cross-referenced to their tags; and what checked out. State the scope
-   plainly — what you verified, and what you did not, so the referee knows where their own
+   plainly — what you verified, and what you did not, so the reader knows where their own
    work starts.
 
 It ends there. No fifth section, no recommendation, no disposition.
@@ -513,7 +513,7 @@ summarizes and points into `repairs/`.
 
 **`README.md`** — what each file is, how to use it, how to rebuild, and, in Case B or C, the
 source situation from Phase 0 stated explicitly. Open it by saying what the package is: working
-material for a referee, not a report.
+material for a critical reader, not a report.
 
 Then assemble `00-guide.pdf` from `01-summary.md` and `02-issues.md` with pandoc, per
 `references/package-templates.md`.
@@ -574,15 +574,15 @@ hypothetical one. If you did not measure something, say you did not rather than 
 it.
 
 State the findings plainly and let them stand. Do not close by recommending what should happen
-to the paper — that is the referee's to write, and they have not read this yet.
+to the paper — that is the reader's to write, and they have not read this yet.
 
 ---
 
 ## Correcting a guide that already exists
 
-A finished guide is not frozen. A claim turns out to be overstated, a referee disputes a
+A finished guide is not frozen. A claim turns out to be overstated, a critical reader disputes a
 finding, a cited preprint appears in print. When that happens, **do not start a new run** — the
-guide is the product, and the job is to correct it in place so what the referee holds is right.
+guide is the product, and the job is to correct it in place so what the reader holds is right.
 
 Work in three phases, in this order, because the order is what keeps a correction from becoming
 a rewrite.
@@ -603,7 +603,7 @@ was searched. A thin original basis means the claim gets **weakened**, not re-af
 voice, and correct it in `issues.yaml` too wherever it also appears there — a literature claim
 frequently lives in both, and fixing only the prose leaves the guide contradicting its own
 annotated PDFs. Prefer an honest hedge to a deletion: a claim narrowed to what is actually true
-is more useful to a referee than a gap where it used to be. Touch nothing you did not audit; add
+is more useful to a reader than a gap where it used to be. Touch nothing you did not audit; add
 no recommendation.
 
 **Then regenerate and rebuild.** `annotate_tex.py all --clean-aux`, then the guide PDF. A

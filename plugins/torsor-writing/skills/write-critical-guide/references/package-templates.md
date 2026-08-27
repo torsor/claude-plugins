@@ -156,10 +156,10 @@ heading. Open it with the section heading instead — "Summary, context, and sig
 ```markdown
 # A critical guide to *<TITLE>* (<IDENTIFIER>)
 
-Working material for refereeing this paper. It is **not a referee report**: it carries no
+Working material for assessing and evaluating this paper. It is **not a formal evaluation**: it carries no
 recommendation and reaches no disposition. It is the examination — the paper read closely, its
 context established, everything questionable found, located, and verified, with repairs where
-they exist — for a referee to work from in writing their own report and reaching their own
+they exist — for a critical reader to work from in writing their own report and reaching their own
 judgment.
 
 | File | What it is |

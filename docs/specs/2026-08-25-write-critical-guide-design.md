@@ -3,8 +3,8 @@
 **Date:** 25 August 2026
 **Status:** implemented, pending review and placement in the plugin repo
 
-An automated pipeline producing a **critical guide** — working material for someone asked to
-referee a paper, not a referee report — generalizing two hand-directed reviews:
+An automated pipeline producing a **critical guide** — working material for someone trying to
+assess and evaluate a paper, not a formal evaluation — generalizing two hand-directed reviews:
 `azumayification` (De Deyn, *The Azumification of orders*, arXiv:2606.05137v1) and
 `c2-coalgebras` (Caradot–Lin, JPAA-D-25-00113).
 
@@ -13,7 +13,7 @@ referee a paper, not a referee report — generalizing two hand-directed reviews
 ## What the two originals did, and what each contributed
 
 Both followed the same spine, and in both the critical-guide package was a **second act** — it came
-after a full `write-paper-guide` pass, and the referee request was phrased as "use your
+after a full `write-paper-guide` pass, and the assessment request was phrased as "use your
 analysis of the paper so far." Both produced: a summary with context and significance; a
 point-by-point issue list tagged and graded, partitioned mathematical / references /
 typographical; three annotated copies of the paper's source carrying `\todo[inline]` notes;
@@ -34,7 +34,7 @@ the union:
 ## The problem that blocked automation
 
 Neither run ever wrote down *why* the reviewer knew what to look at. The findings came from the
-guide-writing read, and lived only in conversation context. A fresh referee agent does not have
+guide-writing read, and lived only in conversation context. A fresh critical-guide agent does not have
 that, which is why the flow could not simply be re-run.
 
 **Resolution:** the Phase 1 invocation asks the guide pass to keep a running concerns ledger —
@@ -46,12 +46,12 @@ discovery pass and the ledger is the handoff. Phase 2b seeds from it, and works 
 
 **One skill, not two.** `write-paper-guide` is invoked as an installed black box with a single
 argument string that pre-answers its interactive steps. No variant or fork: installed versions
-differ, and the referee skill must not depend on the guide's directory layout, filenames, or
+differ, and the critical-guide skill must not depend on the guide's directory layout, filenames, or
 chapter numbering. It inspects what is on disk afterwards.
 
 **The reader is fixed.** An active researcher in a roughly adjacent field — comfortable with the
 general area and its standard machinery, not a specialist in this corner, reading in order to
-referee. Fixing it is what lets the run be unattended.
+assess and evaluate it. Fixing it is what lets the run be unattended.
 
 **No recommendation.** The guide never says accept, revise, or reject. Ordering the findings
 by consequence is as close as it comes. Rationale: the reviewer decides the disposition, and a
@@ -59,7 +59,7 @@ generated verdict is both presumptuous and the part most likely to be wrong. Pha
 of *mathematical* repair routes is in scope; it is advice about mathematics, not publication.
 
 **Adversarial verification of major findings.** Three independent skeptics per candidate,
-prompted to refute, defaulting to refuted when uncertain; two of three kill it. A referee report
+prompted to refute, defaulting to refuted when uncertain; two of three kill it. A formal evaluation
 naming a defect that is not there costs the authors weeks; a missed typo costs a reader
 seconds. The errors are asymmetric and the process reflects that. Promotion runs too: a minor
 finding a main theorem rests on is re-examined.
@@ -129,9 +129,9 @@ licenses inventing others when the paper warrants. Phase 2's sweeps are likewise
 set.
 
 **The build knowledge is inherited, not restated.** Phase 7 is the family publication pass
-from `assets/commons/publication.md`; the local lessons file keeps only the referee-specific
+from `assets/commons/publication.md`; the local lessons file keeps only the review-specific
 delta.
 
 **The name.** Originally `write-referee-report`. Renamed because the artifact is not a report:
-it is the material a referee works from in writing one. The old name misdescribed the
+it is the material a critical reader works from in writing one. The old name misdescribed the
 deliverable and risked steering an agent into writing a signed verdict.

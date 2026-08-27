@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-r"""annotate_tex — build referee artifacts from a single issue ledger.
+r"""annotate_tex — build review artifacts from a single issue ledger.
 
 One ledger (``issues.yaml``) is the source of truth for a critical-guide package. From it
 this tool generates, and keeps in step:
@@ -9,7 +9,7 @@ this tool generates, and keeps in step:
   * the point-by-point issue list in Markdown.
 
 The generation direction matters. Hand-maintaining the prose list and the annotation
-anchors in parallel is what lets them drift, and a referee note pointing at the wrong
+anchors in parallel is what lets them drift, and a note pointing at the wrong
 passage is worse than no note at all. Here an anchor that no longer matches its source
 is a hard error, not a silent mismatch.
 

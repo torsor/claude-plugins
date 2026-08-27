@@ -17,7 +17,7 @@ EPUB, and Markdown output — in the torsor design and prose style.
 |-------|----------------|
 | `write-manual` | A user's manual for a project (Scalzi-influenced prose). |
 | `write-paper-guide` | A two-part reading guide to a single mathematical paper, calibrated to a specific reader. |
-| `write-critical-guide` | A critical guide to one paper — summary, graded issue list, repairs, and annotated copies of its source. Working material for a referee; runs unattended and reaches no verdict. |
+| `write-critical-guide` | A critical guide to one paper — summary, graded issue list, repairs, and annotated copies of its source. Working material for a critical reader; runs unattended and reaches no verdict. |
 | `write-paper-repairs` | Repairs for the issues a critical guide found, written into the paper's own source as tracked changes. Applies only what the paper forces; proposes the rest. |
 | `write-review-and-repair` | Runs the pair end to end — `write-critical-guide` then `write-paper-repairs` on one paper — as a single unattended pipeline. A thin orchestrator; adds no judgment of its own. |
 | `write-topic-guide` | One explanatory guide synthesizing several sources on a topic (handles large / scanned PDFs). |

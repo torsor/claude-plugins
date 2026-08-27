@@ -8,7 +8,7 @@ with exactly one voice for the full style guide.
 
 ## What a critical guide is (get this right first)
 
-**Working material for a referee, not the referee's report.** A referee report is signed and
+**Working material for a critical reader, not the formal evaluation.** A formal evaluation is signed and
 sent to an editor and carries one person's judgment. This is what that person works from: the
 paper read closely, its context established, everything questionable found, located, and
 verified, with repairs where repairs exist. They decide what they agree with, what matters,
@@ -24,10 +24,10 @@ passage is compressed, what is missing, and whether the gap can be closed.
 **No disposition.** The words *accept*, *accept with revision*, *major revision*, *minor
 revision*, and *reject* do not appear as judgments about the work under review. Say what the
 paper does, what it is worth, what is wrong with it, and what would repair each thing — and
-stop. The verdict is the referee's, and a guide that reaches one invites them to ratify a
+stop. The verdict is the reader's, and a guide that reaches one invites them to ratify a
 judgment they did not make.
 
-**Addressed to the referee, and written so it can be worked from.** They need to get to the
+**Addressed to the critical reader, and written so it can be worked from.** They need to get to the
 paper's shape quickly, then to any particular issue without hunting. The summary document
 serves the first, the issue list and the annotated sources the second, and neither is a
 compressed version of the other. Everything is located precisely enough to check.
@@ -35,13 +35,13 @@ compressed version of the other. Everything is located precisely enough to check
 **It states its own coverage.** Say what was checked and came out clean, and say what was not
 checked. A list of nine problems otherwise reads as the whole result of the examination. If
 thirty citations were verified and nine were wrong, say thirty. If the long computation in §6
-was not re-derived, say so. Where the coverage ends is where the referee's own work begins,
+was not re-derived, say so. Where the coverage ends is where the reader's own work begins,
 and they cannot see that boundary unless it is drawn.
 
 **It is written from a position, and owns it.** "I verified every tag the paper cites that I
 had reason to doubt." "I found no error that I believe threatens the main theorem." The
 judgments are yours; attributing them to no one makes them harder to weigh, not more
-objective. They are also *yours* rather than the referee's — write so the two never blur.
+objective. They are also *yours* rather than the reader's — write so the two never blur.
 
 ---
 
@@ -52,7 +52,7 @@ establishes. Theorem 4.2 states. Never "we prove" — that is the paper's voice.
 
 **The examination in the first person singular.** "I checked," "I could not follow," "I was
 able to supply the step." Never the editorial "we"; it hides whether a thing was done or
-merely believed. And never a first person that could be read as the referee's own — do not
+merely believed. And never a first person that could be read as the reader's own — do not
 write a sentence for them to sign.
 
 **Present tense for what the paper says; past for what you did.** "Step 1 replaces the order
@@ -101,7 +101,7 @@ must match the territory.
 **State results faithfully.** Do not silently strengthen or weaken what the paper claims. Mark
 a paraphrase as a paraphrase.
 
-**Give the repair where you have one.** A referee comment that names a defect and stops is
+**Give the repair where you have one.** A comment that names a defect and stops is
 half a comment. Where the fix is short, write it out; where it is a choice among routes, name
 the routes and what each costs.
 
@@ -117,7 +117,7 @@ not yours, either leave it or mark it plainly as a suggestion.
 
 **Four documents, each with one job.** The summary is prose and argues an assessment. The
 issue list is a reference and is exhaustive. The repairs document is constructive. The
-annotated sources are for reading the paper against, and are the part a referee is most
+annotated sources are for reading the paper against, and are the part a reader is most
 likely to pass on. Do not let any of them become a shorter copy of another.
 
 **Group issues by kind, then by theme.** Group at the top by what the author must *do* about
@@ -146,7 +146,7 @@ sentence would close this, at the point of use, as printed.
 **Banned — in every voice:**
 
 - **Disposition vocabulary** as a judgment on this paper: accept, reject, revision,
-  publishable, "worthy of publication." Equally, anything that writes the referee's report
+  publishable, "worthy of publication." Equally, anything that writes the formal evaluation
   for them — "I recommend," "this reviewer finds," "in my report I will."
 - **"Load-bearing."** Say what rests on what. In mathematics either a step is used or the
   result is false, so the metaphor grades nothing; and it has become a tic. "This parenthesis
@@ -177,10 +177,10 @@ subject is partly the authors' inconsistency, the report's own inconsistency rea
 
 ## What a critical guide is not
 
-- **Not a referee report.** It is the material one is written from. It carries no signature
+- **Not a formal evaluation.** It is the material one is written from. It carries no signature
   and reaches no disposition.
 - Not a reading guide — it assesses and itemizes; it does not orient a newcomer. (A reading
   guide is the input to this process, not a component of its output.)
 - Not a rewrite of the paper — where the authors' prose is merely not yours, leave it.
 - Not a survey — context serves the assessment of *this* paper.
-- Not a recommendation. Findings, ordered by consequence. The decision belongs to the referee.
+- Not a recommendation. Findings, ordered by consequence. The decision belongs to the reader.
