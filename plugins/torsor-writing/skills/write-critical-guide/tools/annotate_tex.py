@@ -586,7 +586,7 @@ def render_issues_md(led):
         add("")
         add("---")
         add("")
-        add("## Scope of this report")
+        add("## Scope of this examination")
         add("")
         add(" ".join(str(led["scope_caveat"]).split()))
 
@@ -729,7 +729,7 @@ def render_clean_checks(led, nested=False):
     heading = ("### Checks that came out clean" if nested
                else "## Checks that came out clean")
     out = ([""] if nested else ["", "---", ""]) + [heading, "",
-           "Recorded so the report says what was examined, not only what was found "
+           "Recorded so the document says what was examined, not only what was found "
            "wanting. Each of the following says what the paper uses it for, with "
            "hypotheses satisfied at the point of use.", "",
            "| Source | Statement | Used for |", "|---|---|---|"]
@@ -778,7 +778,11 @@ def cmd_annotate(led, args):
         path = os.path.join(args.outdir, name)
         with open(path, "w", encoding="utf-8") as f:
             f.write(text)
-        print("wrote %s — %d notes" % (name, len(issues_in(led, key))))
+        items = issues_in(led, key)
+        bundled = [i for i in items if i["id"] in bundled_into(led)]
+        print("wrote %s — %d note boxes from %d ledger items%s"
+              % (name, len(items) - len(bundled) + 1, len(items),
+                 " (%d bundled into others)" % len(bundled) if bundled else ""))
     return 0
 
 
@@ -837,11 +841,29 @@ def cmd_build(led, args):
     return 0 if ok else 1
 
 
+def labels_defined_in(path):
+    """Label names the source actually defines, ignoring commented-out lines.
+
+    A reference whose target is not in this set can never resolve, however many
+    passes are run: the label is absent, or it lives in commented-out source.
+    That is the manuscript's own dangling cross-reference, not a failure of the
+    annotation build, and must not be reported as one.
+    """
+    names = set()
+    with open(path, encoding="utf-8", errors="replace") as f:
+        for line in f:
+            line = re.sub(r"(?<!\\)%.*", "", line)
+            names.update(re.findall(r"\\z?label\{([^}]*)\}", line))
+            names.update(re.findall(r"\blabel\s*=\s*\{?([A-Za-z0-9:_.-]+)", line))
+    return names
+
+
 def report_build(outdir, stem, tex, led):
     """Verify the PDF rather than trusting the exit status, which lies."""
     pdf = os.path.join(outdir, stem + ".pdf")
     logf = os.path.join(outdir, stem + ".log")
     problems = []
+    notes = []
 
     if not os.path.exists(pdf):
         print("  %-30s FAILED — no PDF" % stem)
@@ -852,9 +874,21 @@ def report_build(outdir, stem, tex, led):
     if os.path.exists(logf):
         with open(logf, encoding="utf-8", errors="replace") as f:
             text = f.read()
-        undef = len(re.findall(r"Reference `[^']*' on page \d+ undefined", text))
+        undef = sorted(set(re.findall(
+            r"Reference `([^']*)' on page \d+ undefined", text)))
         if undef:
-            problems.append("%d undefined reference(s) — the run did not converge" % undef)
+            defined = labels_defined_in(tex)
+            stale = [n for n in undef if n in defined]
+            inherited = [n for n in undef if n not in defined]
+            if stale:
+                problems.append(
+                    "%d undefined reference(s) — the run did not converge (%s)"
+                    % (len(stale), ", ".join(stale)))
+            if inherited:
+                notes.append(
+                    "%d dangling cross-reference(s) inherited from the manuscript, "
+                    "which print as ?? in the author's own PDF too: %s"
+                    % (len(inherited), ", ".join(inherited)))
         if re.search(r"^! ", text, re.M):
             problems.append("LaTeX reported an error")
 
@@ -866,7 +900,7 @@ def report_build(outdir, stem, tex, led):
     with open(tex, encoding="utf-8") as f:
         got = f.read().count(r"\todo[inline")
     if got != want + 1:                 # +1 for the header note
-        problems.append("%d note boxes, expected %d" % (got, want + 1))
+        problems.append("%d note boxes in the document, expected %d" % (got, want + 1))
 
     pages = ""
     try:
@@ -880,8 +914,12 @@ def report_build(outdir, stem, tex, led):
 
     if problems:
         print("  %-30s PROBLEM — %s" % (stem, "; ".join(problems)))
+        for n in notes:
+            print("  %-30s note — %s" % ("", n))
         return False
-    print("  %-30s ok  (%s%d notes)" % (stem, pages, want + 1))
+    print("  %-30s ok  (%s%d note boxes)" % (stem, pages, want + 1))
+    for n in notes:
+        print("  %-30s note — %s" % ("", n))
     return True
 
 

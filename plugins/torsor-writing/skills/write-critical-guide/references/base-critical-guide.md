@@ -8,6 +8,13 @@ with exactly one voice for the full style guide.
 
 ## What a critical guide is (get this right first)
 
+> **Calibration, not content.** This section and "What a critical guide is not" below
+> exist to settle what is being written. None of it belongs in the document. Every
+> sentence in both fails the substitution test in
+> `${CLAUDE_PLUGIN_ROOT}/assets/commons/stance.md` — each stays true of any paper, so
+> none is a finding about this one. They read as finished prose, which is exactly why
+> they get transcribed; do not.
+
 **Working material for a critical reader, not the formal evaluation.** A formal evaluation is signed and
 sent to an editor and carries one person's judgment. This is what that person works from: the
 paper read closely, its context established, everything questionable found, located, and
@@ -50,13 +57,18 @@ objective. They are also *yours* rather than the reader's — write so the two n
 **The paper in the third person.** The authors prove, introduce, observe, assume. Section 3
 establishes. Theorem 4.2 states. Never "we prove" — that is the paper's voice.
 
-**The examination in the first person singular.** "I checked," "I could not follow," "I was
-able to supply the step." Never the editorial "we"; it hides whether a thing was done or
-merely believed. And never a first person that could be read as the reader's own — do not
-write a sentence for them to sign.
+**The examination with the evidence as subject.** No first person: the document has no
+author, and the rule with its worked replacements is in
+`${CLAUDE_PLUGIN_ROOT}/assets/commons/stance.md`. "A diff against arXiv:1909.04683 gives
+0.9429 similarity," not "I diffed it." "Step 3 does not follow: the kernel is computed on the
+wrong submodule," not "I could not follow Step 3." Never the editorial "we"; it hides whether
+a thing was done or merely believed, which is the failure the evidence-as-subject rule exists
+to prevent. And never a sentence written for the reader to sign.
 
-**Present tense for what the paper says; past for what you did.** "Step 1 replaces the order
-by a maximal one" — the paper still says that. "I verified the nine tags" — you did that once.
+**Present tense for what the paper says; past for what the examination did.** "Step 1 replaces
+the order by a maximal one" — the paper still says that. "Nine cited tags were checked against
+their sources" — that happened once. Where the past tense forces a passive, promote the
+evidence instead: "The diff gives 0.9429 similarity."
 
 ---
 

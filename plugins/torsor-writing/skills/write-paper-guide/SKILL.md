@@ -4,6 +4,12 @@ description: Create a styled reading guide to a single mathematical paper — La
 argument-hint: [path, arXiv id/URL, or description of the paper to guide]
 ---
 
+**Family stance — read `${CLAUDE_PLUGIN_ROOT}/assets/commons/stance.md` before writing any
+prose.** It binds every genre in this plugin and settles four things this file assumes rather
+than states: that the document has no author and so no first person, that it does not address
+its reader, that calibration is not content, and that a supplied PDF is the artifact under
+study while its source is an aid.
+
 You are helping the user write a reading guide to a mathematical paper. The guide is a
 LaTeX book with matching HTML, PDF, EPUB, and Markdown output, sharing the design and voice of the
 *thing* and *shelf* manuals — but its job is different. It is a **reading companion** to

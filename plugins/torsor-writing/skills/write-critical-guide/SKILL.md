@@ -4,12 +4,23 @@ description: Produce a critical guide to a single mathematical paper — working
 argument-hint: [path to the paper, an arXiv id/URL, or the folder containing it]
 ---
 
+**Family stance — read `${CLAUDE_PLUGIN_ROOT}/assets/commons/stance.md` before writing any
+prose.** It binds every genre in this plugin and settles four things this file assumes rather
+than states: that the document has no author and so no first person, that it does not address
+its reader, that calibration is not content, and that a supplied PDF is the artifact under
+study while its source is an aid.
+
 You are producing a **critical guide** to one mathematical paper: working material for a
 person trying to assess and evaluate it. It is a set of Markdown documents, a typeset guide,
 and annotated copies of the paper's own LaTeX source carrying `\todo[inline]` notes at the
 passages they concern.
 
-**Be clear about what this is.** It is not a formal evaluation, and it must never be written as
+**Be clear about what this is** — and keep it to yourself. This paragraph calibrates what you
+are writing; none of it belongs in the document, and every sentence in it fails the
+substitution test in `${CLAUDE_PLUGIN_ROOT}/assets/commons/stance.md`. It reads as finished
+prose, which is exactly why it ends up transcribed into the summary.
+
+It is not a formal evaluation, and it must never be written as
 one. A formal evaluation is a document one person signs and sends to an editor, and it carries
 that person's judgment. What you are producing is the material that person works from: the
 paper read closely, its context established, everything questionable found and located and
@@ -75,13 +86,18 @@ begins — and they cannot tell a clean bill of health from an unopened box unle
 which it was.
 
 **Voice.** Write about the paper in the third person — the authors prove, introduce, assume;
-Section 3 establishes; Theorem 4.2 states. Use your own first person for what you did and
-found: "I verified every tag the paper cites that I had reason to doubt," "I found no error
-that threatens the main theorem." Never "we."
+Section 3 establishes; Theorem 4.2 states. Never "we."
 
-That first person is yours, not the reader's. You are handing them your examination, and they
-must be able to tell your work from their own conclusions — so report what you checked and
-what you concluded, and leave the deciding to them. Never write a sentence for them to sign.
+For the examination itself, the rule is in `${CLAUDE_PLUGIN_ROOT}/assets/commons/stance.md`
+and it is not optional: **no first person, and the evidence is the subject.** Not "I verified
+every tag the paper cites" but "Nine cited tags check out against their sources; the table
+gives each." Not "I could not follow Step 3" but "Step 3 does not follow: the kernel is
+computed on the wrong submodule." The named evidence is what a critical reader can check;
+"I verified" is what they have to take on trust from a producer who does not exist.
+
+The same file forbids addressing the reader. Report what the examination found and what it
+did not reach; never write a sentence for someone to sign, and never tell them the decision
+is theirs — they know.
 
 ---
 
@@ -188,6 +204,20 @@ Phase 2c consults the citation cache, and tags are namespaced by chunk.
 
 Identify the paper and settle **which text the annotations will be inserted into**. This
 choice shapes the whole package, so make it first and record it.
+
+**Which file is the artifact is already settled**, by
+`${CLAUDE_PLUGIN_ROOT}/assets/commons/stance.md`: where a PDF exists it is the artifact under
+study, and source is an aid — for exact quotation, line locations, and anchor placement. The
+choice below is only where the *annotations* are inserted, which is a separate question.
+
+The consequence bites hardest here, so it is worth stating in the terms of this genre: a
+finding must be visible in the compiled paper. Commented-out source is not. Neither is
+anything else the reader of the PDF cannot see. A statement whose proof is commented out is
+a statement with no proof, and that is the finding — not that the author left notes, and not
+what the notes contain. Reasoning from them yields findings about a person's working process
+in place of findings about their work, and a passage may be commented out because it was
+wrong, superseded, or never meant to survive, none of which is knowable from outside. An
+author marker that a macro *renders* is a different matter: it prints, so it is in scope.
 
 Locate the authors' LaTeX source if it exists. For an arXiv paper, `https://arxiv.org/e-print/<id>`
 returns the submission tarball. Then you are in one of three situations:
@@ -553,13 +583,22 @@ the annotated copies rather than a manual, and `annotate_tex.py` supplies tier 1
 
 Read `references/lessons.md` before starting; it carries the fixes for what goes wrong.
 
-1. `annotate_tex.py all` exits zero. Its `build` stage already checks the four things that
-   go wrong silently — undefined cross-references, LaTeX errors, note counts against the
-   ledger, and PDFs older than their sources — so a non-zero exit is a real failure, not a
-   formality. Read what it reports.
-2. `00-guide.pdf` builds, and its tables break across pages with their headers repeating.
-   Nothing checks this for you: render page 1 and a middle page and look at them.
-3. In Case B, every annotated passage was confirmed present in the submitted PDF.
+1. **`make` exits zero, from a clean tree.** Not `make guide`, not the tool invoked by hand —
+   `make`. It is the package's documented rebuild path and it is the one thing a reader will
+   run. A red gate is a bug to fix; it is never a symptom to write up in the README.
+2. `annotate_tex.py build` reports every annotated document `ok`. It checks what goes wrong
+   silently — undefined cross-references, LaTeX errors, note counts against the ledger, PDFs
+   older than their sources — and separates the paper's own dangling references, which are
+   notes, from a run that has not converged, which is a failure. Read what it reports, and run
+   it twice where the numbering is self-referential.
+3. `check_guide.py` reports `00-guide.pdf` `ok`. **The guide gets the same mechanical gate as
+   the annotated copies, not a lesser one.** It is the document the reader actually reads, and
+   it is the one that fails quietly: an undefined citation warns rather than errors, and older
+   pandoc does not relay LaTeX's warnings at all, so eight `[?]` marks in ninety pages can pass
+   a visual spot-check and a clean-looking build on the machine that made them.
+4. The guide's tables break across pages with their headers repeating. Nothing checks this:
+   render page 1 and a middle page and look at them.
+5. In Case B, every annotated passage was confirmed present in the submitted PDF.
 
 Then hand back: the path to `critical-guide/`, what the package contains, the count of findings
 by category and grade, what Phase 3 refuted and dropped, and what was not verified. Send

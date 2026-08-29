@@ -4,6 +4,12 @@ description: Use when the goal is a personalized study guide that ROUTES a speci
 argument-hint: [target topic/result, the corpus, and the reader (profile file or description)]
 ---
 
+**Family stance — read `${CLAUDE_PLUGIN_ROOT}/assets/commons/stance.md` before writing any
+prose.** It binds every genre in this plugin and settles four things this file assumes rather
+than states: that the document has no author and so no first person, that it does not address
+its reader, that calibration is not content, and that a supplied PDF is the artifact under
+study while its source is an aid.
+
 You are helping the user write a **study guide**: a personalized route through one large,
 tag-addressable corpus — the Stacks project, Kerodon, or a similar reference with
 addressable chunks and a citation structure — bringing one named reader from what they

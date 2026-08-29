@@ -23,7 +23,12 @@ result, and it never widens into a survey of everyone who has worked nearby.
 **Person depends on the purpose mode.** The summary is written for a stated
 purpose, recorded in the reader profile. In **self-presentation** mode the
 subject is presenting their own program — first person is allowed ("I show,"
-"my main construction"). In every other mode — **newcomer orientation**,
+"my main construction"). This is the family's one standing exception to
+`${CLAUDE_PLUGIN_ROOT}/assets/commons/stance.md`, which otherwise forbids the
+first person outright: here the "I" is the mathematician's own, and it has an
+author. It does not license a first person for the document's producer.
+
+In every other mode — **newcomer orientation**,
 **evaluator appraisal**, **scholarly appreciation** — write about the
 mathematician in the third person: *Krashen proves, the 2019 paper establishes,
 the construction of Section 3.* Pick one and hold it throughout.

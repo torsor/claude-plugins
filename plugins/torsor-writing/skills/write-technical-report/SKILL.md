@@ -3,6 +3,12 @@ name: write-technical-report
 description: Use when the goal is a skeptical-reader technical report about an autonomous, semi-autonomous, computational, mathematical, or software experiment. Turn protocols, run logs, outputs, tests, evaluator notes, interventions, and repository state into a reproducible account of the question, methods, results, validation, failures, limitations, and next experiment. Use for positive, negative, inconclusive, exploratory, comparative, ablation, reproduction, or capability-evaluation results. Output is the torsor house format (LaTeX → PDF, HTML, EPUB, Markdown).
 ---
 
+**Family stance — read `${CLAUDE_PLUGIN_ROOT}/assets/commons/stance.md` before writing any
+prose.** It binds every genre in this plugin and settles four things this file assumes rather
+than states: that the document has no author and so no first person, that it does not address
+its reader, that calibration is not content, and that a supplied PDF is the artifact under
+study while its source is an aid.
+
 You are helping the user write a **technical report** about an experiment. The report must let
 an intelligent, technically capable reader who did not participate determine what was asked,
 what was done, what happened, why the evidence deserves its stated level of trust, and where

@@ -3,6 +3,12 @@ name: write-pure-math-paper
 description: Use when the goal is to author, organize, or substantially rewrite an original research paper or short note in pure mathematics from theorem statements, proofs, research notes, computations, references, or an existing manuscript. Build a rigorous paper around the main result, proof architecture, precise comparison with prior work, theorem dependencies, hypotheses, examples, applications, and open boundaries. Preserve proof status and flag gaps rather than inventing repairs. Output is the torsor house format (LaTeX → PDF, HTML, EPUB, Markdown).
 ---
 
+**Family stance — read `${CLAUDE_PLUGIN_ROOT}/assets/commons/stance.md` before writing any
+prose.** It binds every genre in this plugin and settles four things this file assumes rather
+than states: that the document has no author and so no first person, that it does not address
+its reader, that calibration is not content, and that a supplied PDF is the artifact under
+study while its source is an aid.
+
 You are helping the user write an **original pure mathematics paper**. The paper must let a
 professional mathematician who did not participate understand the main theorem, see why it
 matters, locate the new idea, audit the proof's difficult points, distinguish proved statements
