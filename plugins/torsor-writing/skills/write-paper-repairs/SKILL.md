@@ -4,6 +4,12 @@ description: Work out repairs for the problems a critical guide found in a mathe
 argument-hint: [path to the paper folder, or to its critical-guide/ package]
 ---
 
+**Family stance — read `${CLAUDE_PLUGIN_ROOT}/assets/commons/stance.md` before writing any
+prose.** It binds every genre in this plugin and settles four things this file assumes rather
+than states: that the document has no author and so no first person, that it does not address
+its reader, that calibration is not content, and that a supplied PDF is the artifact under
+study while its source is an aid.
+
 You are repairing problems that someone else's examination has already found. A critical guide
 to this paper exists — a ledger of issues, each located, graded, and argued. **Your job is to
 work out the mathematics that fixes them**, and to write into the paper only the fixes that the

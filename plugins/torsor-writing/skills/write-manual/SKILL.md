@@ -4,6 +4,12 @@ description: Create a styled user's manual for a project — LaTeX source with H
 argument-hint: [path or description of the project to document]
 ---
 
+**Family stance — read `${CLAUDE_PLUGIN_ROOT}/assets/commons/stance.md` before writing any
+prose.** It binds every genre in this plugin and settles four things this file assumes rather
+than states: that the document has no author and so no first person, that it does not address
+its reader, that calibration is not content, and that a supplied PDF is the artifact under
+study while its source is an aid.
+
 You are helping the user write a user's manual for a project. The manual will be a LaTeX book with matching HTML, PDF, EPUB, and Markdown output, following the design and voice established in the *thing: A User's Manual*.
 
 The user has said: $ARGUMENTS

@@ -4,6 +4,12 @@ description: Use to report where live workshop work stands — a docent's state-
 argument-hint: [single room or whole workshop, and the reader]
 ---
 
+**Family stance — read `${CLAUDE_PLUGIN_ROOT}/assets/commons/stance.md` before writing any
+prose.** It binds every genre in this plugin and settles four things this file assumes rather
+than states: that the document has no author and so no first person, that it does not address
+its reader, that calibration is not content, and that a supplied PDF is the artifact under
+study while its source is an aid.
+
 You are helping the user write a **workshop state guide**: the docent's **state-of-the-work
 guide**, one dated present-tense snapshot of where live research work stands, so a collaborator
 deciding the next move can trust the picture. It shares the torsor design, commons scaffold,

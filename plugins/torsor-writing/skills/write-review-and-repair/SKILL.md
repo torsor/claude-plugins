@@ -4,6 +4,12 @@ description: Run the two-stage examine-then-repair pipeline end to end on one ma
 argument-hint: [path to the paper, an arXiv id/URL, or the folder containing it]
 ---
 
+**Family stance — read `${CLAUDE_PLUGIN_ROOT}/assets/commons/stance.md` before writing any
+prose.** It binds every genre in this plugin and settles four things this file assumes rather
+than states: that the document has no author and so no first person, that it does not address
+its reader, that calibration is not content, and that a supplied PDF is the artifact under
+study while its source is an aid.
+
 You are running a two-stage pipeline over a single mathematical paper: **examine it, then
 repair it.** Both stages are existing skills that already run unattended and already share a
 handoff. Your job is only to run them in order and confirm the handoff between them — you add

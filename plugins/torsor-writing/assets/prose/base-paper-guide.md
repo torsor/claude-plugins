@@ -15,8 +15,9 @@ its own.
 
 **Write about the paper in the third person.** The authors prove, introduce, observe,
 assume. Section 3 establishes. Theorem 4.2 states. Never "we prove" or "our construction"
-— that is the paper's voice, not the guide's. The guide's own first person, if it appears,
-belongs to the act of guiding: "Here is where it helps to slow down."
+— that is the paper's voice, not the guide's. The guide has no first person of its own
+either: see `${CLAUDE_PLUGIN_ROOT}/assets/commons/stance.md`. Guidance is given directly —
+"This is where it helps to slow down" — not attributed to a guide that has no author.
 
 **It is honestly a guide and says so.** It may be opinionated about what is hard, what is
 routine, what to read closely, what to skim. That candor is the point. Flattening
