@@ -238,13 +238,9 @@ heading. Open it with the section heading instead — "Summary, context, and sig
 ## `README.md`
 
 ```markdown
-# A critical guide to *<TITLE>* (<IDENTIFIER>)
+# A critical guide to *<TITLE>*
 
-Working material for assessing and evaluating this paper. It is **not a formal evaluation**: it carries no
-recommendation and reaches no disposition. It is the examination — the paper read closely, its
-context established, everything questionable found, located, and verified, with repairs where
-they exist — for a critical reader to work from in writing their own report and reaching their own
-judgment.
+<AUTHORS>, <IDENTIFIER>, <N> pp.
 
 | File | What it is |
 |---|---|
@@ -260,6 +256,16 @@ judgment.
 Each annotated document opens with an index of its own notes, in tag order, and is otherwise
 **byte-for-byte the authors' source** apart from the inserted notes and one changed
 `todonotes` option.
+
+## What is in evidence
+
+**The compiled PDF is the artifact.** Every finding here is about the paper as it prints. The
+LaTeX source is used for exact quotation, for line locations, and to carry the annotations; it
+is not a source of findings in its own right, and material that does not reach the compiled
+page is out of scope. An author marker that a macro *renders* is a different matter — it
+prints, so it is in evidence.
+
+Locations give the source line, the paper's own section and statement numbers, and the PDF page.
 
 ## Rebuilding
 
