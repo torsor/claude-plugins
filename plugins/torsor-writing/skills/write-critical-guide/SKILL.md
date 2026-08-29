@@ -583,13 +583,22 @@ the annotated copies rather than a manual, and `annotate_tex.py` supplies tier 1
 
 Read `references/lessons.md` before starting; it carries the fixes for what goes wrong.
 
-1. `annotate_tex.py all` exits zero. Its `build` stage already checks the four things that
-   go wrong silently — undefined cross-references, LaTeX errors, note counts against the
-   ledger, and PDFs older than their sources — so a non-zero exit is a real failure, not a
-   formality. Read what it reports.
-2. `00-guide.pdf` builds, and its tables break across pages with their headers repeating.
-   Nothing checks this for you: render page 1 and a middle page and look at them.
-3. In Case B, every annotated passage was confirmed present in the submitted PDF.
+1. **`make` exits zero, from a clean tree.** Not `make guide`, not the tool invoked by hand —
+   `make`. It is the package's documented rebuild path and it is the one thing a reader will
+   run. A red gate is a bug to fix; it is never a symptom to write up in the README.
+2. `annotate_tex.py build` reports every annotated document `ok`. It checks what goes wrong
+   silently — undefined cross-references, LaTeX errors, note counts against the ledger, PDFs
+   older than their sources — and separates the paper's own dangling references, which are
+   notes, from a run that has not converged, which is a failure. Read what it reports, and run
+   it twice where the numbering is self-referential.
+3. `check_guide.py` reports `00-guide.pdf` `ok`. **The guide gets the same mechanical gate as
+   the annotated copies, not a lesser one.** It is the document the reader actually reads, and
+   it is the one that fails quietly: an undefined citation warns rather than errors, and older
+   pandoc does not relay LaTeX's warnings at all, so eight `[?]` marks in ninety pages can pass
+   a visual spot-check and a clean-looking build on the machine that made them.
+4. The guide's tables break across pages with their headers repeating. Nothing checks this:
+   render page 1 and a middle page and look at them.
+5. In Case B, every annotated passage was confirmed present in the submitted PDF.
 
 Then hand back: the path to `critical-guide/`, what the package contains, the count of findings
 by category and grade, what Phase 3 refuted and dropped, and what was not verified. Send

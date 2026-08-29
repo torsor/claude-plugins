@@ -16,9 +16,9 @@ overwrites it.
 
 DOCS := $(basename $(notdir $(wildcard annotated-*.tex)))
 PDFS := $(addsuffix .pdf,$(DOCS))
-MD   := 01-summary.md 02-issues.md
 
-.PHONY: all clean distclean regen guide check
+.PHONY: all clean distclean regen guide check annotated
+.NOTPARALLEL:
 
 all: regen guide annotated
 
@@ -27,42 +27,91 @@ check:
 	python3 annotate_tex.py check -v
 
 # --- generated from the ledger: issue list + annotated sources ---
+# `annotate` and `issues-md`, not `all`: `all` would also run a three-pass
+# pdflatex that the `annotated` target below has to redo from scratch, and
+# three passes do not always converge (see that target's comment).
 regen:
-	python3 annotate_tex.py all --clean-aux -l issues.yaml -o .
+	python3 annotate_tex.py check -l issues.yaml -o .
+	python3 annotate_tex.py annotate -l issues.yaml -o .
+	python3 annotate_tex.py issues-md -l issues.yaml -o .
 
-# --- the guide: the two markdown documents as one PDF ---
+# --- the guide: the markdown documents as one PDF ---
+#
+# Four steps, not one. The guide quotes the paper, so it inherits the paper's
+# citations: quoted passages carry the author's own \cite calls. Resolving them
+# needs a bibliography, and a bibliography needs bibtex between pdflatex passes
+# -- which `pandoc --pdf-engine` cannot do, since it invokes the engine once.
+# So pandoc writes 00-guide.tex and the same sequence annotate_tex.py runs for
+# the annotated copies is run here, against the same .bib.
 guide: 00-guide.pdf
 
-00-guide.pdf: $(MD) guide-meta.yaml guide-preamble.tex
+00-guide.pdf: 01-summary.md 02-issues.md guide-meta.yaml guide-preamble.tex \
+              guide-bibliography.tex <BIB>.bib
 	{ cat guide-meta.yaml; echo; cat 01-summary.md; \
 	  printf '\n\n\\clearpage\n\n'; cat 02-issues.md; } > .guide-combined.md
-	pandoc .guide-combined.md \
+	pandoc .guide-combined.md --standalone \
 	  --pdf-engine=pdflatex \
 	  --include-in-header=guide-preamble.tex \
-	  -o $@
-	@rm -f .guide-combined.md
-	@echo "built $@"
+	  --include-after-body=guide-bibliography.tex \
+	  -o 00-guide.tex
+	pdflatex -interaction=nonstopmode 00-guide.tex >/dev/null 2>&1 || true
+	bibtex  00-guide                 >/dev/null 2>&1 || true
+	pdflatex -interaction=nonstopmode 00-guide.tex >/dev/null 2>&1 || true
+	pdflatex -interaction=nonstopmode 00-guide.tex >/dev/null 2>&1 || true
+	@python3 check_guide.py
 
 # --- the annotated copies of the paper ---
-# Delegated to the tool, which runs the pass sequence that converges and then
-# verifies the result. A bare `pdflatex` rule here would report success on a PDF
-# whose every cross-reference reads `??`.
-annotated:
+# Delegated to the tool, which runs the pass sequence and then verifies the
+# result. A bare `pdflatex` rule here would report success on a PDF whose every
+# cross-reference reads `??`.
+#
+# Run `build` twice where the paper's numbering is self-referential -- mathtools
+# `showonlyrefs` with keytheorems `sharenumber=equation` is the case in hand,
+# where statement numbers depend on which equations the previous pass referenced
+# and six passes are needed, not three. Each `build` runs three. Drop the second
+# line when a single `build` reports no undefined references.
+annotated: regen
+	python3 annotate_tex.py build --clean-aux -l issues.yaml -o .
 	python3 annotate_tex.py build -l issues.yaml -o .
 
 clean:
 	rm -f *.aux *.log *.out *.toc *.bbl *.blg *.tdo *.brf *.fls *.fdb_latexmk
-	rm -f *.build.log .guide-combined.md
+	rm -f *.build.log .guide-combined.md 00-guide.tex
 	rm -rf __pycache__
 
 distclean: clean
-	rm -f $(PDFS) 00-guide.pdf annotated-*.tex 02-issues.md
+	rm -f $(PDFS) 00-guide.pdf 00-guide.tex annotated-*.tex 02-issues.md
 ```
 
-The `annotated` target defers to `annotate_tex.py build`, which runs `pdflatex` three times
-with `bibtex` between and then checks the log, the note count, and the timestamps. That is not
-superstition: one pass leaves every cross-reference as `??`, and both `make` and `latexd` exit
-0 on a failed run. If the paper ships a `.bib`, copy it in beside the annotated sources.
+Both build paths verify their output rather than trusting an exit status, and both apply the
+same rule: **a defect in the package fails the build; a defect in the paper does not.** An
+undefined citation in the guide is the guide's own, since the guide cites what it cites, so it
+fails. A cross-reference the paper itself leaves dangling is reported as a note and passes —
+it prints `??` in the author's PDF too, and it is a finding, not a build error. Getting this
+backwards is how a `make` that has never once run to completion ships as a package's
+documented rebuild path.
+
+---
+
+## `guide-bibliography.tex`
+
+Fed to pandoc with `--include-after-body`, so it lands just before `\end{document}`. Match the
+paper's own `\bibliographystyle` — read it out of the source — so a quoted citation prints the
+label the paper prints.
+
+```latex
+\bibliographystyle{<THE PAPER'S STYLE, e.g. amsalpha>}
+\bibliography{<BIB>,guide-extra}
+```
+
+`<BIB>.bib` is the paper's bibliography. If the folder does not supply one, reconstruct it from
+the References of the submitted PDF and say so in the README: the labels in every built
+document derive from that reconstruction, and it is build support, not the author's file.
+
+`guide-extra.bib` holds works the **guide** cites that the paper's bibliography does not, kept
+separate so the reconstruction stays what it claims to be. The case that puts entries here is
+worth knowing in advance: quoting another paper's prose brings that paper's citation keys with
+it, and they will not resolve against this paper's bibliography.
 
 ---
 
@@ -116,6 +165,41 @@ Pandoc header for `00-guide.pdf`. Change only the running-head title.
 `\AtBeginEnvironment{longtable}{\small\RaggedRight}` is what keeps a typographical table with
 long "suggested wording" cells inside the text block. Without it the table overflows the
 margin, which the log does not report.
+
+Two more blocks belong in this file, and both exist because the guide sets quoted manuscript
+prose as **real LaTeX** rather than as a code span — that is deliberate, so the mathematics
+inside a quotation typesets, and it is what makes the rest of this necessary.
+
+**A compatibility block for the paper's own macros.** Every macro that can reach a quoted
+passage needs a definition here: the paper's own where it gives one, a faithful stand-in where
+it builds the macro with a package this document does not load. Build it by compiling and
+fixing what errors — but do not stop when the errors stop. Macros that *warn* rather than
+error, `\cite` above all, will pass straight through that loop and print as `[?]` in a
+document nobody rereads at ninety pages. Grep the built PDF's text, which is what
+`check_guide.py` does.
+
+```latex
+% every manuscript macro that can appear inside a quotation
+\providecommand{\kk}{\Bbbk}
+\providecommand{\vac}{\mathbf{1}}
+\DeclareMathOperator{\Aut}{Aut}
+% ... and stand-ins for what cannot be reproduced, rendered as what they print
+\providecommand{\zcref}[2][]{\textup{(ref)}}
+\providecommand{\<AUTHOR MARKER MACRO>}[1]{\textup{[<NAME>: #1]}}
+```
+
+**Bibliography support the article class does not supply.** `amsalpha` and its relatives emit
+these; without them the four-step build fails in the bibliography rather than in the body,
+which is a confusing place to land.
+
+```latex
+\providecommand{\bysame}{\leavevmode\hbox to3em{\hrulefill}\thinspace}
+\providecommand{\MR}[1]{}
+\providecommand{\MRhref}[2]{#2}
+```
+
+`\bysame` is not optional whenever two cited works share an author list, which in a guide to a
+paper with a series behind it is the normal case.
 
 ---
 
@@ -185,10 +269,15 @@ Each annotated document opens with an index of its own notes, in tag order, and 
     make clean    # remove build artifacts
     make distclean # also remove generated PDFs, .tex, and 02-issues.md
 
-Two constraints if you edit the Markdown: bare LaTeX macros outside math (a `\Cref{...}`
+`make` must exit 0. If it does not, the package is not finished — a red gate is a bug to fix,
+never a symptom to document in this README.
+
+Three constraints if you edit the Markdown. Bare LaTeX macros outside math (a `\Cref{...}`
 quoted from the paper) must be wrapped in backticks, or pandoc hands them to an engine that
-has never heard of them; and the build uses `pdflatex` rather than `lualatex`, which is an
-order of magnitude faster here and handles every non-ASCII character the guide uses.
+has never heard of them. Quoted passages set as prose are the exception and are handled by the
+compatibility block instead, since their mathematics has to typeset. And the build uses
+`pdflatex` rather than `lualatex`, which is an order of magnitude faster here and handles
+every non-ASCII character the guide uses.
 
 <!-- CASE B ONLY — delete if the annotation base is the submitted text -->
 ## A note on the source
