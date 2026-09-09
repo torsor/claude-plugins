@@ -1,0 +1,62 @@
+paper:
+  title: "Averaging on coordinate spaces"
+  authors: ["A. Author"]
+  identifier: "synthetic-example"
+  source: "paper.tex"
+  locations_refer_to: "the fictional source paper.tex"
+issue_list_name: "02-issues.md"
+categories:
+  mathematical:
+    tag: M
+    title: Mathematical
+    colour: red
+    output: annotated-mathematical.tex
+  references:
+    tag: R
+    title: References
+    colour: green
+    output: annotated-references.tex
+  typographical:
+    tag: T
+    title: Typographical
+    colour: blue
+    output: annotated-typographical.tex
+    sections:
+      - name: Grammar
+        render: table
+        columns:
+          - {header: Tag, field: id}
+          - {header: Original, field: quote}
+          - {header: Correction, field: request}
+issues:
+  - id: M-1
+    category: mathematical
+    grade: major
+    location: "Kernel calculation"
+    anchor: 'The kernel of $P$ has dimension $n$.'
+    caption: "Kernel dimension"
+    quote: 'The kernel of $P$ has dimension $n$.'
+    note: >
+      The image is one-dimensional. Rank-nullity gives kernel dimension $n-1$.
+    request: 'Replace $n$ with $n-1$ and state the rank-nullity calculation.'
+    confidence: direct-check
+  - id: R-1
+    category: references
+    grade: minor
+    anchor: "The image calculation follows from the lemma above."
+    caption: "Locate the lemma"
+    note: "Replace the relative locator with the lemma's explicit reference."
+    request: 'Use `\ref{lem:constant-vectors}`.'
+  - id: T-1
+    category: typographical
+    grade: trivial
+    section: Grammar
+    anchor: "The coordinates is equal after averaging."
+    caption: "Subject agreement"
+    quote: "The coordinates is equal after averaging."
+    note: "The plural subject requires a plural verb."
+    request: "The coordinates are equal after averaging."
+verified_clean:
+  - source: "Fixture lemma: constant vectors"
+    statement: "The image is the span of the all-ones vector."
+    used_for: "the corrected kernel calculation"

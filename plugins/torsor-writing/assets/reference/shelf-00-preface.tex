@@ -1,0 +1,59 @@
+\chapter{Preface: A Library is Not a Folder}
+
+Let's be honest with each other. You have a lot of PDFs.
+
+Some of them are books you actually read. Some are papers you downloaded
+with good intentions three years ago and have not opened since. Some are
+scan artifacts with no metadata, named things like
+\code{scan0047-compressed-FINAL.pdf} by a process you no longer remember.
+They live in various folders on various machines, and some of them are on
+Dropbox, and some are not, and you are not entirely certain which ones are
+which.
+
+A folder is not a library. A library has a catalog. It knows what it
+contains, who wrote it, what it's about, and where to find it. When you
+want something, you don't browse --- you search. When you share a reading
+list with a collaborator, you share a manifest, not a zip file.
+
+\textbf{shelf} is a system for making that the reality instead of the aspiration.
+
+It consists of four tools. \code{shelf} is the main one: it owns the
+database, manages the files, handles collections and checkouts, exports
+bibliographies. \code{shelf-classify} is the metadata brain --- given a
+PDF, it figures out what it is, where it fits, and what it should be
+called. \code{shelf-index} is the search engine --- it reads your files,
+builds a semantic index, and answers natural-language queries against it.
+\code{shelf-latex} is the writing integration --- it lets you write
+\code{\textbackslash shelf\{Anderson\}} in a \LaTeX{} document and get back
+a proper citation with a clickable link that opens the book to the right
+page.
+
+The four tools talk to each other using a simple JSON protocol over
+standard input and output. \code{shelf} orchestrates; the others are
+backends. You can run them together or wire up replacements.
+
+A word about scope. The first version of shelf is aimed squarely at
+mathematics: it classifies papers into AMS subject areas, looks up metadata
+on zbMATH and arXiv, and proposes filenames in the style mathematicians
+use. That specificity is a feature right now --- it's what makes the
+defaults useful rather than generic. But the architecture is not
+math-specific. Collections, checkouts, semantic search, and clickable
+citations work the same way whether your library is algebraic geometry
+papers or social science monographs. As helpers for other disciplines are
+added, the classification and lookup layers will broaden. The rest of the
+manual applies regardless.
+
+This manual is organized into four parts, one per tool. Part~I covers
+\code{shelf}: the core concepts, how to manage a library, how collections
+and checkouts work, and how to search. Part~II covers \code{shelf-classify}:
+how a PDF gets catalogued, what confidence levels mean, and how to call the
+classifier directly. Part~III covers \code{shelf-index}: how semantic search
+works under the hood and what the three commands do. Part~IV covers
+\code{shelf-latex}: the \code{\textbackslash shelf} syntax, the
+transformation pipeline, and the fallback package for when you just need
+things to compile.
+
+You don't need to read all four parts. If you're setting up a library for
+the first time, Part~I is the one. If you're writing a paper and want
+clickable citations, jump to Part~IV. If something in the classification
+results looks wrong and you want to understand why, Part~II will explain it.

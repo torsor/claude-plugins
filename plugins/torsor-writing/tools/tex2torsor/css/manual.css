@@ -1,0 +1,204 @@
+/*
+ * manual.css — supplement to tokens.css for HTML documentation output.
+ *
+ * Provides: page layout, callout boxes, TOC sidebar, section spacing.
+ * Requires tokens.css loaded first.
+ */
+
+/* --- Page layout --- */
+body {
+  padding: var(--space-6) var(--space-5);
+}
+
+.page-layout {
+  max-width: calc(var(--measure-wide) + 18rem);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 16rem 1fr;
+  grid-template-areas: "toc body";
+  gap: var(--space-8);
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .page-layout {
+    grid-template-columns: 1fr;
+    grid-template-areas: "toc" "body";
+  }
+}
+
+/* --- TOC --- */
+.doc-toc {
+  grid-area: toc;
+  position: sticky;
+  top: var(--space-6);
+  max-height: calc(100vh - 2 * var(--space-6));
+  overflow-y: auto;
+  padding: var(--space-4);
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-3);
+  font-size: var(--text-sm);
+}
+
+.doc-toc .kicker {
+  margin-bottom: var(--space-3);
+}
+
+.doc-toc ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.doc-toc li {
+  margin: var(--space-1) 0;
+  line-height: var(--leading-snug);
+}
+
+.doc-toc ul ul {
+  padding-left: var(--space-4);
+  margin-top: var(--space-1);
+}
+
+.doc-toc ul ul li {
+  color: var(--muted);
+  font-size: var(--text-xs);
+}
+
+.doc-toc a {
+  color: var(--text-body);
+  border-bottom: none;
+}
+
+.doc-toc a:hover {
+  color: var(--link-hover);
+}
+
+/* --- Body --- */
+.doc-body {
+  grid-area: body;
+  min-width: 0;
+}
+
+.doc-header {
+  margin-bottom: var(--space-7);
+  padding-bottom: var(--space-5);
+  border-bottom: 1px solid var(--border);
+}
+
+.doc-title {
+  font-size: var(--text-4xl);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-2);
+}
+
+.doc-subtitle {
+  font-size: var(--text-lg);
+  color: var(--muted);
+  font-style: italic;
+  margin: 0;
+}
+
+/* Section spacing */
+h1, h2, h3, h4 {
+  margin-top: var(--space-7);
+}
+
+h1:first-child,
+h2:first-child {
+  margin-top: 0;
+}
+
+/* Chapter numbers from --number-sections */
+.header-section-number {
+  color: var(--muted);
+  margin-right: 0.5em;
+}
+
+/* --- Callout boxes (notebox / warnbox) --- */
+.callout {
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-2);
+  border-left: 3px solid var(--border-strong);
+  background: var(--bg-panel);
+  margin: var(--space-5) 0;
+}
+
+.callout p:last-child {
+  margin-bottom: 0;
+}
+
+.callout strong:first-child {
+  display: block;
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: var(--space-2);
+}
+
+.callout-note {
+  border-left-color: var(--skyblue);
+  background: color-mix(in oklch, var(--skyblue-soft), var(--bg-panel) 50%);
+}
+
+.callout-note strong:first-child {
+  color: var(--skyblue-deep);
+}
+
+.callout-warn {
+  border-left-color: var(--ochre);
+  background: color-mix(in oklch, var(--ochre-soft), var(--bg-panel) 50%);
+}
+
+.callout-warn strong:first-child {
+  color: var(--ochre-deep);
+}
+
+/* --- Code blocks --- */
+pre.shell,
+pre.sourceCode {
+  font-size: var(--text-sm);
+  line-height: 1.55;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-2);
+  padding: var(--space-4) var(--space-5);
+  overflow-x: auto;
+  margin: var(--space-4) 0 var(--space-5);
+}
+
+/* --- Tables --- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+  margin: var(--space-5) 0;
+}
+
+thead th {
+  background: var(--bg-sunken);
+  font-weight: 500;
+  color: var(--muted);
+  text-transform: uppercase;
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
+  padding: 0.55rem 0.8rem;
+  border-bottom: 2px solid var(--border-strong);
+  text-align: left;
+}
+
+tbody td {
+  padding: 0.5rem 0.8rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+tbody tr:hover td {
+  background: color-mix(in oklch, var(--ochre-soft), transparent 60%);
+}

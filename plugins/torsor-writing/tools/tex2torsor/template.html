@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>$if(title)$$title$$else$Document$endif$</title>
+$for(css)$  <link rel="stylesheet" href="$css$" />
+$endfor$
+$if(math)$  $math$
+$endif$
+</head>
+<body class="paper-texture">
+<div class="page-layout">
+
+$if(toc)$
+<nav class="doc-toc" id="toc" aria-label="Table of contents">
+  <p class="kicker">Contents</p>
+  $table-of-contents$
+</nav>
+$endif$
+
+<main class="doc-body prose" id="main">
+$if(title)$
+<header class="doc-header">
+  <h1 class="doc-title">$title$</h1>
+$if(subtitle)$  <p class="doc-subtitle">$subtitle$</p>
+$endif$
+</header>
+$endif$
+
+$body$
+</main>
+
+</div>
+</body>
+</html>

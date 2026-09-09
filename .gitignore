@@ -1,0 +1,18 @@
+# macOS
+.DS_Store
+
+# Python (tex2torsor)
+__pycache__/
+*.pyc
+
+# Maintainer-private files — kept out of the repo on purpose
+# sanitize.local  — de-identification rules for sync-assets.sh
+# lineage.local   — the prose lineage (named style influences)
+sanitize.local
+lineage.local
+*.swp
+*.swo
+
+# Private maintainer rules and incomplete staged imports
+*.local
+.asset-sync-*/

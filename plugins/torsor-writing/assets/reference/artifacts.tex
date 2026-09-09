@@ -1,0 +1,110 @@
+\documentclass[12pt]{book}
+%\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[numbers]{natbib}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage[capitalise]{cleveref}
+\usepackage{parskip}
+\usepackage{setspace}
+\usepackage[paperwidth=6in, paperheight=9in,
+            inner=1in, outer=0.75in,
+            top=0.875in, bottom=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage[textwidth=0.65in, textsize=scriptsize, color=orange!25]{todonotes}
+\usepackage{imakeidx}
+\makeindex[columns=2, title=Index, intoc]
+\usepackage{pdfpages}
+
+% --- Typography & Style (torsor / Solarized Cézanne) ---
+\usepackage[T1]{fontenc}
+\usepackage{ebgaramond}                        % warm Garamond serif for body
+\usepackage[scale=0.92]{cabin}                 % geometric sans for headings
+\usepackage[protrusion=true,expansion=true]{microtype}
+
+% Palette — Solarized Cézanne (mirrors tokens.css)
+\usepackage{xcolor}
+\definecolor{paper}     {HTML}{FAF6EE}         % --paper-0
+\definecolor{inkdark}   {HTML}{2A2620}         % --ink-0
+\definecolor{inkbody}   {HTML}{4A4136}         % --ink-1
+\definecolor{inkmuted}  {HTML}{6E6353}         % --ink-2
+\definecolor{inkdim}    {HTML}{8E8270}         % --ink-3
+\definecolor{terracotta}{HTML}{C0643A}         % --terracotta (approx)
+\definecolor{sage}      {HTML}{669966}         % --sage (approx)
+\definecolor{pageborder}{HTML}{DDD0B6}         % --paper-3
+
+% Hyperlink colors
+\hypersetup{
+  colorlinks = true,
+  linkcolor  = inkdark,
+  citecolor  = inkmuted,
+  urlcolor   = terracotta,
+}
+
+% Chapter and section headings
+\usepackage{titlesec}
+
+% Numbered chapters: "Chapter N" kicker (muted sans) + large title (dark serif) + rule
+\titleformat{\chapter}[display]
+  {\normalfont\sffamily\footnotesize\bfseries\color{inkmuted}}
+  {\chaptertitlename~\thechapter}
+  {0.5em}
+  {\huge\rmfamily\mdseries\color{inkdark}}
+  [\medskip{\color{pageborder}\titlerule[0.4pt]}\vspace{1em}]
+\titlespacing*{\chapter}{0pt}{-10pt}{30pt}
+
+% Unnumbered chapters (Preface, appendices): title only + rule
+\titleformat{name=\chapter,numberless}[display]
+  {\normalfont\huge\rmfamily\mdseries\color{inkdark}}
+  {}
+  {0pt}
+  {}
+  [\medskip{\color{pageborder}\titlerule[0.4pt]}\vspace{1em}]
+
+\titleformat{\section}
+  {\normalfont\sffamily\large\color{inkdark}}
+  {}
+  {0em}
+  {}
+\titlespacing*{\section}{0pt}{2.5ex plus 1ex minus .2ex}{0.5em}
+
+\titleformat{\subsection}
+  {\normalfont\sffamily\normalsize\color{inkmuted}}
+  {}
+  {0em}
+  {}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .5ex minus .2ex}{0.3em}
+
+% Headers/footers
+\usepackage{fancyhdr}
+\setlength{\headheight}{14pt}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\renewcommand{\sectionmark}[1]{\markright{#1}}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\small\color{inkdim}\thepage}
+\fancyhead[RE]{\small\color{inkmuted}\itshape\leftmark}
+\fancyhead[LO]{\small\color{inkmuted}\itshape\rightmark}
+\renewcommand{\headrulewidth}{0pt}
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \fancyfoot[C]{\small\color{inkdim}\thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+}
+
+\setcounter{secnumdepth}{0}
+
+\title{On the Design of Design\\ \large How we produce structured methodologies\\ for change and for the construction of artifacts.}
+\author{torsor lab}
+\date{}
+
+\begin{document}
+\color{inkbody}
+\setstretch{1.12}
+
+\includepdf{cover.pdf}
+\maketitle

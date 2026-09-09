@@ -1,0 +1,4 @@
+interface:
+  display_name: "Pure Mathematics Paper"
+  short_description: "Write rigorous, well-organized pure math papers"
+  default_prompt: "Use $write-pure-math-paper to turn these results, proofs, and notes into a rigorous paper."

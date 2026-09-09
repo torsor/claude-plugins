@@ -1,0 +1,27 @@
+% Fictional manuscript written for documentation and tests; errors are intentional.
+\documentclass{article}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{lemma}{Lemma}
+\title{Averaging on coordinate spaces}
+\author{A. Author}
+\date{}
+\begin{document}
+\maketitle
+\section{The averaging map}
+Let $n\geq 2$ and work over $\mathbb{Q}$. For $x=(x_1,\ldots,x_n)$ set
+\[
+  P(x)=\frac{x_1+\cdots+x_n}{n}(1,\ldots,1).
+\]
+\begin{lemma}\label{lem:constant-vectors}
+The image of $P$ is the span of $(1,\ldots,1)$.
+\end{lemma}
+\begin{proof}
+Every image vector is constant, and $P(1,\ldots,1)=(1,\ldots,1)$.
+\end{proof}
+\section{Kernel calculation}
+The kernel of $P$ has dimension $n$.
+Indeed, a vector is in the kernel precisely when its coordinates sum to zero.
+\section{Further properties}
+The image calculation follows from the lemma above.
+The coordinates is equal after averaging.
+\end{document}

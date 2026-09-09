@@ -1,0 +1,4 @@
+interface:
+  display_name: "Technical Report"
+  short_description: "Write evidence-led technical experiment reports"
+  default_prompt: "Use $write-technical-report to turn this experiment and its artifacts into a skeptical-reader technical report."
