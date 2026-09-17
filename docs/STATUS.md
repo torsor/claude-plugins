@@ -13,7 +13,7 @@ orchestrator that runs them in sequence.
 
 `tests/fixtures/review/` contains a purpose-written elementary manuscript with intentional
 errors and its issue ledger. It is documentation and test data, with no connection to a
-commissioned review. See `docs/PUBLICATION.md` for the publication checks.
+commissioned review.
 
 The shared builder remains a future design described in
 `specs/2026-08-27-unified-builder-core-future-goals.md`.

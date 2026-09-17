@@ -1,12 +1,17 @@
-.PHONY: check test audit enable-hooks
+# torsor-writing — checks for this repository.
+#
+#   make test    # the plugin's own test suite
+#
+# Requires Python 3 and the packages in requirements-dev.txt.
 
-check: test audit
+.PHONY: check test help
+
+check: test
 
 test:
 	python3 -m unittest discover -s tests -v
 
-audit:
-	bash plugins/torsor-writing/scripts/audit-public.sh --history
+help:
+	@echo "targets: test"
 
-enable-hooks:
-	git config core.hooksPath .githooks
+.DEFAULT_GOAL := check

@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-set -euo pipefail
-exec bash plugins/torsor-writing/scripts/audit-public.sh

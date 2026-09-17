@@ -54,11 +54,10 @@ manual's `main.tex`) for layout. Spec defines; examples demonstrate.
 
 ## This copy is canonical
 
-This directory used to be a snapshot, overwritten from a private style library on every
-`sync-assets.sh` run. That is retired as of 2026-09-08 — the sync no longer touches
-`assets/prose`, and **this copy is the source of truth**. It carries base files the
-upstream library never had, and it describes register by technique rather than by named
-influence. Edit it here.
+This directory used to be a snapshot, overwritten from a separate style library whenever
+the bundled assets were refreshed. That is retired: **this copy is the source of truth**.
+It carries base files the upstream library never had, and it describes register by
+technique rather than by named influence. Edit it here.
 
 ## Where the rules came from
 

@@ -48,9 +48,6 @@ plugins/torsor-writing/
     reference/      shelf-main.tex, shelf-00-preface.tex, artifacts-preamble (style only)
   tools/
     tex2torsor/     LaTeX → HTML converter
-  scripts/
-    sync-assets.sh    refresh + de-identify reference/ and tex2torsor (maintainer only)
-    audit-public.sh   check disclosure patterns in files, index, and history
 ```
 
 ### Install (on each machine)
@@ -75,38 +72,26 @@ needs these on the box that runs `make`:
 
 `tex2torsor` itself is bundled, so it is **not** a separate prerequisite.
 
-### Maintaining the bundled assets
+### The bundled assets
 
-`assets/reference/` and `tools/tex2torsor/` are snapshots generated from a private source
-tree by `scripts/sync-assets.sh`, which also strips maintainer identifiers on the way in
-(the originals are left untouched). To refresh:
+`assets/reference/` and `tools/tex2torsor/` are snapshots of a separate source tree, kept
+here so the plugin is self-contained. `assets/prose/` is canonical here and is edited in
+place — see `assets/prose/README.md`.
 
-```bash
-LAB=/path/to/source-tree plugins/torsor-writing/scripts/sync-assets.sh
-git diff
-# Stage the reviewed files explicitly, then run the publication checks below.
-```
+Machines pick up changes with `claude plugin update torsor-writing`.
 
-Other machines pick up the change with `claude plugin update torsor-writing`.
+### Tests
 
-`assets/prose/` is **not** synced — it is canonical here and is edited in place. See
-`assets/prose/README.md`.
-
-### Validation and publication
-
-[Implementation status](docs/STATUS.md) distinguishes executable checks from workflows
-that still require expert review. [Publication guidance](docs/PUBLICATION.md) describes
-example provenance, private import rules, and release checks.
+[Implementation status](docs/STATUS.md) distinguishes executable checks from workflows that
+still require expert review.
 
 ```bash
-make enable-hooks
-make check
+python3 -m pip install -r requirements-dev.txt
+make test
 ```
 
-The audit checks working files and staged content; its history mode also checks all local
-refs, historical paths, and commit and tag messages. Scanner errors fail the check. The
-pre-push hook includes explicitly outgoing objects. The tests exercise detection bypasses
-and a fictional manuscript with an executable issue ledger.
+The suite exercises the critical-guide annotation tool against a fictional manuscript with
+an executable issue ledger (`tests/fixtures/review/`).
 
 New examples require a manual provenance review. Keep commissioned documents and case
 records outside this repository. The concrete review example lives in
