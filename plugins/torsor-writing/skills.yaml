@@ -32,5 +32,7 @@ skills:
     summary: A critical guide to one paper — summary, graded issue list, repairs, and annotated copies of its source. Referee working material; runs unattended, reaches no verdict.
   - name: write-paper-repairs
     summary: Repairs for the issues a critical guide found, written into the paper's own source as tracked changes. Applies only what the paper forces; proposes the rest.
+  - name: write-correspondence-guide
+    summary: A map of where one paper's content sits in the literature — an inventory of what it asserts, several independent searches per item, and annotated copies of its source. Admits only records that change what a reader would know; states correspondences, never what to cite.
   - name: write-review-and-repair
     summary: Runs the pair end to end — write-critical-guide then write-paper-repairs on one paper — as a single unattended pipeline. A thin orchestrator; adds no judgment of its own.
