@@ -272,6 +272,11 @@ MATH_ENVS = ("equation", "align", "multline", "gather", "flalign", "alignat",
              "pmatrix", "bmatrix", "vmatrix", "tikzcd", "displaymath", "dmath")
 
 VERBATIM_ENVS = ("verbatim", "lstlisting", "minted", "Verbatim", "alltt")
+# Nothing may be inserted between \begin{itemize} and its first \item: LaTeX has
+# nowhere to put it and stops with "Something's wrong--perhaps a missing \item".
+# Found by write-correspondence-guide, which places far denser notes than this
+# skill does and hit it immediately; the hazard is the same here.
+LIST_ENVS = ("itemize", "enumerate", "description")
 
 
 def _delims(line):
@@ -302,6 +307,7 @@ def safe_line(lines, start):
     display = 0
     envs = 0
     verb = 0
+    awaiting_item = 0        # inside a list env with no \item yet
     for j, raw in enumerate(lines):
         dollars, opens, closes, doubles, line = _delims(raw)
         inline ^= (dollars % 2 == 1)
@@ -312,8 +318,15 @@ def safe_line(lines, start):
             envs -= line.count(r"\end{%s}" % e) + line.count(r"\end{%s*}" % e)
         for e in VERBATIM_ENVS:
             verb += line.count(r"\begin{%s}" % e) - line.count(r"\end{%s}" % e)
+        for e in LIST_ENVS:
+            awaiting_item += line.count(r"\begin{%s}" % e)
+            awaiting_item -= line.count(r"\end{%s}" % e)
+        awaiting_item = max(awaiting_item, 0)
+        if awaiting_item and r"\item" in line:
+            awaiting_item -= 1
         if (j >= start and not inline and not dispdd
-                and display <= 0 and envs <= 0 and verb <= 0):
+                and display <= 0 and envs <= 0 and verb <= 0
+                and not awaiting_item):
             if r"\end{document}" in lines[j]:
                 break
             return j
