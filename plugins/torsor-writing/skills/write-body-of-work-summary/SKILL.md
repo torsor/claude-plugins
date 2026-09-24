@@ -314,7 +314,7 @@ LaTeX/PDF/HTML/EPUB/Markdown **plus** the kept `source-notes/`.
 
 Same torsor preamble (Solarized Cézanne, Garamond/Cabin, box styles, `\code{}`),
 the math block (theorem environments, `pitfallbox`), `tex2torsor` + HTML design,
-the `latexmk` / pandoc (EPUB + Markdown) / `lab-view`
+the `latexmk` / pandoc (EPUB + Markdown)
 toolchain, the publication pass, the `torsor lab` credit, and the colophon page
 (inherited verbatim via the commons scaffold). A reader moving between a tool
 manual, a paper guide, a topic guide, and a body-of-work summary should feel the

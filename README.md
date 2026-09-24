@@ -68,8 +68,6 @@ needs these on the box that runs `make`:
 - a TeX install (with `amsmath`, `amsthm`, `mathtools` for guides)
 - `pandoc` (EPUB, and HTML via tex2torsor)
 - `latexmk` (part of TeX Live / MacTeX) for the PDF
-- optionally `lab-view`, the torsor lab previewer used by `make view`; the other targets
-  do not need it
 
 `tex2torsor` itself is bundled, so it is **not** a separate prerequisite.
 

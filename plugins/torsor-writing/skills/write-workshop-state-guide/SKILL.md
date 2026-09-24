@@ -238,7 +238,7 @@ guide/<YYYY-MM-DD>-<slug>-state/
 
 Same torsor preamble (Solarized Cézanne, Garamond/Cabin, box styles, `\code{}`), math block
 (theorem environments, `pitfallbox`), `tex2torsor` + HTML design, `latexmk` /
-pandoc (EPUB + Markdown) / `lab-view` toolchain, publication pass, `torsor lab` credit, and
+pandoc (EPUB + Markdown) toolchain, publication pass, `torsor lab` credit, and
 colophon page — all inherited verbatim via the commons scaffold. Unique to the state guide: the
 **confidence ledger** as its spine, the **present-tense, dated, commit-stamped** register, the
 mandatory **what changed / what might change** section, and the collaborator-steering reader.

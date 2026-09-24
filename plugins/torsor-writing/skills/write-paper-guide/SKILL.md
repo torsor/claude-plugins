@@ -355,7 +355,7 @@ The guide shares with the *thing* / *shelf* manuals:
   `\code{}` macro) — extended, not altered, with the commons math block
 - the same scaffold, build toolchain, and publication pass, from the commons
   (`assets/commons/`): `latexmk` for PDF, tex2torsor for HTML,
-  pandoc for EPUB and Markdown, `lab-view` for preview, check-build.py for verification
+  pandoc for EPUB and Markdown, check-build.py for verification
 - the same author credit: `torsor lab` (in `pdfauthor`, the epub `--metadata author`, and the colophon page)
 - the same colophon page on the title page's verso: `torsor lab` over the `torsor.org` link
 

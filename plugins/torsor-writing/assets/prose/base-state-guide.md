@@ -184,8 +184,8 @@ The second sentence never claims the question is settled, stamps its state, carr
 ## The family it belongs to
 
 The guide shares the manual family's preamble (Solarized Cézanne palette, Garamond/Cabin
-fonts, box styles, `\code{}`), `tex2torsor` and HTML design, toolchain (`latexmk`, pandoc,
-`lab-view`), the math block (theorem environments, `pitfallbox`), and `torsor lab` credit —
+fonts, box styles, `\code{}`), `tex2torsor` and HTML design, toolchain (`latexmk`, pandoc),
+the math block (theorem environments, `pitfallbox`), and `torsor lab` credit —
 all inherited verbatim via the commons scaffold. Unique to the state guide: the **confidence
 ledger** as its spine, the **present-tense, dated, commit-stamped** register, the mandatory
 **what changed / what might change** section, and the reader profile of a collaborator

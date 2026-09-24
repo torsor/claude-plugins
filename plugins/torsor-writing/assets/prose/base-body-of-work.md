@@ -175,7 +175,7 @@ carelessness even when the mathematics is right.
 
 The summary shares the manual family's preamble (Solarized Cézanne palette,
 Garamond/Cabin fonts, box styles, `\code{}`), `tex2torsor` and HTML design,
-toolchain (`latexmk`, pandoc, `lab-view`), and `torsor lab` credit — extended with
+toolchain (`latexmk`, pandoc), and `torsor lab` credit — extended with
 the math block (theorem environments, `pitfallbox`). Unique to this genre: the
 overview-plus-paragraphs shape, the purpose modes that set grammatical person,
 and the discipline of answering the six framing questions without naming them. A

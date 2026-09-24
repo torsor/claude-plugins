@@ -267,7 +267,7 @@ guide/<YYYY-MM-DD>-<slug>-state/
 
 Same torsor preamble (Solarized Cézanne, Garamond/Cabin, box styles, `\code{}`), the math
 block (theorem environments, `pitfallbox`), `tex2torsor` + HTML design, the
-`latexmk` / pandoc (EPUB + Markdown) / `lab-view` toolchain, the publication pass, the
+`latexmk` / pandoc (EPUB + Markdown) toolchain, the publication pass, the
 `torsor lab` credit, and the colophon page — all inherited verbatim via the commons scaffold.
 A reader moving between a tool manual, a paper guide, a topic guide, and a state guide should
 feel the same hand at work.

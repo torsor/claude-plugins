@@ -221,7 +221,7 @@ All manuals in this set share:
 - The same base mechanics, plus a chosen voice, from the torsor prose library
 - The same scaffold, build toolchain, and publication pass, from the commons
   (`assets/commons/`): `latexmk` for PDF, tex2torsor for HTML,
-  pandoc for EPUB and Markdown, `lab-view` for preview, check-build.py for verification
+  pandoc for EPUB and Markdown, check-build.py for verification
 - The same author credit: `torsor lab` (in `pdfauthor`, the epub `--metadata author`, and the colophon page)
 - The same colophon page on the title page's verso: `torsor lab` over the `torsor.org` link
 - The same structural rhythm: preface → big idea → features → quick reference

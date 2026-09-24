@@ -59,7 +59,7 @@ latex/chapters/*.aux
 ## Makefile
 
 Use this exact pattern — `latexmk` for PDF, tex2torsor for HTML, pandoc for EPUB and
-Markdown, `lab-view` for preview, `check-build.py` for verification:
+Markdown, the system opener for preview, `check-build.py` for verification:
 
 ```makefile
 # <genre comment>
@@ -92,7 +92,7 @@ help:
 	@echo "  make epub   — build epub/manual.epub via pandoc"
 	@echo "  make md     — build markdown/manual.md via pandoc (GitHub-Flavored Markdown)"
 	@echo "  make check  — run check-build.py (log scan, freshness, format checks)"
-	@echo "  make view   — build html (if needed) and open in lab-view"
+	@echo "  make view   — build html (if needed) and open it in the default viewer"
 	@echo "  make clean  — remove html/, epub/, and markdown/ output"
 
 # -g forces a full run: latexmk skips a rebuild when inputs changed only in timestamp,
@@ -149,8 +149,11 @@ html:
 check:
 	$(PYTHON) check-build.py
 
+# The system's own opener: xdg-open where it exists (Linux), open otherwise (macOS).
+OPEN ?= $(shell command -v xdg-open >/dev/null 2>&1 && echo xdg-open || echo open)
+
 view: html
-	lab-view $(HTML_DIR)/manual.html &
+	$(OPEN) $(HTML_DIR)/manual.html
 
 clean:
 	rm -rf $(HTML_DIR) $(EPUB_DIR) $(MD_DIR)

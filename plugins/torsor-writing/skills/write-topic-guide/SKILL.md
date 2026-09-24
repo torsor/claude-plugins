@@ -202,7 +202,7 @@ uses `latexmk`; the Markdown export (`make md`) is part of the default build.
 
 Same torsor preamble (Solarized Cézanne, Garamond/Cabin, box styles, `\code{}`), the math
 block (theorem environments, `pitfallbox`), `tex2torsor` + HTML design, the
-`latexmk` / pandoc (EPUB + Markdown) / `lab-view` toolchain, the publication
+`latexmk` / pandoc (EPUB + Markdown) toolchain, the publication
 pass, the `torsor lab` credit, and the colophon page on the title
 page's verso (`torsor lab` over the `torsor.org` link — inherited verbatim via the
 commons scaffold this skill reuses). A reader moving between a tool manual, a
