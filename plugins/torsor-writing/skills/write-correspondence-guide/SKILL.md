@@ -611,10 +611,13 @@ still empty defeats that completely — the document then has no mechanical rela
 thing it claims to summarise. This happened on a first run. Run `correspond.py check` and
 confirm it reports a non-zero connection count before any prose is written.
 
+**Start the Makefile from `references/Makefile.package`** and copy `correspond.py` into the
+package beside it, so the package rebuilds without the skill.
+
 **Stage the Makefile to what exists.** A build that names Phase 6's hand-written files as
 prerequisites fails on a package that has only reached Phase 5, which is most of the time a
 user will run it. Guard that target: if the prose is not written, say so and name what the
-readable artifact is instead.
+readable artifact is instead. The template already does this.
 
 Generated, not written by hand:
 
@@ -623,8 +626,12 @@ python3 correspond.py all --clean-aux -o .
 ```
 
 produces the entries view, the unlocated view, the leads view, one `callouts/<id>.tex` per
-entry, one `annotated-<literature>.tex` per literature plus `annotated-unlocated.tex`, and the
-compiled PDFs, verifying each build rather than trusting its exit status.
+entry, `annotated-all.tex` (every admitted record set in full), one `annotated-<literature>.tex`
+per literature (only when annotation exceeds about 60% of an average page of the combined
+copy; `annotate` measures and reports it) plus `annotated-unlocated.tex`, and the compiled PDFs, verifying each build
+rather than trusting its exit status; then `annotated-all.epub` from the combined copy.
+**`annotated-all.pdf` and `annotated-all.epub` are expected products of every run** that has
+an annotation base; the EPUB is skipped, with a message, only where pandoc is absent.
 
 Write note bodies as **Markdown** and let the generator translate them for LaTeX.
 
@@ -660,13 +667,16 @@ stated explicitly. Open it by saying what the package is.
    that fails leaves the previous `.tex` on disk, the build then fails on stale input, and
    the error you read belongs to a document that does not reflect the change you just made.
    This cost a full diagnostic cycle on a first run. Run each step and read its output.
-4. Render a page of an annotated copy and **look at it.** The builder now falls back to
+4. Render a page of an annotated copy — `annotated-all.pdf` at least — and **look at it.** The builder now falls back to
    inline boxes by itself where the margin cannot hold a literature's notes, and says so —
    but it is detecting a failed build, not an ugly one, and only a person can see the
    difference between a page that works and a page that is merely legal.
 5. The colour key says plainly that it grades nothing. A ramp that reads as severity has
    dragged the wrong register back in.
 6. In Case B, every annotated passage was confirmed present in the submitted PDF.
+7. `correspond.py epub` reports `annotated-all.epub ok` with the note count equal to the
+   admitted records, and the number of formulas left as TeX. Say that number at hand-back;
+   the PDF is the copy where every formula is typeset.
 
 Then hand back: the path, what the package contains, the number of entries and connections,
 how many passes the inventory took and what the last one added, and **what could not be

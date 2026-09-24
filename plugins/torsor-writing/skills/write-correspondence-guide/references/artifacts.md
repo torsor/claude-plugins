@@ -61,6 +61,20 @@ this part of" faster than any prose.
 **One further copy: what nothing was found for.** For an author, their own contribution
 mapped onto their own draft.
 
+**And one combined copy: `annotated-all`, in PDF and EPUB.** Always made. Every admitted
+record at its passage, from every literature at once, and each note carries the **whole
+record** — what it changes, the source with its locator, the relation, how far the source was
+read, the dictionary, where it stops — rather than a pointer. It is the copy that reads
+without the guide open beside it, which is exactly the situation of an e-reader, so it is
+also rendered to `annotated-all.epub` (`correspond.py epub`, run by `all`). In the EPUB each
+note is a `<div>` classed by its relation and washed in the same pale colour as the PDF, with
+the text colour pinned so the box stays legible when the reader switches to a dark theme.
+The combined copy is the preferred product. The per-literature cut is made as well only
+when the combined copy is crowded: `annotate` compiles the bare paper and the combined copy,
+measures annotation as $1-P_0/P$ of an average page, and makes the cut when that exceeds about
+60% (`CUT_SHARE`; override with `--cut always|never`). A record count is the wrong measure,
+since the same number of records crowds a short paper and barely marks a long one.
+
 **The note is one line.** Kind, source with locator, pointer into the guide:
 
 ```
@@ -121,10 +135,14 @@ correspondence-guide/
   inventory.yaml              ledger
   correspondences.yaml        ledger
   callouts/<id>.tex           generated; injectable into a reading guide
-  annotated-<literature>.tex  generated, one per literature
+  annotated-all.tex/.pdf      generated, every admitted record in full; always made
+  annotated-all.epub          generated from annotated-all.tex by pandoc; always made
+  annotated-<literature>.tex  generated, one per literature, only when annotation
+                              exceeds ~60% of an average page of annotated-all
   annotated-unlocated.tex     generated
-  annotate_tex.py             copied in, so the package rebuilds without the skill
-  Makefile  README.md
+  correspond.py               copied in, so the package rebuilds without the skill
+  Makefile                    from references/Makefile.package
+  README.md
 search-notes/                 the audit trail: inventory passes, search records,
                               disagreements, the full union of what was looked at.
                               Kept, not handed over.

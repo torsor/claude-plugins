@@ -1,0 +1,45 @@
+# Correspondence guide to <paper>. Copy to correspondence-guide/Makefile at Phase 6.
+# Everything here is generated from the two ledgers, inventory.yaml and
+# correspondences.yaml; nothing generated is edited by hand.
+#
+#   make          check the ledgers, regenerate everything, build the guide
+#   make check    anchors resolve and the ledgers agree
+#   make map      views (A-*.md), callouts/, the annotated copies and their PDFs,
+#                 and annotated-all.epub -- the paper with every admitted record set
+#                 in full at its passage (PDF and EPUB are both expected products)
+#   make guide    the written guide -> 00-guide.pdf (skipped, with a message, until
+#                 Part I and Part II exist)
+#   make clean    remove LaTeX by-products
+
+PYTHON ?= python3
+
+.PHONY: all check map guide clean
+
+all: check map guide
+
+check:
+	$(PYTHON) correspond.py check -o .
+
+# `all` = callouts, views, annotate (annotated-all, the per-literature cut when there
+# are enough marks, annotated-unlocated), build (compile and verify every copy),
+# epub (annotated-all.epub; reported and skipped if pandoc is absent).
+map:
+	$(PYTHON) correspond.py all --clean-aux -o .
+
+# Stage this target to what exists: a package that has only reached Phase 5 has no
+# written guide, and `make` must still exit zero.
+guide:
+	@if [ ! -f guide/latex/main.tex ]; then \
+	  echo "The written guide is not in guide/latex yet."; \
+	  echo "The readable artifacts are A-connections.md, annotated-all.pdf and annotated-all.epub."; \
+	  exit 0; \
+	fi
+	$(MAKE) -C guide gen
+	cd guide && latexmk -g -pdf -interaction=nonstopmode -halt-on-error -cd latex/main.tex
+	$(MAKE) -C guide html epub md
+	cd guide && $(PYTHON) check-build.py
+	cp guide/latex/main.pdf 00-guide.pdf
+
+clean:
+	rm -f *.aux *.log *.out *.toc
+	-cd guide/latex && latexmk -c main.tex >/dev/null 2>&1

@@ -9,9 +9,11 @@ Nothing is transcribed by hand: written twice, prose and anchors drift.
     python3 correspond.py check -v          anchors resolve, ledgers agree
     python3 correspond.py callouts -o .     callouts/<id>.tex
     python3 correspond.py views -o .        A-entries.md, A-unlocated.md, A-leads.md
-    python3 correspond.py annotate -o .     annotated-<literature>.tex (+ unlocated)
+    python3 correspond.py annotate -o .     annotated-all.tex, annotated-<literature>.tex,
+                                            annotated-unlocated.tex
     python3 correspond.py build -o .        compile and verify each one
-    python3 correspond.py all -o .          everything, then build
+    python3 correspond.py epub -o .         annotated-all.epub (needs pandoc)
+    python3 correspond.py all -o .          everything, then build, then epub
 
 The anchor rule is the one that makes this work: an anchor must be a verbatim
 substring of exactly one line of the annotation base.  The math- and verbatim-aware
@@ -1051,6 +1053,58 @@ def cmd_views(args):
     return 0
 
 
+CUT_SHARE = 0.6   # make the per-literature cut only when annotation is ~60% of a page:
+                  # the single combined copy is the preferred product
+
+
+def _pages(outdir, stem):
+    logp = os.path.join(outdir, stem + ".log")
+    if not os.path.exists(logp):
+        return None
+    m = re.search(r"Output written on .*?\((\d+) pages?", open(logp, errors="replace").read(), re.S)
+    return int(m.group(1)) if m else None
+
+
+def annotation_share(lines, all_lines):
+    """Share of the combined copy's pages that is annotation, as 1 - P0/P.
+
+    P0 is the page count of the paper with no notes, P that of annotated-all.  This
+    is the average composition of a page; without a PDF-geometry library the
+    per-page (median) figure is not available.  Returns (P0, P, share), or None
+    when either copy fails to compile.
+    """
+    import shutil
+    import tempfile
+    tmp = tempfile.mkdtemp(prefix="corr-density-")
+    try:
+        counts = []
+        for stem, body in (("bare", lines), ("combined", all_lines)):
+            with open(os.path.join(tmp, stem + ".tex"), "w") as fh:
+                fh.write("\n".join(body) + "\n")
+            latex(stem + ".tex", tmp, runs=2)
+            counts.append(_pages(tmp, stem))
+        if None in counts or not counts[1]:
+            return None
+        p0, p = counts
+        return p0, p, max(0.0, 1.0 - float(p0) / p)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+def _key_texts(which, full):
+    title = ("Marked: what nothing was located for" if which == "@unlocated"
+             else "Marked: located connections" if which == "@all"
+             else "Marked: %s" % which)
+    sub = ("Each mark names an entry for which no corresponding source was located."
+           if which == "@unlocated"
+           else "Each note gives what the record changes, the source with its "
+                "locator, the kind of relationship, how far the source was read, "
+                "and where the correspondence stops." if full
+           else "Each mark gives the kind of relationship, the source with its "
+                "locator, and the entry in the guide carrying the full record.")
+    return title, sub
+
+
 def cmd_annotate(args):
     inv, cor, ents = load(args.outdir)
     index = corr_index(cor)
@@ -1059,37 +1113,61 @@ def cmd_annotate(args):
         print("no annotation base: annotated copies are not produced (Case C)")
         return 0
     made = []
-    # The per-literature cut exists so a reader can open one copy and see one body
-    # of work's whole footprint.  Below a threshold it does the opposite, scattering
-    # a handful of notes over a dozen near-empty documents, so collapse to one.
-    lits = literatures(cor)
-    n_marks = sum(1 for c in (cor.get("entries") or [])
-                  for conn in (c.get("connections") or []) if is_news(conn))
-    if n_marks < 60 and len(lits) > 1:
-        targets = [("@all", "annotated-connections")]
-        print("%d marks over %d literatures: one combined copy, not a cut"
-              % (n_marks, len(lits)))
-    else:
-        targets = [(lit, "annotated-%s" % slug(lit)) for lit in lits]
-    targets.append(("@unlocated", "annotated-unlocated"))
-    for which, stem in targets:
-        out, n = build_annotated(lines, inv, cor, index, which, not args.margin,
-                                 full=args.full)
+
+    def write(which, stem, full):
+        out, n = build_annotated(lines, inv, cor, index, which, not args.margin, full=full)
         if not n:
-            continue
-        title = ("Marked: what nothing was located for" if which == "@unlocated"
-                 else "Marked: located connections" if which == "@all"
-                 else "Marked: %s" % which)
-        sub = ("Each mark names an entry for which no corresponding source was located."
-               if which == "@unlocated"
-               else "Each mark gives the kind of relationship, the source with its "
-                    "locator, and the entry in the guide carrying the full record.")
-        out = insert_key(out, title, sub)
-        p = os.path.join(args.outdir, stem + ".tex")
-        with open(p, "w") as fh:
+            return None
+        out = insert_key(out, *_key_texts(which, full))
+        with open(os.path.join(args.outdir, stem + ".tex"), "w") as fh:
             fh.write("\n".join(out) + "\n")
         made.append((stem, n))
         print("%s.tex: %d marks" % (stem, n))
+        return out
+
+    # annotated-all is always made: every admitted record, set in full at its passage,
+    # so the one copy reads without the guide beside it.  It is also the source of
+    # annotated-all.epub (`correspond.py epub`).
+    all_out = write("@all", ALL_STEM, True)
+
+    # The per-literature cut exists so a reader can open one copy and see one body of
+    # work's whole footprint.  It earns its place only when the combined copy is
+    # crowded: when annotation is more than about 60% of a typical page, the paper is
+    # hard to read through it, and one literature at a time is the readable view.  The
+    # threshold deliberately favours the single product.  Below that, the
+    # cut scatters a few notes over many near-empty documents, and the combined copy
+    # stands alone.  Measured, not guessed from a record count: the same number of
+    # records crowds a short paper and barely marks a long one.
+    lits = literatures(cor)
+    cut = args.cut
+    if cut == "auto":
+        if all_out is None or len(lits) < 2:
+            cut = "never"
+        else:
+            m = annotation_share(lines, all_out)
+            if m is None:
+                cut = "always"
+                print("annotation density: could not measure (a copy failed to compile); "
+                      "making the per-literature cut")
+            else:
+                p0, p, share = m
+                cut = "always" if share > CUT_SHARE else "never"
+                print("annotation density: paper %d pp, combined copy %d pp, annotation "
+                      "%.0f%% of a page on average (threshold %.0f%%): %s"
+                      % (p0, p, 100 * share, 100 * CUT_SHARE,
+                         "per-literature cut made" if cut == "always"
+                         else "combined copy only"))
+    if cut == "always":
+        for lit in lits:
+            write(lit, "annotated-%s" % slug(lit), args.full)
+    else:
+        # A cut left over from an earlier run would otherwise still be built.
+        for lit in lits:
+            stale = os.path.join(args.outdir, "annotated-%s" % slug(lit))
+            for ext in (".tex", ".pdf"):
+                if os.path.exists(stale + ext):
+                    os.remove(stale + ext)
+    write("@unlocated", "annotated-unlocated", args.full)
     if not made:
         print("no anchored connections; nothing annotated")
     return 0
@@ -1111,6 +1189,7 @@ def cmd_build(args):
         for lit in literatures(cor):
             targets["annotated-%s" % slug(lit)] = lit
         targets["annotated-unlocated"] = "@unlocated"
+        targets[ALL_STEM] = "@all"
     except LedgerError:
         inv = cor = index = lines = None
 
@@ -1124,7 +1203,7 @@ def cmd_build(args):
         # Inline boxes are not floats and always place.
         if problems and lines is not None and stem in targets:
             out, n = build_annotated(lines, inv, cor, index, targets[stem], True,
-                                     full=getattr(args, 'full', False))
+                                     full=(stem == ALL_STEM) or getattr(args, 'full', False))
             out = insert_key(out, "Marked: %s" % targets[stem],
                              "Notes are set inline here rather than in the margin, "
                              "because at this density the margin cannot hold them.")
@@ -1144,6 +1223,136 @@ def cmd_build(args):
     return rc
 
 
+# ----------------------------------------------------------------------
+# annotated-all.epub
+# ----------------------------------------------------------------------
+#
+# pandoc reads the annotated LaTeX with three adjustments, each for something pdflatex
+# accepts and pandoc's reader does not.  The adjusted intermediate is written as
+# EPUB_SRC, whose name does not start with "annotated-", so `build` never compiles it.
+
+ALL_STEM = "annotated-all"
+EPUB_SRC = "epub-src-annotated-all.tex"
+_BUILDREL = re.compile(r"\\buildrel\s*(\{[^{}]*\}|\S)\s*\\over\s*(\{[^{}]*\}|\\[A-Za-z]+)")
+_KIND = {rgb: label for label, rgb in LABEL_COLOUR.items()}
+
+
+def _env_name(label):
+    return "corr" + re.sub(r"[^a-z]", "", label.lower())
+
+
+def _matching_brace(s, i):
+    depth, j = 0, i
+    while j < len(s):
+        ch = s[j]
+        if ch == "\\":
+            j += 2
+            continue
+        if ch == "{":
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth == 0:
+                return j
+        j += 1
+    raise LedgerError("unbalanced note at offset %d of %s.tex" % (i, ALL_STEM))
+
+
+def _todo_to_env(tex):
+    """\\todo[...colour...]{body} -> an environment named for the relationship.
+
+    pandoc turns an unknown environment into a <div> of that class, and the EPUB's
+    stylesheet gives each class the same pale wash the PDF copies use."""
+    out, i = [], 0
+    while True:
+        k = tex.find("\\todo[", i)
+        if k < 0:
+            out.append(tex[i:])
+            return "".join(out)
+        out.append(tex[i:k])
+        opt_end = tex.index("]{", k)
+        m = re.search(r"red,([\d.]+);green,([\d.]+);blue,([\d.]+)", tex[k:opt_end])
+        label = _KIND.get(",".join(m.groups())) if m else None
+        e = _matching_brace(tex, opt_end + 1)
+        body = tex[opt_end + 2:e]
+        head = LABELS[label][0].capitalize() if label else "Correspondence"
+        env = _env_name(label) if label else "corrbox"
+        out.append("\n\n\\begin{%s}\\textsc{%s.}\\ %s\\end{%s}\n\n" % (env, head, body, env))
+        i = e + 1
+
+
+def _for_pandoc(tex):
+    # 1. The fallback stubs are no-ops under LaTeX (\providecommand never overrides),
+    #    but pandoc treats them as definitions and clobbers \mathbb, \in, \sim ...
+    tex = "\n".join(l for l in tex.split("\n")
+                    if not (l.startswith("\\providecommand") and "\\ensuremath{\\mathrm{" in l))
+    # 2. \buildrel{a}\over{b} does not convert; \overset{a}{b} does.
+    tex = _BUILDREL.sub(lambda m: "\\overset{%s}{%s}" % (m.group(1).strip("{}"),
+                                                          m.group(2).strip("{}")), tex)
+    # 3. A hand-written thebibliography is dropped and its \cite keys print empty:
+    #    substitute the labels that print, and set the list as an ordinary section.
+    labels = dict((k, v) for v, k in re.findall(r"\\bibitem\s*\[([^\]]*)\]\{([^}]*)\}", tex))
+
+    def cite(m):
+        lab = ", ".join(labels.get(k.strip(), k.strip()) for k in m.group(2).split(","))
+        return "[%s%s]" % (lab, (", " + m.group(1)) if m.group(1) else "")
+    tex = re.sub(r"\\cite\s*(?:\[([^\]]*)\])?\{([^}]*)\}", cite, tex)
+    tex = re.sub(r"\\begin\{thebibliography\}\{[^}]*\}",
+                 r"\\section*{References}\\begin{itemize}", tex)
+    tex = tex.replace("\\end{thebibliography}", "\\end{itemize}")
+    tex = re.sub(r"\\bibitem\s*\[([^\]]*)\]\{[^}]*\}",
+                 lambda m: "\\item \\textbf{[%s]} " % m.group(1), tex)
+    return tex.replace("\\newblock", " ")
+
+
+def _epub_css():
+    base = subprocess.run(["pandoc", "--print-default-data-file", "epub.css"],
+                          capture_output=True, text=True).stdout
+    rules = ["div[class^='corr'] { margin: 0.8em 0; padding: 0.5em 0.7em; font-size: 0.9em;",
+             "  border-left: 3px solid #8E8270; border-radius: 3px; color: #2A2620; }",
+             "div[class^='corr'] .smallcaps { font-variant: small-caps; font-weight: bold; }"]
+    for label, rgb in LABEL_COLOUR.items():
+        r, g, b = (int(round(float(x) * 255)) for x in rgb.split(","))
+        rules.append(".%s { background-color: rgb(%d,%d,%d); }" % (_env_name(label), r, g, b))
+    return base + "\n/* correspondence boxes: colour indexes the relationship, grades nothing */\n" \
+        + "\n".join(rules) + "\n"
+
+
+def cmd_epub(args):
+    src = os.path.join(args.outdir, ALL_STEM + ".tex")
+    if not os.path.exists(src):
+        print("no %s.tex (run `annotate` first); no EPUB" % ALL_STEM)
+        return 0
+    try:
+        subprocess.run(["pandoc", "--version"], capture_output=True, check=True)
+    except (OSError, subprocess.CalledProcessError):
+        print("pandoc not found: %s.epub not produced" % ALL_STEM)
+        return 0
+    inv = yaml.safe_load(open(os.path.join(args.outdir, "inventory.yaml")))
+    paper = (inv.get("meta") or {}).get("paper") or {}
+    tex = _for_pandoc(_todo_to_env(open(src, encoding="utf-8", errors="replace").read()))
+    with open(os.path.join(args.outdir, EPUB_SRC), "w") as fh:
+        fh.write(tex)
+    with open(os.path.join(args.outdir, ALL_STEM + ".css"), "w") as fh:
+        fh.write(_epub_css())
+    title = "%s, annotated with its correspondences" % " ".join(
+        str(paper.get("title") or "The paper").split())
+    authors = "; ".join(paper.get("authors") or [])
+    cmd = ["pandoc", EPUB_SRC, "--mathml", "--css", ALL_STEM + ".css", "--toc",
+           "--split-level=1", "--metadata", "title=%s" % title,
+           "--metadata", "author=%s%sannotations: torsor lab" % (authors, "; " if authors else ""),
+           "-o", ALL_STEM + ".epub"]
+    r = subprocess.run(cmd, cwd=args.outdir, capture_output=True, text=True)
+    n_notes = tex.count("\\begin{corr")
+    unconverted = sum(1 for l in r.stderr.splitlines() if "Could not convert TeX math" in l)
+    if r.returncode:
+        print("%s.epub FAIL  pandoc exit %d: %s" % (ALL_STEM, r.returncode, r.stderr.strip()[:300]))
+        return 1
+    print("%s.epub ok  %d notes; %d formulas left as TeX (pandoc could not convert them)"
+          % (ALL_STEM, n_notes, unconverted))
+    return 0
+
+
 def cmd_all(args):
     for fn in (cmd_callouts, cmd_views, cmd_annotate):
         rc = fn(args)
@@ -1152,14 +1361,14 @@ def cmd_all(args):
     rc = cmd_build(args)
     if args.clean_aux:
         clean_aux(args.outdir)
-    return rc
+    return rc or cmd_epub(args)
 
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("command", choices=["check", "callouts", "views", "annotate",
-                                        "build", "all"])
+                                        "build", "epub", "all"])
     ap.add_argument("-o", "--outdir", default=".")
     ap.add_argument("-v", "--verbose", action="store_true")
     ap.add_argument("--full", action="store_true",
@@ -1170,10 +1379,14 @@ def main():
                          "the margin is too narrow for a note carrying a source and a "
                          "locator, and it truncates them.")
     ap.add_argument("--clean-aux", action="store_true")
+    ap.add_argument("--cut", choices=["auto", "always", "never"], default="auto",
+                    help="per-literature annotated copies: auto (default) makes them when "
+                         "annotation is more than ~60%% of a typical page of annotated-all")
     args = ap.parse_args()
     try:
         return {"check": cmd_check, "callouts": cmd_callouts, "views": cmd_views,
-                "annotate": cmd_annotate, "build": cmd_build, "all": cmd_all
+                "annotate": cmd_annotate, "build": cmd_build, "epub": cmd_epub,
+                "all": cmd_all
                 }[args.command](args)
     except LedgerError as exc:
         print("error: %s" % exc, file=sys.stderr)
