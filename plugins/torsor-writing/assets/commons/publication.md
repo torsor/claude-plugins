@@ -1,7 +1,7 @@
 # The publication pass — verification by evidence, not vigilance
 
 Every torsor book ends with this pass. It exists because the failure modes of the
-toolchain are quiet: `latexd` exits 0 on failure, an equation walks past the margin
+toolchain are quiet: a build exits 0 around a wrong or stale PDF, an equation walks past the margin
 without breaking anything, HTML math silently degrades to raw TeX. The pass moves the
 checks from "remember to look" to mechanism, in three tiers. A document is not done —
 not committed, not delivered, not declared finished — until the pass has run and its

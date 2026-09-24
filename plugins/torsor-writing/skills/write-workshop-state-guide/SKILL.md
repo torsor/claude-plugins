@@ -229,7 +229,7 @@ guide/<YYYY-MM-DD>-<slug>-state/
 | Burying corrections and dead ends in footnotes | Make them a **first-class chapter** ("what changed / what might change") |
 | Result-maxing rhetoric ("contribution," "pulled it off," "impressive") | Use the five state questions; obey the extended ban-list + no-premature-closure rule |
 | Overwriting last week's state guide | Write a **new dated artifact**; progression must stay visible |
-| Guessing the build toolchain | Reuse the commons scaffold (`latexd`→`latexmk`, `tex2torsor`, pandoc) + `lessons.md` |
+| Guessing the build toolchain | Reuse the commons scaffold (`latexmk`, `tex2torsor`, pandoc) + `lessons.md` |
 | Throwing away the distillation | Keep `state-notes/` as a deliverable, distinct from background `source-notes/` |
 
 ---
@@ -237,7 +237,7 @@ guide/<YYYY-MM-DD>-<slug>-state/
 ## What stays the same as the manual family
 
 Same torsor preamble (Solarized Cézanne, Garamond/Cabin, box styles, `\code{}`), math block
-(theorem environments, `pitfallbox`), `tex2torsor` + HTML design, `latexd` (→ `latexmk`) /
+(theorem environments, `pitfallbox`), `tex2torsor` + HTML design, `latexmk` /
 pandoc (EPUB + Markdown) / `lab-view` toolchain, publication pass, `torsor lab` credit, and
 colophon page — all inherited verbatim via the commons scaffold. Unique to the state guide: the
 **confidence ledger** as its spine, the **present-tense, dated, commit-stamped** register, the

@@ -8,7 +8,9 @@ hits the problem they solve. Not every document needs them.
 
 ## General gotcha (applies always, every genre)
 
-**`latexd` exits 0 even when LaTeX fails.** `make pdf && echo ok` can lie. `make check`
+**A build's exit status is not evidence.** `make pdf && echo ok` can lie: undefined
+references are only warnings, a halted run can leave the previous PDF in place, and latexmk
+can skip a rebuild it judges unnecessary. `make check`
 (check-build.py) automates the detection — it verifies the PDF exists, is newer than the
 sources, and that the log is free of errors and undefined references. If you're on a
 tree without check-build.py, verify by hand:
@@ -66,7 +68,7 @@ use a table.
 **The PDF is the source of truth.** The HTML/EPUB math path (tex2torsor + pandoc's
 built-in converter) cannot render: over-accents (`\widetilde`, `\overline`), `\frac`,
 extensible/labelled arrows (`\xrightarrow`, `\varinjlim`), or `array`/`aligned` (so:
-commutative diagrams). The PDF via `latexd` renders everything; the other two formats
+commutative diagrams). The PDF via `latexmk` renders everything; the other two formats
 need help.
 
 Handle it **without changing the shared `tex2torsor`** — keep the workaround local to

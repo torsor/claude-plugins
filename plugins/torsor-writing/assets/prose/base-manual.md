@@ -99,6 +99,6 @@ as carelessness even when everything is correct.
 
 All manuals share the LaTeX preamble (Solarized Cézanne palette, Garamond/Cabin fonts, box
 styles, `\code{}` macro), the `tex2torsor` converter and HTML design, the toolchain
-(`latexd` PDF, pandoc EPUB, `lab-view` preview), and the author credit `torsor lab`. A
+(`latexmk` PDF, pandoc EPUB, `lab-view` preview), and the author credit `torsor lab`. A
 reader moving between manuals should feel at home. Don't deviate from the design without a
 strong reason and the author's agreement.

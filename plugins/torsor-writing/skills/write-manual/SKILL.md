@@ -76,7 +76,7 @@ Before doing anything else, read:
    ${CLAUDE_PLUGIN_ROOT}/assets/commons/publication.md
    ```
    `scaffold.md` is required reading before Step 4. Reach for `lessons.md` when the
-   toolchain misbehaves (`latexd` reporting success on a failed build, HTML/EPUB math
+   toolchain misbehaves (a build reporting success on a failed or stale PDF, HTML/EPUB math
    not rendering). The tex2torsor converter lives at
    `${CLAUDE_PLUGIN_ROOT}/tools/tex2torsor/`.
 
@@ -220,7 +220,7 @@ All manuals in this set share:
 - The same LaTeX preamble (Solarized Cézanne palette, Garamond/Cabin fonts, box styles, `\code{}` macro)
 - The same base mechanics, plus a chosen voice, from the torsor prose library
 - The same scaffold, build toolchain, and publication pass, from the commons
-  (`assets/commons/`): `latexd` (or `latexmk` fallback) for PDF, tex2torsor for HTML,
+  (`assets/commons/`): `latexmk` for PDF, tex2torsor for HTML,
   pandoc for EPUB and Markdown, `lab-view` for preview, check-build.py for verification
 - The same author credit: `torsor lab` (in `pdfauthor`, the epub `--metadata author`, and the colophon page)
 - The same colophon page on the title page's verso: `torsor lab` over the `torsor.org` link

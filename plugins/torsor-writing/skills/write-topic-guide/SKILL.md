@@ -134,7 +134,7 @@ Authoring reuses the family commons and `write-paper-guide`, with topic-guide de
 (directory, `.gitignore`, Makefile, preamble rules, the math block, STYLE.md assembly,
 tex2torsor + check-build.py copies); take the guide-genre specifics — title page,
 reader profile, outline conventions — from `write-paper-guide` Steps 4–5; and consult
-`${CLAUDE_PLUGIN_ROOT}/assets/commons/lessons.md` for the math-rendering and `latexd`
+`${CLAUDE_PLUGIN_ROOT}/assets/commons/lessons.md` for the math-rendering and build
 gotchas. Do not re-derive the build.
 
 Apply these deltas to those steps:
@@ -158,8 +158,7 @@ Apply these deltas to those steps:
 Build all four formats, run `make check`, and finish with the publication pass
 (`${CLAUDE_PLUGIN_ROOT}/assets/commons/publication.md`). The guide deliverable is
 the LaTeX/PDF/HTML/EPUB/Markdown **plus** the `source-notes/` directory. The `pdf` target
-falls back to `latexmk` where `latexd` isn't installed; the Markdown export (`make md`) is
-part of the default build.
+uses `latexmk`; the Markdown export (`make md`) is part of the default build.
 
 ---
 
@@ -195,15 +194,15 @@ part of the default build.
 | Treating the topic as a fake single "paper" and walking its sections | Decide a **concept spine**; organize Part II by milestone, not by source |
 | Skipping the synthesis/gaps step and discovering mid-write a step no source covers | Produce `synthesis.md` with a gaps list; resolve gaps before Phase C |
 | Letting sources' clashing conventions leak in | Pin ONE verified convention in `synthesis.md` and the appendix; reconcile everywhere |
-| Guessing the build (`xelatex`/`make4ht`/`tex4ebook`) | Reuse the commons scaffold's `latexd` (→ `latexmk` fallback) / `tex2torsor` / `pandoc` (EPUB + Markdown) toolchain + `assets/commons/lessons.md` |
+| Guessing the build (`xelatex`/`make4ht`/`tex4ebook`) | Reuse the commons scaffold's `latexmk` / `tex2torsor` / `pandoc` (EPUB + Markdown) toolchain + `assets/commons/lessons.md` |
 | Hand-writing every chapter sequentially for a large guide | Subagent per chapter + progress ledger + final faithfulness review |
 | Throwing away the extraction work | Keep `source-notes/` as a deliverable — it is reusable and is part of the point |
 
 ## What stays the same as the manual family
 
 Same torsor preamble (Solarized Cézanne, Garamond/Cabin, box styles, `\code{}`), the math
-block (theorem environments, `pitfallbox`), `tex2torsor` + HTML design, the `latexd`
-(→ `latexmk` fallback) / pandoc (EPUB + Markdown) / `lab-view` toolchain, the publication
+block (theorem environments, `pitfallbox`), `tex2torsor` + HTML design, the
+`latexmk` / pandoc (EPUB + Markdown) / `lab-view` toolchain, the publication
 pass, the `torsor lab` credit, and the colophon page on the title
 page's verso (`torsor lab` over the `torsor.org` link — inherited verbatim via the
 commons scaffold this skill reuses). A reader moving between a tool manual, a

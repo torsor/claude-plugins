@@ -42,7 +42,7 @@ markdown/
 # LaTeX PDF output
 latex/main.pdf
 
-# LaTeX intermediate artifacts (if built without latexd)
+# LaTeX intermediate artifacts (latexmk writes them beside main.tex)
 latex/*.aux
 latex/*.log
 latex/*.out
@@ -58,14 +58,13 @@ latex/chapters/*.aux
 
 ## Makefile
 
-Use this exact pattern — `latexd` for PDF, tex2torsor for HTML, pandoc for EPUB and
+Use this exact pattern — `latexmk` for PDF, tex2torsor for HTML, pandoc for EPUB and
 Markdown, `lab-view` for preview, `check-build.py` for verification:
 
 ```makefile
 # <genre comment>
 #
-# PDF:  latexd (wrapper around latexmk — keeps build artifacts out of source tree;
-#         falls back to plain latexmk when latexd isn't on PATH)
+# PDF:  latexmk (ships with TeX Live / MacTeX; aux files stay in latex/, gitignored)
 # HTML: tex2torsor (Python converter)
 # EPUB: pandoc (directly from LaTeX source)
 # MD:   pandoc → GitHub-Flavored Markdown (directly from LaTeX source)
@@ -88,7 +87,7 @@ MD_OUT    := $(MD_DIR)/manual.md
 
 help:
 	@echo "Targets:"
-	@echo "  make pdf    — build latex/main.pdf via latexd (or latexmk if latexd absent)"
+	@echo "  make pdf    — build latex/main.pdf via latexmk"
 	@echo "  make html   — build html/manual.html via tex2torsor"
 	@echo "  make epub   — build epub/manual.epub via pandoc"
 	@echo "  make md     — build markdown/manual.md via pandoc (GitHub-Flavored Markdown)"
@@ -96,15 +95,11 @@ help:
 	@echo "  make view   — build html (if needed) and open in lab-view"
 	@echo "  make clean  — remove html/, epub/, and markdown/ output"
 
-# latexd keeps build artifacts out of the source tree. On hosts without it,
-# fall back to plain latexmk (leaves aux files in latex/ — already gitignored).
+# -g forces a full run: latexmk skips a rebuild when inputs changed only in timestamp,
+# which leaves a PDF older than its sources and fails `make check`'s freshness test.
 pdf:
-	@if command -v latexd >/dev/null 2>&1; then \
-	  latexd $(LATEX_DIR)/main.tex; \
-	else \
-	  echo "latexd not on PATH — falling back to latexmk"; \
-	  latexmk -pdf -interaction=nonstopmode -halt-on-error -cd $(LATEX_DIR)/main.tex; \
-	fi
+	latexmk -g -pdf -interaction=nonstopmode -halt-on-error -file-line-error \
+	  -cd $(LATEX_DIR)/main.tex
 
 epub:
 	mkdir -p $(EPUB_DIR)
@@ -165,9 +160,11 @@ clean:
 source file, so the `epub` and `md` targets must `cd $(LATEX_DIR)` before invoking
 pandoc and use `../$(EPUB_OUT)` / `../$(MD_OUT)` as the output path.
 
-**PDF note:** `latexd` is a local lab tool and isn't on most systems. The `pdf` target
-checks for it and falls back to plain `latexmk`, so the build works out of the box; the
-fallback leaves aux files in `latex/` (already gitignored).
+**PDF note:** `latexmk` ships with TeX Live and MacTeX, so the `pdf` target needs nothing
+beyond a TeX install. It leaves its intermediate files in `latex/` (gitignored) and writes
+the log to `latex/main.log`, which is where `make check` reads it. `-g` forces a rebuild
+even when latexmk judges nothing has changed; without it, regenerating an input with
+identical content leaves the PDF older than its sources, and `make check` reports it stale.
 
 ## main.tex preamble
 
@@ -297,9 +294,9 @@ cd <doc-dir> && make pdf && make html && make epub && make md
 
 Then run `make check` and fix what it reports. Common issues:
 
-- `latexd` not installed or not on PATH — it's a lab tool, absent on most systems; the
-  `pdf` target falls back to `latexmk`, so this only bites if `latexmk` is also missing.
-- **`latexd` exits 0 even when LaTeX fails** — never trust the exit code; `make check`
+- `latexmk` not found — it comes with TeX Live / MacTeX; install one of those.
+- **A build's exit status is not evidence** — undefined references are only warnings, and a
+  failed run can leave the previous PDF in place. Never trust the exit code; `make check`
   verifies the PDF is real and fresh. On failure, read `latex/main.log`.
 - Missing LaTeX packages (install via tlmgr); the math block needs `amsmath`, `amsthm`,
   `mathtools`.

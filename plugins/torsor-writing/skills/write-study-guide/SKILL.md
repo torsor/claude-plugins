@@ -77,7 +77,7 @@ undefined, and the assets look as though they do not exist. So:
 1. Style: `${CLAUDE_PLUGIN_ROOT}/assets/prose/base-paper-guide.md` + the chosen voice
    (default `01-direct`; catalog in `assets/prose/README.md`).
 2. Commons: `${CLAUDE_PLUGIN_ROOT}/assets/commons/scaffold.md` (required before
-   Phase B), `assets/commons/lessons.md` (math-rendering and `latexd` gotchas — a study
+   Phase B), `assets/commons/lessons.md` (math-rendering and build gotchas — a study
    guide is always math-heavy), `assets/commons/publication.md`.
 3. Layout reference: `${CLAUDE_PLUGIN_ROOT}/assets/reference/shelf-main.tex`.
 

@@ -126,7 +126,7 @@ right.
 ## The family it belongs to
 
 The guide shares the manual family's preamble (Solarized Cézanne palette, Garamond/Cabin
-fonts, box styles, `\code{}`), `tex2torsor` and HTML design, toolchain (`latexd`, pandoc,
+fonts, box styles, `\code{}`), `tex2torsor` and HTML design, toolchain (`latexmk`, pandoc,
 `lab-view`), and `torsor lab` credit — extended with the math block (theorem environments,
 `pitfallbox`). Unique to the guide: the two-part shape, the third-person companion framing,
 and the reader profile. A reader moving between a tool manual and a paper guide should feel

@@ -42,7 +42,7 @@ Seven LaTeX hazards are handled here so no individual review has to rediscover t
    replaces rather than raises.
 
 ``build`` exists because a single pdflatex pass leaves every cross-reference reading
-``??``, and because both ``latexd`` and ``make`` exit 0 on a failed LaTeX run. It runs
+``??``, and because ``make`` can exit 0 around a failed LaTeX run. It runs
 the sequence that converges and then checks the log and the note count rather than
 trusting the exit status.
 """

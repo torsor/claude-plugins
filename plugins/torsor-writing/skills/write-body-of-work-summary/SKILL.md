@@ -229,7 +229,7 @@ Authoring reuses the family commons, with body-of-work deltas.
 `${CLAUDE_PLUGIN_ROOT}/assets/commons/scaffold.md` (directory, `.gitignore`,
 Makefile, preamble rules, the math block, STYLE.md assembly, tex2torsor +
 check-build.py copies). Consult
-`${CLAUDE_PLUGIN_ROOT}/assets/commons/lessons.md` for math-rendering and `latexd`
+`${CLAUDE_PLUGIN_ROOT}/assets/commons/lessons.md` for math-rendering and build
 gotchas. Do not re-derive the build.
 
 Apply these deltas:
@@ -307,14 +307,14 @@ LaTeX/PDF/HTML/EPUB/Markdown **plus** the kept `source-notes/`.
 | Guessing the grammatical person | Ask the purpose mode first; third person unless self-presentation |
 | Skipping the themes map and discovering mid-write that the work doesn't cohere as drafted | Produce `themes.md`; agree themes + organization before Phase C |
 | Using "clean" or "load-bearing" | Banned family-wide — say *central*, *carries the argument*, *does the work*, *the engine of* |
-| Guessing the build | Reuse the commons scaffold's `latexd` (→ `latexmk` fallback) / `tex2torsor` / pandoc toolchain + `lessons.md` |
+| Guessing the build | Reuse the commons scaffold's `latexmk` / `tex2torsor` / pandoc toolchain + `lessons.md` |
 | Throwing away the extraction work | Keep `source-notes/` — reusable, and part of the point |
 
 ## What stays the same as the family
 
 Same torsor preamble (Solarized Cézanne, Garamond/Cabin, box styles, `\code{}`),
 the math block (theorem environments, `pitfallbox`), `tex2torsor` + HTML design,
-the `latexd` (→ `latexmk` fallback) / pandoc (EPUB + Markdown) / `lab-view`
+the `latexmk` / pandoc (EPUB + Markdown) / `lab-view`
 toolchain, the publication pass, the `torsor lab` credit, and the colophon page
 (inherited verbatim via the commons scaffold). A reader moving between a tool
 manual, a paper guide, a topic guide, and a body-of-work summary should feel the

@@ -63,7 +63,7 @@ def find_log(root: Path, explicit: str | None) -> Path | None:
 
 def check_log(log: Path | None, failures: list[str]) -> None:
     if log is None:
-        print("Log: NOT FOUND — latexd may keep it elsewhere; pass --log PATH. "
+        print("Log: NOT FOUND — pass --log PATH if the build writes it elsewhere. "
               "Errors/undefined refs/overfull NOT checked.")
         failures.append("LaTeX log not found — log-based checks did not run")
         return

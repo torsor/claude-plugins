@@ -47,7 +47,7 @@ New and reused files, all within `plugins/torsor-writing/`.
 | `assets/prose/voices/01-direct.md` | reused **verbatim** | default voice, unchanged |
 | `skills/write-topic-guide/pre-summarization.md` | reused (discipline) | isolated-subagent / distill-first / review-every-digest / err-on-more discipline applies; its **scanned-PDF machinery only bites** when a steering decision pulls an external background PDF (the internal record is markdown — no vision-read/OCR needed) |
 | `assets/commons/scaffold.md` | reused **verbatim** | directory, `.gitignore`, Makefile, preamble, math block, STYLE.md assembly, `tex2torsor` + `check-build.py` |
-| `assets/commons/lessons.md` | reused **verbatim** | math-rendering / `latexd` gotchas |
+| `assets/commons/lessons.md` | reused **verbatim** | math-rendering / build gotchas |
 | `assets/commons/publication.md` | reused **verbatim** | final publication pass |
 | `assets/prose/README.md` | **edit** | list `base-state-guide.md` in the composition map |
 | `.claude-plugin/plugin.json` | **edit** | add the skill to the description; bump version |
@@ -258,7 +258,7 @@ guide/<YYYY-MM-DD>-<slug>-state/
 | Burying corrections and dead ends in footnotes | Make them a **first-class chapter** (what changed / what might change) |
 | Result-maxing rhetoric ("contribution," "pulled it off," "impressive") | Use the five state questions; obey the extended ban-list + no-premature-closure rule |
 | Overwriting last week's state guide | Write a **new dated artifact**; progression must stay visible |
-| Guessing the build toolchain | Reuse the commons scaffold (`latexd`→`latexmk`, `tex2torsor`, pandoc) + `lessons.md` |
+| Guessing the build toolchain | Reuse the commons scaffold (`latexmk`, `tex2torsor`, pandoc) + `lessons.md` |
 | Throwing away the distillation | Keep `state-notes/` as a deliverable, distinct from background `source-notes/` |
 
 ---
@@ -266,8 +266,8 @@ guide/<YYYY-MM-DD>-<slug>-state/
 ## 7. What stays the same as the manual family
 
 Same torsor preamble (Solarized Cézanne, Garamond/Cabin, box styles, `\code{}`), the math
-block (theorem environments, `pitfallbox`), `tex2torsor` + HTML design, the `latexd`
-(→ `latexmk`) / pandoc (EPUB + Markdown) / `lab-view` toolchain, the publication pass, the
+block (theorem environments, `pitfallbox`), `tex2torsor` + HTML design, the
+`latexmk` / pandoc (EPUB + Markdown) / `lab-view` toolchain, the publication pass, the
 `torsor lab` credit, and the colophon page — all inherited verbatim via the commons scaffold.
 A reader moving between a tool manual, a paper guide, a topic guide, and a state guide should
 feel the same hand at work.

@@ -4,7 +4,7 @@
 the gotchas every torsor document hits, and
 `${CLAUDE_PLUGIN_ROOT}/assets/commons/publication.md` carries the verification pass and its
 evidence-report discipline. Both apply here unchanged, including the one that matters most —
-`latexd` and `make` exit 0 on a failed LaTeX run, so a build is verified, never assumed.
+`make` can exit 0 around a failed LaTeX run, so a build is verified, never assumed.
 
 This file carries only what is specific to a critical guide: annotating a source you did not
 write, and assembling a typeset document out of Markdown that quotes LaTeX.
