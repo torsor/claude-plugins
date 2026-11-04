@@ -24,6 +24,8 @@ skills:
     summary: A state guide for a workshop / working session.
   - name: write-pure-math-paper
     summary: A mathematics paper in the house style.
+  - name: write-pure-math-paper-and-supplement
+    summary: A streamlined journal paper plus a companion Supplement that makes the pair self-contained.
   - name: write-technical-report
     summary: An evidence-led technical experiment report.
 
