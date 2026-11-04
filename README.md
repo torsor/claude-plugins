@@ -25,6 +25,7 @@ EPUB, and Markdown output — in the torsor design and prose style.
 | `write-body-of-work-summary` | A styled overview of one mathematician's whole body of work — program essay plus a paragraph per paper. |
 | `write-workshop-state-guide` | A state guide for a workshop / working session. |
 | `write-pure-math-paper` | A mathematics paper in the house style. |
+| `write-pure-math-paper-and-supplement` | A streamlined journal paper plus a companion Supplement giving every proof the paper states, sketches, or credits. |
 | `write-technical-report` | An evidence-led technical experiment report. |
 
 ```
@@ -41,6 +42,7 @@ plugins/torsor-writing/
     write-body-of-work-summary/ SKILL.md
     write-workshop-state-guide/ SKILL.md
     write-pure-math-paper/      SKILL.md (+ references/, agents/)
+    write-pure-math-paper-and-supplement/  SKILL.md (+ agents/)
     write-technical-report/     SKILL.md (+ references/, agents/)
   assets/
     commons/        shared scaffold, lessons, and publication pass used across the skills

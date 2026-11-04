@@ -1,0 +1,4 @@
+interface:
+  display_name: "Pure Mathematics Paper and Supplement"
+  short_description: "Write a streamlined math paper plus a self-contained supplement"
+  default_prompt: "Use $write-pure-math-paper-and-supplement to turn these results, proofs, and notes into a journal paper with a companion supplement."
